@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import RouterIndex from '../src/router';
 import 'element-theme-default';
-import './css/public.css'
+import './css/public.css';
+import $ from 'jquery';
+
+global.$ = $;
 
 class App extends Component {
   render() {
