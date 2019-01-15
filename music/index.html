@@ -98,12 +98,6 @@
 										</div>
 									</div>
 								</div>
-								<!-- <div class="weui-panel__ft">
-									<a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
-									  <div class="weui-cell__bd">查看更多</div>
-									  <span class="weui-cell__ft"></span>
-									</a>    
-								</div> -->
 							
 					</div>
 					
@@ -112,34 +106,13 @@
 			<div class="mui-scroll-wrapper block">
 				<div class="mui-scroll">
 					<ul class="sort_list">
-						<li>
-							<a href="">
-								<div class="left">
-									<img src="http://y.gtimg.cn/music/photo_new/T003R300x300M000000m8iOH2WvvWY.jpg" alt="">
-									<div class="cover"></div>
-								</div>
-								<div class="right">
-									<h1 class="elp">巅峰榜·流行指数</h1>
-									<p>
-										<em class="index">1</em>
-										<span class="s_name">一万次悲伤</span> -
-										<span class="sg">逃跑计划</span>
-									</p>
-									<p>
-										<em class="index">1</em>
-										<span class="s_name">一万次悲伤</span> -
-										<span class="sg">逃跑计划</span>
-									</p>
-									<p>
-										<em class="index">1</em>
-										<span class="s_name">一万次悲伤</span> -
-										<span class="sg">逃跑计划</span>
-									</p>
-									<i class="arrow mui-icon mui-icon-arrowright"></i>
-								</div>
-							</a>
-						</li>
 					</ul>
+				</div>
+				<div class="mask" id="sort_mask">
+					<div class="load">
+						<i class="weui-loading"></i>
+						<span class="weui-loadmore__tips">正在加载</span>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -250,6 +223,12 @@
 				$('.tab_item').removeClass(colorArr[now]).eq(i).addClass(colorArr[now]);
 				cur = i;
 				$('.block').hide().eq(cur).show();
+				if(i==1){
+					var len = document.getElementsByClassName('sort_list')[0].getElementsByTagName('li').length;
+					for(let i = 0; i < len; i ++){
+						getSort(i);
+					}
+				}
 			})
 		})
 	}
@@ -298,29 +277,59 @@
 				$('#newmask').hide();
 			}
 		})
-// 		$.get(`${url}/top/playlist?limit=20`).then((dt)=>{
-// 			console.log(dt);
-// // 			<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
-// // 				<div class="weui-media-box__hd">
-// // 					<img class="weui-media-box__thumb" src="http://y.gtimg.cn/music/photo_new/T002R300x300M000004BdozS16T3Je.jpg?max_age=2592000">
-// // 				</div>
-// // 				<div class="weui-media-box__bd">
-// // 					<h4 class="weui-media-box__title">白马青衫</h4>
-// // 					<p class="weui-media-box__desc">洛天依</p>
-// // 				</div>
-// // 				<div class="weui-panel__ft"><time class="pub_time">2019-01-15</time></div>
-// // 			</a>
-// 			
-// 			
-// 			
-// 		})
+
 	}
 	
+	function getSort(id){
+		$.get(`${url}/top/list?idx=${id}`).then((dt)=>{
+			$('#sort_mask').hide();
+			
+			$('.sort_list li').find('a').eq(id).empty();
+			var cnt = `<div class="left">
+									<img src="${lazyurl}" data-original='${dt.playlist.coverImgUrl}' alt="">
+									<div class="cover"></div>
+						</div>
+						<div class="right">
+							<h1 class="elp">${dt.playlist.name}</h1>
+							<i class="arrow mui-icon mui-icon-arrowright"></i>
+						</div>`;
+			$('.sort_list li').find('a').eq(id).append(cnt);
 
-		$.get(`${url}/top/album?limit=20`).then((dt)=>{
-			console.log(dt);
+			var ps = '';
+			for(let i = 1; i < 4; i ++){
+				ps += `<p class='elp'>
+						<em class="index">${i}</em>
+						<span class="s_name">${dt.playlist.tracks[i-1].name}</span> -
+						<span class="sg">${dt.playlist.tracks[i-1].ar[0].name}</span>
+					</p>`;
+				
+			}
+			$('.sort_list li').eq(id).find('p').remove();
+			$('.sort_list li').eq(id).find('h1').after(ps);
+			$('.sort_list li').eq(id).find('img').lazyload()
 		})
+	}
 
+	function createSort(){
+		for(let i = 0; i < 24; i ++){
+			var li = $('<li />').append(
+									$('<a />').attr('href',"javascript:void(0)")
+											  .on('tap',function(){
+												  console.log(i);
+											  })
+								);
+			$('.sort_list').append(li);							  	
+		}
+	}
+
+	function sortHandle(){
+		$('.sort_list li').each(function(i){
+			$(this).find('img').attr({'src':lazyurl});
+			$(this).find('a').on('tap',function(){
+				console.log(i);
+			})
+		})
+	}
 	
 	
 	cancelSkin();
@@ -328,8 +337,8 @@
 	switchTab();
 	getBanner();
 	topSong();
-	
-	
+	createSort();
+	// sortHandle();
 	
 	(function(){
 		$('.tab_item').eq(cur).addClass(colorArr[now]);
@@ -353,6 +362,8 @@
 		mui('.mui-scroll-wrapper').scroll({
 			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
 		});
+
+		$('.sort_list img').lazyload();
 	})()
 	
 </script>

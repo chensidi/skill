@@ -161,6 +161,9 @@ nav{
 #recommand{
 	position: relative;
 }
+#recommand img{
+	height: 100%;
+}
 .mask{
 		position: absolute;
     top: 0;
@@ -281,4 +284,19 @@ footer{
     height: 6px;
     margin-top: -3px;
 		color: #b2b2b2;;
+}
+.cover{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background: rgba(0,0,0,.5);
+}
+#sort_mask{
+	display: flex;
+}
+
+#sort_mask>.load{
+	margin: auto;
 }
