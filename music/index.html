@@ -26,10 +26,10 @@
 				<span>排行榜</span>
 			</div>
 			<div class="tab_item">
-				<span>推荐</span>
+				<span>歌手</span>
 			</div>
 			<div class="tab_item">
-				<span>推荐</span>
+				<span>搜索</span>
 			</div>
 		</nav>
 		<div class="main">
@@ -115,6 +115,71 @@
 					</div>
 				</div>
 			</div>
+			<div class="block">
+				<div class="kind">
+					<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+						<div class="mui-scroll" id="type">
+						</div>
+					</div>
+					<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+						<div class="mui-scroll" id="index">
+						</div>
+					</div>
+				</div>
+				<div class="mui-scroll-wrapper" id="singers">
+					<div class="mui-scroll">
+						<ul>
+						</ul>
+					</div>
+					<div class="mask" id="singer_mask">
+						<div class="load">
+							<i class="weui-loading"></i>
+							<span class="weui-loadmore__tips">正在加载</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="block">
+				<div class="weui-search-bar" id="searchBar">
+					<div class="weui-search-bar__form">
+						<div class="weui-search-bar__box ser_box">
+							<i class="weui-icon-search"></i>
+							<input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索歌曲、歌手、专辑" required="">
+							<a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+						</div>
+						<label class="weui-search-bar__label" id="searchText">
+							<i class="weui-icon-search"></i>
+							<span>搜索</span>
+						</label>
+					</div>
+					<a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+				</div>
+				<div class="hotser mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="hots">
+							<h1 class="hot_title">热门搜索</h1>
+							<div class="hot_list clearfix">
+							</div>
+						</div>
+						<div class="ser_result">
+							<div class="result_item">
+								<img src="images/lazy.png" alt="">
+								<div>
+									<p class="s_song elp">YUI</p>
+									<p class="s_singer elp">西皮士</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="mask" id="ser_mask">
+						<div class="load">
+							<i class="weui-loading"></i>
+							<span class="weui-loadmore__tips">正在加载</span>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<footer>
 			<div class="player-img rotate">
@@ -174,9 +239,30 @@
 	const bgColorArr = [['yellow','#F8F8FF'],['black','#212121'],['blue','#F8F8FF'],['red','#F8F8FF'],['green','#F8F8FF']],
 		  colorArr = ['yellowon','blackon','blueon','redon','greenon'],
 		  lazyurl = 'images/lazy.png',
-		  url = 'http://localhost:3000';
+		  url = 'http://localhost:3000',
+		  sortColor = [{h:'#333',name:'#333',singer:'rgba(0,0,0,.5)',bg:'#fff',serBg:'#F8F8FF',serBox:'#fff'},
+		  				{h:'#fff',name:'#ddd',singer:'rgba(221, 221, 221, 0.7)',bg:'#333',serBg:'#212121',serBox:'#333'}
+					  ],
+		  types = [
+			  {info:'入驻歌手',id:5001},
+			  {info:'华语男',id:1001},
+			  {info:'华语女',id:1002},
+			  {info:'华语组合',id:1003},
+			  {info:'欧美男',id:2001},
+			  {info:'欧美女',id:2002},
+			  {info:'欧美组合',id:2003},
+			  {info:'日本男',id:6001},
+			  {info:'日本女',id:6002},
+			  {info:'日本组合',id:6003},
+			  {info:'韩国男',id:7001},
+			  {info:'韩国女',id:7002},
+			  {info:'韩国组合',id:7003},
+			  {info:'其他男',id:4001},
+			  {info:'其他女',id:4002},
+			  {info:'其他组合',id:4003}
+		  ];
 			
-	let now = 4,last = 4,cur = 0;
+	let now = 4,last = 4,cur = 0,nowSort = 0;
 	function actionSheet(){
 		$.actions({
 			actions: [
@@ -207,11 +293,26 @@
 				$('.tab_item').eq(cur).removeClass(colorArr[last]).addClass(colorArr[i]);
 				$('.skin-recommend-title').removeClass(colorArr[last]).addClass(colorArr[i]);
 				if(i==1){
+					nowSort = 1;
 					$('.tab_item').css('color','#fff');
-					$('.weui-media-box__title,.pub_time').css('color','#fff')
+					$('.weui-media-box__title,.pub_time').css('color','#fff');
+					$('#type a,#index a').css('color','#ddd');
 				}else{
+					nowSort = 0;
 					$('.tab_item,.pub_time,.weui-media-box__title').css('color','rgba(0, 0, 0, .7)');
+					$('#type a,#index a').css('color','#333');					
 				}
+				$('.sort_list li').css('background',sortColor[nowSort].bg);
+				$('.sort_list li h1,.s_song').css('color',sortColor[nowSort].h);
+				$('.sort_list li .index,.sort_list li .s_name,.s_singer').css('color',sortColor[nowSort].name);
+				$('.sort_list li .sg').css('color',sortColor[nowSort].singer);
+				$('#type,#index').find('.tag'+last).removeClass().addClass('tag'+i);
+				$('#singers span').css('color',sortColor[nowSort].name);
+				$('#searchBar').css('background',sortColor[nowSort].serBg);
+				$('.ser_box,#searchText,#searchCancel').css({'background':sortColor[nowSort].serBox,'color':sortColor[nowSort].name});
+				$('.hot_title').removeClass(colorArr[last]).addClass(colorArr[i]);
+				$('.hot_item').css({'color':sortColor[nowSort].name,'background':sortColor[nowSort].bg});
+				
 				now = i;
 			})
 		})
@@ -228,6 +329,10 @@
 					for(let i = 0; i < len; i ++){
 						getSort(i);
 					}
+				}else if(i==2){
+					topSingers();
+				}else if(i==3){
+					hotSerach();
 				}
 			})
 		})
@@ -290,7 +395,7 @@
 									<div class="cover"></div>
 						</div>
 						<div class="right">
-							<h1 class="elp">${dt.playlist.name}</h1>
+							<h1 class="elp" style="color:${sortColor[nowSort].h}">${dt.playlist.name}</h1>
 							<i class="arrow mui-icon mui-icon-arrowright"></i>
 						</div>`;
 			$('.sort_list li').find('a').eq(id).append(cnt);
@@ -298,9 +403,9 @@
 			var ps = '';
 			for(let i = 1; i < 4; i ++){
 				ps += `<p class='elp'>
-						<em class="index">${i}</em>
-						<span class="s_name">${dt.playlist.tracks[i-1].name}</span> -
-						<span class="sg">${dt.playlist.tracks[i-1].ar[0].name}</span>
+						<em class="index" style="color:${sortColor[nowSort].name}">${i}</em>
+						<span class="s_name" style="color:${sortColor[nowSort].name}">${dt.playlist.tracks[i-1].name}</span> -
+						<span class="sg" style="color:${sortColor[nowSort].singer}">${dt.playlist.tracks[i-1].ar[0].name}</span>
 					</p>`;
 				
 			}
@@ -317,20 +422,122 @@
 											  .on('tap',function(){
 												  console.log(i);
 											  })
-								);
+								).css('background',sortColor[nowSort].bg);
 			$('.sort_list').append(li);							  	
 		}
 	}
 
-	function sortHandle(){
-		$('.sort_list li').each(function(i){
-			$(this).find('img').attr({'src':lazyurl});
-			$(this).find('a').on('tap',function(){
-				console.log(i);
+	function createTypes(){
+		types.map((obj,i)=>{
+			var a = $('<a />').text(obj.info)
+							  .attr('tag',obj.id)
+							  .on('tap',function(){
+									var cat = $(this).attr('tag');
+									var initial = $('#index').find('.tag'+now).attr('tag');
+								  	$(this).addClass('tag'+now).siblings().removeClass('tag'+now);
+									var addr = `/artist/list?cat=${cat}&initial=${initial}`;
+								  	topSingers(addr);
+							  });
+			if(i == 0){
+				a.addClass('tag'+now);
+			}
+			$('#type').append(a);
+		})
+
+		for(let i = 64; i <= 90; i ++){
+			var txt = i==64?'推荐':String.fromCharCode(i),
+				tag = i==64?'':String.fromCharCode(i);
+			var a = $('<a />').text(txt)
+							  .attr('tag',tag)
+							  .on('tap',function(){
+								  	var cat = $('#type').find('.tag'+now).attr('tag');
+									var initial = $(this).attr('tag');
+									$(this).addClass('tag'+now).siblings().removeClass('tag'+now);
+									var addr = `/artist/list?cat=${cat}&initial=${initial}`;
+									topSingers(addr);
+							  });
+			if(i == 64){
+				a.addClass('tag'+now);
+			}
+			$('#index').append(a);
+		}
+	}
+
+	
+	function topSingers(addr='/top/artists?offset=0&limit=30'){
+		$('#singers .mask').show();
+		$.get(`${url}${addr}`).then((dt)=>{
+			$('#singers ul').empty();
+			$('#singers .mask').hide();
+			
+			dt.artists.map((obj,i)=>{
+				var li = $('<li />').attr('sid',obj.id)
+						  			.append(
+										 $('<img />').attr({src:`${lazyurl}`,alt:`${obj.name}`,'data-original':`${obj.img1v1Url}`})
+						  							 .addClass('singer_img')
+									  ).append(
+										  $('<span />').addClass('singer_name elp').text(obj.name).css('color',sortColor[nowSort].name)
+									  ).on('tap',function(){
+											console.log($(this).attr('sid'))
+									  })
+				$('#singers ul').append(li);
+				li.find('img').lazyload();
 			})
 		})
 	}
 	
+
+	function hotSerach(){
+		$('.hot_list').empty();
+		$('#ser_mask').show();
+		$.get(`${url}/search/hot`).then((dt)=>{
+			$('#ser_mask').hide();
+			dt.result.hots.map((obj,i)=>{
+				var item = `<div class="hot_item" style="color:${sortColor[nowSort].name};background:${sortColor[nowSort].bg}">${obj.first}</div>`;
+				$('.hot_list').append(item);
+			})
+		})
+	}
+	
+	function serHandle(){
+		$('#searchInput').on('input',function(){
+			// console.log($(this).val());
+			if($(this).val()!=''){
+				$('.hots').hide();
+				$('.ser_result').show();
+			}else{
+				$('.hots').show();
+				$('.ser_result').hide();
+			}
+		})
+		$('#searchInput').on('keydown',function(e){
+			if(e.keyCode==13&&$(this).val()!=''){
+				var val = $(this).val();
+				$('.ser_result').empty();
+				$.get(`${url}/search?keywords= ${val}`).then((dt)=>{
+					dt.result.songs.map((obj,i)=>{
+						var item = $('<div />').addClass('result_item')
+											   .append($('<img />').attr('src','images/lazy.png'))
+											   .append(
+												   $('<div />').append($('<p />').addClass('s_song elp').text(obj.name).css('color',sortColor[nowSort].h))
+												   			   .append($('<p />').addClass('s_singer elp').text(obj.artists[0].name).css('color',sortColor[nowSort].name))
+											   ).on('tap',function(){
+													console.log(obj.id);
+											   })
+						$('.ser_result').append(item);
+					})
+					
+				})
+			}
+
+		})
+		$('#searchClear,#searchCancel').on('tap',function(){
+			$('.ser_result').hide();
+			$('.hots').show();
+			$('.ser_result').empty();
+		})
+
+	}
 	
 	cancelSkin();
 	switchColor();
@@ -338,13 +545,16 @@
 	getBanner();
 	topSong();
 	createSort();
-	// sortHandle();
+	createTypes();
+	serHandle();
 	
+
 	(function(){
 		$('.tab_item').eq(cur).addClass(colorArr[now]);
 		$('body,footer').css('background',bgColorArr[now][1]);
 		$('.skin-recommend-title').removeClass(colorArr[last]).addClass(colorArr[now]);
 		$('.block').eq(cur).show();
+		$('.hot_title').removeClass(colorArr[last]).addClass(colorArr[now]);
 		var slider = mui("#slider");
 		slider.slider({
 			interval: 5000
@@ -363,7 +573,22 @@
 			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
 		});
 
+		mui('.kind_scroll').scroll({
+			scrollY: false, 
+			scrollX: true,
+			deceleration:0.0006,
+			bounce: true
+		})
+
 		$('.sort_list img').lazyload();
+
+		// $.get(`${url}/toplist/artist`).then((dt)=>{
+		// 	console.log(dt);
+		// })
+
+		// $.get(`${url}/top/artists`).then((dt)=>{
+		// 	console.log(dt);
+		// })
 	})()
 	
 </script>
