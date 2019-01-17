@@ -193,7 +193,10 @@
 				</div>
 				<span class="song">不后悔</span>
 				<span class="singer">张学友</span>
-				<div class="play-right"></div>
+				<div class="play-right">
+					<div class="play"><img src="images/play.png" alt="" id="play_btn"></div>
+					<div class="next"><img src="images/next.png" alt="" id="next_btn"></div>
+				</div>
 			</div>
 		</footer>
 		<div class="music-skin" id="music-skin">
@@ -225,6 +228,9 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	<div class="iframe">
+		<iframe src="album.html" frameborder="0"></iframe>
 	</div>
 </body>
 </html>
@@ -262,7 +268,14 @@
 			  {info:'其他组合',id:4003}
 		  ];
 			
-	let now = 4,last = 4,cur = 0,nowSort = 0;
+	let now = 4,last = 4,cur = 0,nowSort = 0,playStatus = false;
+	
+	function getStorage(){
+		if(localStorage.getItem('now')!=null){
+			now = last = localStorage.getItem('now');
+		}
+	}
+
 	function actionSheet(){
 		$.actions({
 			actions: [
@@ -285,39 +298,48 @@
 	function switchColor(){
 		$('.skin_block').each(function(i){
 			$(this).find('div').on('tap',function(){
-				last = now;
-				$('header').removeClass().addClass(bgColorArr[i][0]);
-				$('body,footer').css('background',bgColorArr[i][1]);
-				$('.weui-icon-success').hide().eq(i).show();
-				$('#music-skin').hide();
-				$('.tab_item').eq(cur).removeClass(colorArr[last]).addClass(colorArr[i]);
-				$('.skin-recommend-title').removeClass(colorArr[last]).addClass(colorArr[i]);
-				if(i==1){
-					nowSort = 1;
-					$('.tab_item').css('color','#fff');
-					$('.weui-media-box__title,.pub_time').css('color','#fff');
-					$('#type a,#index a').css('color','#ddd');
-				}else{
-					nowSort = 0;
-					$('.tab_item,.pub_time,.weui-media-box__title').css('color','rgba(0, 0, 0, .7)');
-					$('#type a,#index a').css('color','#333');					
-				}
-				$('.sort_list li').css('background',sortColor[nowSort].bg);
-				$('.sort_list li h1,.s_song').css('color',sortColor[nowSort].h);
-				$('.sort_list li .index,.sort_list li .s_name,.s_singer').css('color',sortColor[nowSort].name);
-				$('.sort_list li .sg').css('color',sortColor[nowSort].singer);
-				$('#type,#index').find('.tag'+last).removeClass().addClass('tag'+i);
-				$('#singers span').css('color',sortColor[nowSort].name);
-				$('#searchBar').css('background',sortColor[nowSort].serBg);
-				$('.ser_box,#searchText,#searchCancel').css({'background':sortColor[nowSort].serBox,'color':sortColor[nowSort].name});
-				$('.hot_title').removeClass(colorArr[last]).addClass(colorArr[i]);
-				$('.hot_item').css({'color':sortColor[nowSort].name,'background':sortColor[nowSort].bg});
-				
-				now = i;
+				switchColorHandle(i);
 			})
 		})
 	}
 	
+	function switchColorHandle(i=now){
+		last = now;
+		$('header').removeClass().addClass(bgColorArr[i][0]);
+		$('body,footer').css('background',bgColorArr[i][1]);
+		$('.weui-icon-success').hide().eq(i).show();
+		$('#music-skin').hide();
+		$('.tab_item').eq(cur).removeClass(colorArr[last]).addClass(colorArr[i]);
+		$('.skin-recommend-title').removeClass(colorArr[last]).addClass(colorArr[i]);
+		if(i==1){
+			nowSort = 1;
+			$('.tab_item').css('color','#fff');
+			$('.weui-media-box__title,.pub_time').css('color','#fff');
+			$('#type a,#index a').css('color','#ddd');
+			$('#play_btn').attr('src','images/play.png');
+			$('#next_btn').attr('src','images/next.png');
+		}else{
+			nowSort = 0;
+			$('.tab_item,.pub_time,.weui-media-box__title').css('color','rgba(0, 0, 0, .7)');
+			$('#type a,#index a').css('color','#333');		
+			$('#play_btn').attr('src','images/play(1).png');
+			$('#next_btn').attr('src','images/next(1).png');			
+		}
+		$('.sort_list li').css('background',sortColor[nowSort].bg);
+		$('.sort_list li h1,.s_song').css('color',sortColor[nowSort].h);
+		$('.sort_list li .index,.sort_list li .s_name,.s_singer').css('color',sortColor[nowSort].name);
+		$('.sort_list li .sg').css('color',sortColor[nowSort].singer);
+		$('#type,#index').find('.tag'+last).removeClass().addClass('tag'+i);
+		$('#singers span').css('color',sortColor[nowSort].name);
+		$('#searchBar').css('background',sortColor[nowSort].serBg);
+		$('.ser_box,#searchText,#searchCancel').css({'background':sortColor[nowSort].serBox,'color':sortColor[nowSort].name});
+		$('.hot_title,.song,.singer').removeClass(colorArr[last]).addClass(colorArr[i]);
+		$('.hot_item').css({'color':sortColor[nowSort].name,'background':sortColor[nowSort].bg});
+		
+		now = i;
+		localStorage.setItem('now',i);
+	}
+
 	function switchTab(){
 		$('.tab_item').each(function(i){
 			$(this).on('tap',function(){
@@ -373,9 +395,13 @@
 									).append(
 										$('<div />').addClass('weui-panel__ft')
 													.append($('<time />').addClass('pub_time').text(pubTime(obj.publishTime)))
-									)
+									).on('tap',function(){
+										// console.log(obj.id);
+										openNewView('album');
+									})
 					$('#recommand').append(a);
 				})
+				switchColorHandle(now);
 			},
 			complete: function(){
 				$('img.weui-media-box__thumb').lazyload();
@@ -514,7 +540,9 @@
 			if(e.keyCode==13&&$(this).val()!=''){
 				var val = $(this).val();
 				$('.ser_result').empty();
+				$('#ser_mask').show();
 				$.get(`${url}/search?keywords= ${val}`).then((dt)=>{
+					$('#ser_mask').hide();
 					dt.result.songs.map((obj,i)=>{
 						var item = $('<div />').addClass('result_item')
 											   .append($('<img />').attr('src','images/lazy.png'))
@@ -523,6 +551,7 @@
 												   			   .append($('<p />').addClass('s_singer elp').text(obj.artists[0].name).css('color',sortColor[nowSort].name))
 											   ).on('tap',function(){
 													console.log(obj.id);
+													
 											   })
 						$('.ser_result').append(item);
 					})
@@ -538,16 +567,36 @@
 		})
 
 	}
+
+	function switchPlay(){
+		$('#play_btn').on('tap',function(){
+			playStatus = !playStatus;
+			var code;
+			code = now==1?'':'(1)';
+			if(playStatus){
+				$(this).attr('src',`images/pause${code}.png`);
+			}else{
+				$(this).attr('src',`images/play${code}.png`);
+			}
+		})
+	}
+
+	function openNewView(url){
+		$('.iframe').show();
+		$('.iframe iframe').attr('src',`${url}.html`)
+	}
 	
+	getStorage();
 	cancelSkin();
 	switchColor();
+	switchColorHandle();
 	switchTab();
 	getBanner();
 	topSong();
 	createSort();
 	createTypes();
 	serHandle();
-	
+	switchPlay();
 
 	(function(){
 		$('.tab_item').eq(cur).addClass(colorArr[now]);
@@ -582,13 +631,7 @@
 
 		$('.sort_list img').lazyload();
 
-		// $.get(`${url}/toplist/artist`).then((dt)=>{
-		// 	console.log(dt);
-		// })
 
-		// $.get(`${url}/top/artists`).then((dt)=>{
-		// 	console.log(dt);
-		// })
 	})()
 	
 </script>
