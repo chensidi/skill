@@ -11,3 +11,9 @@ export const setColor = function({commit,state},n){
 		num:n
 	})
 }
+export const setOn = function({commit,state},n){
+	commit({
+		type:"setOn",
+		num:n
+	})
+}

@@ -11,3 +11,7 @@ export const getColor = (state)=>{
 export const getColorObj = (state)=>{
     return state.colors;
 }
+
+export const getOn = (state) => {
+    return state.active;
+}

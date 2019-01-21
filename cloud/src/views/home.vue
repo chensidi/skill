@@ -6,12 +6,24 @@
             :actions="actions"
             @select="onSelect"
         />
+        <Switchs :act='this.getOn' />
+        <div class="main">
+            <div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+                    <Slider />
+
+				</div>
+            </div>
+        </div>
         <wv-icon type="success"></wv-icon>
+        
     </div>
 </template>
 <script>
 import Topbar from '../components/topbar';
-import {mapActions} from 'vuex';
+import Switchs from '../components/switchbar';
+import Slider from '../components/slider';
+import {mapActions, mapGetters} from 'vuex';
 export default {
     name: 'Home',
     created(){
@@ -34,7 +46,9 @@ export default {
             ]
         };
     },
-
+    computed: {
+        ...mapGetters(['getOn'])
+    },
     methods: {
         ...mapActions(['setColor']),
         onSelect(item) {
@@ -48,7 +62,12 @@ export default {
             this.show = info;
         }
     },
-    components: {Topbar}
+    mounted(){
+        mui('.mui-scroll-wrapper').scroll({
+			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		});
+    },
+    components: {Topbar,Switchs,Slider}
 }
 
 </script>
