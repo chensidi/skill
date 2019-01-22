@@ -35,6 +35,7 @@ export default {
         change(n){
             this.on = n;
             this.setOn(n);
+            // this.$emit('curDisplay',n);
         },
         ...mapActions(['setOn'])
     }

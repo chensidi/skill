@@ -8,21 +8,34 @@
         />
         <Switchs :act='this.getOn' />
         <div class="main">
-            <div class="mui-scroll-wrapper">
+            <div class="mui-scroll-wrapper" v-if="this.getOn==0">
 				<div class="mui-scroll">
                     <Slider />
-
+                    <NewAlbum />
+				</div>
+            </div>
+            <div class="mui-scroll-wrapper" v-if="this.getOn==1">
+				<div class="mui-scroll">
+                    <Rank />
+				</div>
+            </div>
+            <div class="mui-scroll-wrapper" v-if="this.getOn==2">
+				<div class="mui-scroll">
+                    <Singer />
 				</div>
             </div>
         </div>
-        <wv-icon type="success"></wv-icon>
-        
+        <Playbar />
     </div>
 </template>
 <script>
 import Topbar from '../components/topbar';
 import Switchs from '../components/switchbar';
 import Slider from '../components/slider';
+import NewAlbum from '../components/newalbum';
+import Playbar from '../components/playbar';
+import Rank from '../components/rank';
+import Singer from '../components/singer';
 import {mapActions, mapGetters} from 'vuex';
 export default {
     name: 'Home',
@@ -60,6 +73,9 @@ export default {
         },
         go(info){
             this.show = info;
+        },
+        display(n){
+            console.log(n)
         }
     },
     mounted(){
@@ -67,7 +83,7 @@ export default {
 			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
 		});
     },
-    components: {Topbar,Switchs,Slider}
+    components: {Topbar,Switchs,Slider,NewAlbum,Playbar,Rank,Singer}
 }
 
 </script>
