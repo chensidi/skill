@@ -3,12 +3,12 @@
         <div class="kind">
             <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
                 <div class="mui-scroll" id="type">
-                    <a v-for='(obj,i) of types' :style="{'color':getColor==1?'#fff':'#333'}" :key="i" :class="i==type?className[getColor]:''" @click="changeType(i)">{{obj.info}}</a>
+                    <a v-for='(obj,i) of types' :style="{'color':getColor==1?'#fff':'#333'}" :key="i" :class="i==type?className[getColor]:''" @click="changeType(i,obj.id)">{{obj.info}}</a>
                 </div>
             </div>
             <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
                 <div class="mui-scroll" id="index">
-                    <a v-for="(item,j) of indexs" :style="{'color':getColor==1?'#fff':'#333'}" :key="j" :class="j==index?className[getColor]:''" @click="changeIndex(j)">{{item.txt}}</a>
+                    <a v-for="(item,j) of indexs" :style="{'color':getColor==1?'#fff':'#333'}" :key="j" :class="j==index?className[getColor]:''" @click="changeIndex(j,item.tag)">{{item.txt}}</a>
                 </div>
             </div>
         </div>
@@ -59,10 +59,13 @@ export default {
           indexs: [],
           addr: `/top/artists?offset=0&limit=30`,
           res: [],
-          loading: true
+          loading: true,
+          cat: '',
+          initial: ''
         }
     },
     created(){
+        mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);
         for(let i = 64; i <= 90; i ++){
 			var txt = i==64?'推荐':String.fromCharCode(i),
                 tag = i==64?'':String.fromCharCode(i);
@@ -71,11 +74,27 @@ export default {
         this.topSingers();
     },
     methods: {
-        changeType(i){
+        changeType(i,cat){
             this.type = i;
+            this.cat = cat;
+            this.loading = true;
+            $.get(`${this.getMyApi}/artist/list?cat=${cat}&initial=${this.initial}`).then((dt)=>{
+                this.res = dt.artists;
+                setTimeout(()=>{
+                    this.loading = false;
+                },500)
+            })
         },
-        changeIndex(i){
+        changeIndex(i,initial){
             this.index = i;
+            this.initial = initial;
+            this.loading = true;
+            $.get(`${this.getMyApi}/artist/list?cat=${this.cat}&initial=${initial}`).then((dt)=>{
+                this.res = dt.artists;
+                setTimeout(()=>{
+                    this.loading = false;
+                },500)
+            })
         },
         topSingers(){
             // `/artist/list?cat=${cat}&initial=${initial}`;

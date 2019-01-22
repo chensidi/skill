@@ -48,6 +48,9 @@ export default {
             var t = new Date(time);
             return t.getFullYear() + '-' + Number(t.getMonth()+1) + '-' + t.getDate();
 	    }
+    },
+    mounted(){
+        mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);
     }
 }
 </script>

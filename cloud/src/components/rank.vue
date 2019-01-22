@@ -62,6 +62,9 @@ export default {
                 this.getRank(i)
             }
         }
+    },
+    mounted(){
+        mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);
     }
 }
 </script>
