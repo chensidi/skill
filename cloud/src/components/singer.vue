@@ -1,25 +1,30 @@
 <template>
     <div id="singers">
         <div class="kind">
-            <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+            <div class="ss mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
                 <div class="mui-scroll" id="type">
                     <a v-for='(obj,i) of types' :style="{'color':getColor==1?'#fff':'#333'}" :key="i" :class="i==type?className[getColor]:''" @click="changeType(i,obj.id)">{{obj.info}}</a>
                 </div>
             </div>
-            <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+            <div class="ss mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
                 <div class="mui-scroll" id="index">
                     <a v-for="(item,j) of indexs" :style="{'color':getColor==1?'#fff':'#333'}" :key="j" :class="j==index?className[getColor]:''" @click="changeIndex(j,item.tag)">{{item.txt}}</a>
                 </div>
             </div>
         </div>
-        <ul class="singers">
-            <li v-for="(obj,i) of res" :key="i">
-                <router-link to="" v-lazy-container="{ selector: 'img' }">
-                    <img class="s_img" :data-src="obj.img1v1Url" data-loading='../../static/img/lazy.png' alt="">
-                    <span class="s_name" :style="{'color':getColor==1?'#ddd':'#333'}">{{obj.name}}</span>
-                </router-link>
-            </li>
-        </ul>
+        <div class="mui-scroll-wrapper" style="top:96px">
+            <div class="mui-scroll">
+                <ul class="singers">
+                    <li v-for="(obj,i) of res" :key="i">
+                        <router-link to="" v-lazy-container="{ selector: 'img' }">
+                            <img class="s_img" :data-src="obj.img1v1Url" data-loading='../../static/img/lazy.png' alt="">
+                            <span class="s_name" :style="{'color':getColor==1?'#ddd':'#333'}">{{obj.name}}</span>
+                        </router-link>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
         <div class="mask" id="singer_mask" v-show="loading">
             <div class="load">
                 <i class="weui-loading"></i>
@@ -65,7 +70,8 @@ export default {
         }
     },
     created(){
-        mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);
+        // mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);        
+
         for(let i = 64; i <= 90; i ++){
 			var txt = i==64?'推荐':String.fromCharCode(i),
                 tag = i==64?'':String.fromCharCode(i);
@@ -112,12 +118,15 @@ export default {
         ...mapGetters(['getColor','getMyApi'])
     },
     mounted(){
-        mui('.mui-scroll-wrapper').scroll({
+        mui('.ss').scroll({
 			scrollY: false, 
 			scrollX: true,
 			deceleration:0.0006,
 			bounce: true
-		})
+        })
+        mui('.mui-scroll-wrapper').scroll({
+			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		});
     }
 }
 </script>
@@ -125,6 +134,10 @@ export default {
     .kind{
         padding: 10px 20px;
         font-size: 14px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
     }
     .kind a{
         padding: 3px 8px;
@@ -160,6 +173,13 @@ export default {
     .singers{
         padding: 0 15px;
     }
+    #singers{
+        position: absolute;
+        left: 0;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+    }
     .singers li{
         margin-bottom: 10px;
     }
@@ -176,6 +196,9 @@ export default {
     }
     .s_name{
         font-size: 16px;
+    }
+    .mui-scroll-wrapper{
+        /* top: 96px; */
     }
 </style>
 

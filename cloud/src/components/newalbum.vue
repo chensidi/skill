@@ -1,8 +1,10 @@
 <template>
-    <div class="album-container">
-        <h1 class="skin-recommend-title" :style="{'color':this.getColorObj[this.getColor].title}">最新专辑</h1>   
+    <div class="album-container mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <Slider />
+            <h1 class="skin-recommend-title" :style="{'color':this.getColorObj[this.getColor].title}">最新专辑</h1>   
             <div class="weui-panel__bd" id="recommand">
-                <router-link to='' class="weui-media-box weui-media-box_appmsg" v-for="(obj,i) of albums" :key="i">
+                <router-link to='/album' class="weui-media-box weui-media-box_appmsg" v-for="(obj,i) of albums" :key="i">
                     <div class="weui-media-box__hd" v-lazy-container="{ selector: 'img' }">
                         <img class="weui-media-box__thumb" data-loading='../../static/img/lazy.png' :data-src='obj.artist.picUrl'>
                     </div>
@@ -19,11 +21,12 @@
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 </template>
 <script>
 import {mapGetters} from 'vuex';
-import { setTimeout } from 'timers';
+import Slider from './slider';
 export default {
     name: 'NewAlbum',
     data(){
@@ -50,8 +53,12 @@ export default {
 	    }
     },
     mounted(){
-        mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);
-    }
+        // mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);
+        mui('.mui-scroll-wrapper').scroll({
+			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		});
+    },
+    components: {Slider}
 }
 </script>
 <style scoped>
