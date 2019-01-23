@@ -21,7 +21,7 @@
                 <Search />
             </div>
         </div>
-        <Playbar />
+        
     </div>
 </template>
 <script>

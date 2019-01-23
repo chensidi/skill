@@ -19,7 +19,7 @@ export default new Router({
       component: Skin
     },
     {
-      path: '/ablum',
+      path: '/album',
       name: 'Album',
       component: Album
     }
