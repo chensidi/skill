@@ -58,7 +58,7 @@ export default {
                     clearInterval(timer);
                     this.width = '0%';
                     $('#mp3')[0].currentTime = 0;
-                    this.setPlay(!this.getPlay);
+                    this.setPlay(false);
                 }
                 this.width = $('#mp3')[0].currentTime/this.duration*100+'%'
             },1000)
@@ -70,8 +70,10 @@ export default {
             return;
         }
         clearInterval(timer);
-        if(this.getPlay){           
-            $('#mp3').attr('src',this.getMp3);
+        if(this.getPlay){  
+            if($('#mp3').attr('src')==undefined){
+                $('#mp3').attr('src',this.getMp3);
+            }         
             $('#mp3')[0].play();
             this.progress();
         }else{
