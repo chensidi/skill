@@ -17,8 +17,8 @@
             <div class="ab_box" :style="{'background':this.getColorObj[this.getColor].bgMain}">
                 <h1 class="song_total" :style="{'color':getColor==1?'#ddd':'#333'}">专辑 共{{songs.length}}首</h1>
                 <ul class="ab_song">
-                    <li v-for="(obj,i) of songs" :key="i">
-                        <router-link to="">
+                    <li v-for="(obj,i) of songs" :key="i" @click="goPlay(obj)">
+                        <router-link to="" >
                             <p class="elp s_name" :style="{'color':getColor==1?'#ddd':'#000'}">{{obj.name}}</p>
                             <p class="elp s_singer" :style="{'color':getColor==1?'rgba(221, 221, 221, 0.7)':'rgba(0, 0, 0, 0.6)'}">{{obj.ar[0].name}}</p>
                         </router-link>
@@ -33,7 +33,7 @@
     </div>
 </template>
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters,mapActions} from 'vuex';
 export default {
     name: 'Album',
     data(){
@@ -45,13 +45,14 @@ export default {
     },
     created(){
         // console.log(this.$route.query);
-        this.datas = this.$route.query.obj;
+        this.datas = this.$route.params.obj;
         this.getSongs();
     },
     computed: {
         ...mapGetters(['getColor','getMyApi','getColorObj'])
     },
     methods: {
+        ...mapActions(['setPlay','setMp3','setCover','setInfo']),
         back(){
             history.go(-1);
         },
@@ -60,6 +61,15 @@ export default {
                 // console.log(dt);
                 this.des = dt.album.description;
                 this.songs = dt.songs;
+            })
+        },
+        goPlay(obj){
+            $.get(`${this.getMyApi}/song/url?id=${obj.id}`).then(dt=>{
+                // console.log(dt.data[0].url);
+                this.setPlay(true);
+                this.setMp3(dt.data[0].url);
+                this.setCover(this.datas.picUrl);
+                this.setInfo({m:obj.name,n:obj.ar[0].name});
             })
         }
     }

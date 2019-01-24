@@ -18,12 +18,14 @@
         <div id="refreshContainer" class="mui-content mui-scroll-wrapper" v-show="value!=''">
             <div class="mui-scroll">
                 <div class="ser_result mui-table-view mui-table-view-chevron">
-                    <div class="result_item" :style="{'background':getColor==1?'#212121':'#fff'}" v-for="(item,j) of res" :key="j">
-                        <img src="../../static/img/lazy.png" alt="">
-                        <div>
-                            <p class="s_song elp" :style="{'color':getColor==1?'#ddd':'#333'}">{{item.name}}</p>
-                            <p class="s_singer elp" :style="{'color':getColor==1?'rgba(221, 221, 221, 0.7)':'rgba(0, 0, 0, 0.6)'}">{{item.artists[0].name}}</p>
-                        </div>
+                    <div @click="goPlay(item)" class="result_item" :style="{'background':getColor==1?'#212121':'#fff'}" v-for="(item,j) of res" :key="j">
+                        
+                            <img src="../../static/img/lazy.png" alt="">
+                            <div>
+                                <p class="s_song elp" :style="{'color':getColor==1?'#ddd':'#333'}">{{item.name}}</p>
+                                <p class="s_singer elp" :style="{'color':getColor==1?'rgba(221, 221, 221, 0.7)':'rgba(0, 0, 0, 0.6)'}">{{item.artists[0].name}}</p>
+                            </div>
+                       
                     </div>
                 </div>
             </div>
@@ -37,7 +39,7 @@
     </div>
 </template>
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters,mapActions} from 'vuex';
 export default {
     name: 'Search',
     data(){
@@ -58,6 +60,7 @@ export default {
         ...mapGetters(['getColor','getColorObj','getMyApi'])
     },
     methods: {
+        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration']),
         search(){
             this.getRes(this.value)
         },
@@ -87,6 +90,9 @@ export default {
                     this.loading = false;
                 },500)
                 mui('#refreshContainer').pullRefresh().endPullupToRefresh();
+                mui("#refreshContainer").on('tap', 'div', function (event) {
+                    this.click();
+                });
                 this.res = this.res.concat(dt.result.songs);
                 this.total = Math.floor(dt.result.songCount/30);
             })
@@ -98,6 +104,20 @@ export default {
 				    item.repeat = true;
 				}
 			}
+        },
+        goPlay(obj){
+            // console.log(obj)
+            $.get(`${this.getMyApi}/song/url?id=${obj.id}`).then(dt=>{
+                // console.log(dt.data[0].url);
+                this.setPlay(true);
+                this.setMp3(dt.data[0].url);
+                // this.setCover(this.datas.picUrl);
+                this.setInfo({m:obj.name,n:obj.artists[0].name});
+                this.setDuration(0);
+            })
+            $.get(`${this.getMyApi}/song/detail?ids=${obj.id}`).then(dt=>{
+                this.setCover(dt.songs[0].al.picUrl);
+            })
         }
     },
     watch: {

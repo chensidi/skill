@@ -4,7 +4,7 @@
             <Slider />
             <h1 class="skin-recommend-title" :style="{'color':this.getColorObj[this.getColor].title}">最新专辑</h1>   
             <div class="weui-panel__bd" id="recommand">
-                <router-link :to="{path:'/album',query:{obj:obj}}" class="weui-media-box weui-media-box_appmsg" v-for="(obj,i) of albums" :key="i">
+                <router-link :to="{name:'Album',params:{obj:obj}}" class="weui-media-box weui-media-box_appmsg" v-for="(obj,i) of albums" :key="i">
                     <div class="weui-media-box__hd" v-lazy-container="{ selector: 'img' }">
                         <img class="weui-media-box__thumb" data-loading='../../static/img/lazy.png' :data-src='obj.artist.picUrl'>
                     </div>

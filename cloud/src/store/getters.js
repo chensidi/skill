@@ -1,3 +1,5 @@
+import { stat } from "fs";
+
 export const getTabbarState = (state)=>{
     return state.tabbarState;
 }
@@ -14,4 +16,24 @@ export const getColorObj = (state)=>{
 
 export const getOn = (state) => {
     return state.active;
+}
+
+export const getPlay = (state)=>{
+    return state.play;
+}
+
+export const getMp3 = (state)=>{
+    return state.mp3;
+}
+
+export const getCover = (state)=>{
+    return state.cover;
+}
+
+export const getInfo = (state)=>{
+    return {name:state.name,singer:state.singer}
+}
+
+export const getDuration = (state)=>{
+    return state.duration;
 }
