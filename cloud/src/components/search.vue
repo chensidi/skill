@@ -60,14 +60,11 @@ export default {
         ...mapGetters(['getColor','getColorObj','getMyApi'])
     },
     methods: {
-        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration']),
+        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration','setKey']),
         search(){
             this.getRes(this.value)
         },
         getHots(){
-            // $.get(`${this.getMyApi}/search/hot`).then(dt=>{
-            //     this.hots = dt.result.hots;
-            // })
             $.ajax({
                 url: `${this.getMyApi}/search/hot`,
                 success: (dt)=>{
@@ -114,6 +111,7 @@ export default {
                 // this.setCover(this.datas.picUrl);
                 this.setInfo({m:obj.name,n:obj.artists[0].name});
                 this.setDuration(0);
+                this.setKey(false);
             })
             $.get(`${this.getMyApi}/song/detail?ids=${obj.id}`).then(dt=>{
                 this.setCover(dt.songs[0].al.picUrl);

@@ -15,7 +15,8 @@ const state = {
 	cover: '',
 	name: '',
 	singer: '',
-	duration: 0
+	duration: true,
+	widthkey: true
 }
 
 export default state;

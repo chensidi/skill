@@ -28,42 +28,49 @@ export default {
             isPlay: this.getPlay,
             mp3: $('#mp3')[0],
             duration: '',
-            cur: this.getDuration,
+            cur: 0,
             width: '0%',
-            timer: null
+            timer: null,
+            current: this.getDuration,
+            key: false
+
         }
     },
     created(){
+        this.current = this.getDuration;
     },
     computed: {
-        ...mapGetters(['getColor','getColorObj','getMp3','getPlay','getCover','getInfo','getDuration'])
+        ...mapGetters(['getColor','getColorObj','getMp3','getPlay','getCover','getInfo','getDuration','getKey'])
     },
     methods: {
-        ...mapActions(['setPlay','setDuration']),
+        ...mapActions(['setPlay','setDuration','setKey']),
         play(){
             this.isPlay = this.getPlay;
             this.setPlay(!this.getPlay);
+            this.setKey(false);
         },
         progress(){
             clearInterval(timer);
-            if(this.cur>=Math.floor(this.duration)){
-                clearInterval(timer);
-                this.width = '0%';
-                this.cur = 0;
-                $('#mp3')[0].currentTime = 0;
-            }
+            this.setKey(true);
+            
             timer = setInterval(()=>{
-                this.cur += 1;
-                this.width = this.cur/this.duration*100+'%'
+                if($('#mp3')[0].currentTime>=Math.floor(this.duration)){
+                    clearInterval(timer);
+                    this.width = '0%';
+                    $('#mp3')[0].currentTime = 0;
+                    this.setPlay(!this.getPlay);
+                }
+                this.width = $('#mp3')[0].currentTime/this.duration*100+'%'
             },1000)
         } 
     },
     updated(){
+        this.duration = document.getElementById('mp3').duration;
+        if(this.getKey){
+            return;
+        }
         clearInterval(timer);
         if(this.getPlay){           
-                this.duration = document.getElementById('mp3').duration;
-                // console.log(this.duration)
-            
             $('#mp3').attr('src',this.getMp3);
             $('#mp3')[0].play();
             this.progress();

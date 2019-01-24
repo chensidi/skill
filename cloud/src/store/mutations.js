@@ -30,3 +30,7 @@ export const setInfo = function(state,obj){
 export const setDuration = function(state,obj){
     state.duration = obj.num;
 }
+
+export const setKey = function(state,obj){
+    state.widthkey = obj.num;
+}

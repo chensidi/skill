@@ -49,10 +49,10 @@ export default {
         this.getSongs();
     },
     computed: {
-        ...mapGetters(['getColor','getMyApi','getColorObj'])
+        ...mapGetters(['getColor','getMyApi','getColorObj','getDuration'])
     },
     methods: {
-        ...mapActions(['setPlay','setMp3','setCover','setInfo']),
+        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration','setKey']),
         back(){
             history.go(-1);
         },
@@ -66,6 +66,7 @@ export default {
         goPlay(obj){
             $.get(`${this.getMyApi}/song/url?id=${obj.id}`).then(dt=>{
                 // console.log(dt.data[0].url);
+                this.setKey(false);
                 this.setPlay(true);
                 this.setMp3(dt.data[0].url);
                 this.setCover(this.datas.picUrl);

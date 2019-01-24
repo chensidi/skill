@@ -53,3 +53,10 @@ export const setDuration = function({commit,state},n){
 		num:n
 	})
 }
+
+export const setKey = function({commit,state},n){
+	commit({
+		type:"setKey",
+		num:n
+	})
+}

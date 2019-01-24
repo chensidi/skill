@@ -37,3 +37,6 @@ export const getInfo = (state)=>{
 export const getDuration = (state)=>{
     return state.duration;
 }
+export const getKey = (state)=>{
+    return state.widthkey;
+}
