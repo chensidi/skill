@@ -1,12 +1,12 @@
 <template>
     <footer :style='{"background-color":this.getColorObj[this.getColor].tb}'>
         <div class="player-img rotate">
-            <img :src="getCover" alt="">
+            <img :class="{playbar_img:rot}" :src="getCover||'static/img/lazy.png'" alt="">
         </div>
         <div class="player-center">
             <div class="weui-progress">
-                    <div class="weui-progress__bar">
-                        <div class="weui-progress__inner-bar js_progress" :style="{'width': width}"></div>
+                    <div class="weui-progress__bar" :style="{'background':this.getColor==1?'rgba(0, 0, 0, 0.3)':'rgba(0, 0, 0, 0.1)'}">
+                        <div class="weui-progress__inner-bar js_progress" :style="{'width': width,'background':this.getColorObj[this.getColor].title}"></div>
                     </div>
             </div>
             <span class="song" :style="{'color':getColor==1?'#fff':'#333'}">{{getInfo.name}}</span>
@@ -32,8 +32,8 @@ export default {
             width: '0%',
             timer: null,
             current: this.getDuration,
-            key: false
-
+            key: false,
+            rot: false
         }
     },
     created(){
@@ -46,8 +46,10 @@ export default {
         ...mapActions(['setPlay','setDuration','setKey']),
         play(){
             this.isPlay = this.getPlay;
-            this.setPlay(!this.getPlay);
-            this.setKey(false);
+            if(this.getMp3){
+                this.setPlay(!this.getPlay);
+                this.setKey(false);
+            }
         },
         progress(){
             clearInterval(timer);
@@ -71,13 +73,21 @@ export default {
         }
         clearInterval(timer);
         if(this.getPlay){  
+            if($('#mp3').attr('src')!=this.getMp3){
+                this.width = '0%';
+                $('#mp3').attr('src',this.getMp3);
+            }
             if($('#mp3').attr('src')==undefined){
                 $('#mp3').attr('src',this.getMp3);
-            }         
-            $('#mp3')[0].play();
-            this.progress();
+            } 
+            if(this.getMp3){
+                $('#mp3')[0].play();
+                this.progress();
+                this.rot = true;
+            }    
         }else{
-            $('#mp3')[0].pause()
+            $('#mp3')[0].pause();
+            this.rot = false;
         }
     },
     watch: {
@@ -114,7 +124,15 @@ export default {
         padding: 1px;
         font-size: 26px;
     }
-    #mp3{
-        /* display: none; */
+    .playbar_img{
+        animation: rot 10s linear infinite;
+        animation-fill-mode: forwards;
+    }
+    @keyframes rot {
+        from{
+            transform: rotate(0deg);
+        }to{
+            transform: rotate(360deg);
+        }
     }
 </style>

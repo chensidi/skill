@@ -9,9 +9,9 @@
             </div>
             <ul class="sort_list">
                 <li v-for="(obj,i) of ranks" :key="i">
-                    <router-link to="" :style="{'background':getColor==1?'#333':'#fff'}">
+                    <router-link :to="{name:'Rankview',params:{datas:obj.obj}}" :style="{'background':getColor==1?'#333':'#fff'}">
                         <div class="left" v-lazy-container="{ selector: 'img' }">
-                            <img :data-src="obj.img" data-loading='../../static/img/lazy.png' alt="">
+                            <img :data-src="obj.img" data-loading='static/img/lazy.png' alt="">
                             <div class="cover"></div>
                         </div>
                         <div class="right">
@@ -55,7 +55,12 @@ export default {
                 },500)
                 this.ranks.splice(id,0,{  img: dt.playlist.coverImgUrl,
                                     h1: dt.playlist.name,
-                                    ps: dt.playlist.tracks.slice(0,3)   
+                                    ps: dt.playlist.tracks.slice(0,3),
+                                    obj: {img:dt.playlist.coverImgUrl,
+                                          dts: dt.playlist.tracks,
+                                          h1: dt.playlist.name,
+                                          des: dt.playlist.description
+                                         }   
                                 });
             })
         },

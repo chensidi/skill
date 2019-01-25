@@ -16,8 +16,8 @@
             <div class="mui-scroll">
                 <ul class="singers">
                     <li v-for="(obj,i) of res" :key="i">
-                        <router-link to="" v-lazy-container="{ selector: 'img' }">
-                            <img class="s_img" :data-src="obj.img1v1Url" data-loading='../../static/img/lazy.png' alt="">
+                        <router-link :to="'/singerview/'+obj.id" v-lazy-container="{ selector: 'img' }">
+                            <img class="s_img" :data-src="obj.img1v1Url" data-loading='static/img/lazy.png' alt="">
                             <span class="s_name" :style="{'color':getColor==1?'#ddd':'#333'}">{{obj.name}}</span>
                         </router-link>
                     </li>

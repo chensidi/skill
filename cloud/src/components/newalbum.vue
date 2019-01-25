@@ -6,7 +6,7 @@
             <div class="weui-panel__bd" id="recommand">
                 <router-link :to="{name:'Album',params:{obj:obj}}" class="weui-media-box weui-media-box_appmsg" v-for="(obj,i) of albums" :key="i">
                     <div class="weui-media-box__hd" v-lazy-container="{ selector: 'img' }">
-                        <img class="weui-media-box__thumb" data-loading='../../static/img/lazy.png' :data-src='obj.artist.picUrl'>
+                        <img class="weui-media-box__thumb" data-loading='static/img/lazy.png' :data-src='obj.artist.picUrl'>
                     </div>
                     <div class="weui-media-box__bd">
                         <h4 class="weui-media-box__title" :style="{'color':getColor==1?'#fff':'#333'}">{{obj.name}}</h4>

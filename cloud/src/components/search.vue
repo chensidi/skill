@@ -20,7 +20,7 @@
                 <div class="ser_result mui-table-view mui-table-view-chevron">
                     <div @click="goPlay(item)" class="result_item" :style="{'background':getColor==1?'#212121':'#fff'}" v-for="(item,j) of res" :key="j">
                         
-                            <img src="../../static/img/lazy.png" alt="">
+                            <img src="static/img/lazy.png" alt="">
                             <div>
                                 <p class="s_song elp" :style="{'color':getColor==1?'#ddd':'#333'}">{{item.name}}</p>
                                 <p class="s_singer elp" :style="{'color':getColor==1?'rgba(221, 221, 221, 0.7)':'rgba(0, 0, 0, 0.6)'}">{{item.artists[0].name}}</p>

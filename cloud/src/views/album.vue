@@ -44,7 +44,6 @@ export default {
         }
     },
     created(){
-        // console.log(this.$route.query);
         this.datas = this.$route.params.obj;
         this.getSongs();
     },
@@ -58,14 +57,12 @@ export default {
         },
         getSongs(){
             $.get(`${this.getMyApi}/album?id=${this.datas.id}`).then(dt=>{
-                // console.log(dt);
                 this.des = dt.album.description;
                 this.songs = dt.songs;
             })
         },
         goPlay(obj){
             $.get(`${this.getMyApi}/song/url?id=${obj.id}`).then(dt=>{
-                // console.log(dt.data[0].url);
                 this.setKey(false);
                 this.setPlay(true);
                 this.setMp3(dt.data[0].url);
@@ -77,66 +74,7 @@ export default {
 }
 </script>
 <style scoped>
-    .album_wrap{
-        position: relative;
-        margin-top: 46px;
-        margin-bottom: 55px;
-    }
-    .ab_bg{
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        padding-top: 70%;
-        background-repeat: no-repeat;
-        background-size: cover;
-        transform-origin: top center;
-        transition: transform;
-        transform: scale(1, 1);
-    }
-    .ab_mask{
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        left: 0;
-        top: 0;
-        background-color: rgba(0,0,0,.3);
-    }
-    .ab_box{
-        padding: 25px 25px 0;
-    }
-    .song_total{
-        font-size: 14px;
-        margin: 0;
-    }
-    .ab_song{
-        margin-top: 20px;
-    }
-    .ab_song li{
-        padding-bottom: 25px;
-    }
     .ab_song li a{
         display: block;
-    }
-    .s_name{
-        font-size: 16px;
-        margin-bottom: 0;
-    }
-    .s_singer{
-        font-size: 14px;
-        margin-bottom: 0;
-    }
-    .playall{
-        position: absolute;
-        bottom: 20px;
-        width: 100%;
-        text-align: center;
-        color: gold;
-    }
-    .des{
-        font-size: 18px;
-        font-weight: 100;
-        text-align: center;
-        margin-bottom: 15px;
-        line-height: 1;
     }
 </style>
