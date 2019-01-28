@@ -1,0 +1,293 @@
+<template>
+    <div class="playview">
+        <van-nav-bar
+            :title="getInfo.name"
+            left-arrow
+            :fixed='true'
+            :z-index='10'
+            @click-left="back"
+        />
+        <div class="p_singer">
+            <div class="p_name">{{getInfo.singer}}</div>
+        </div>
+        <div class="p_mid">
+            <div class="singer-img">
+                <img :src="getCover" :class="{cover_rot:playState}" alt="">
+            </div>
+        </div>
+        <div class="singer-bottom">
+            <div class="progress_bar">
+                <time>{{parseInt(Math.ceil(curTime)/60)+':'+((Math.ceil(curTime)%60<10)?'0'+Math.ceil(curTime)%60:Math.ceil(curTime)%60)}}</time>
+                <van-slider
+                    v-model="value"
+                    bar-height="3px"
+                    active-color="#f44"
+                    @change='change'
+                />
+                <time>{{parseInt(Math.ceil(getDuration)/60)+':'+((Math.ceil(getDuration)%60<10)?'0'+Math.ceil(getDuration)%60:Math.ceil(getDuration)%60)}}</time>
+            </div>
+            <div class="play-wrapper">
+                <div></div>
+                <div class="lasts"><van-icon name="play" /></div>
+                <div><van-icon :name="getPlay?'pause':'stop'" @click="play" /></div>
+                <div><van-icon name="play" /></div>
+
+                <div class="actions"><van-icon name="bars" @click="show=true" /></div>                
+            </div>
+            <van-actionsheet v-model="show" title="播放列表">
+                <div class="actionsheets" @click="show=false">
+                    <div class="item_left">01</div>
+                    <div class="item-right">
+                        <p class="list_name elp">飞烟</p>
+                        <p class="list_singer elp">洛天依/未央</p>
+                    </div>
+                    <div class="deletes"><van-icon name="delete" /></div>
+                </div>
+            </van-actionsheet>
+        </div>
+        <div class="drop" :style="{'background-image':`url(${getCover})`}"></div>
+    </div>
+</template>
+<script>
+let time1;
+import {mapGetters,mapActions} from 'vuex';
+export default {
+    name: 'Play',
+    data(){
+        return {
+            value: 0,
+            show: false,
+            curTime: 0,
+            playState: this.getPlay
+        }
+    },
+    created(){
+        // console.log($('#mp3').attr('src'))
+        this.value = $('#mp3')[0].currentTime/this.getDuration*100;
+        this.playState = this.getPlay;
+        this.curTime = $('#mp3')[0].currentTime;
+    },
+    computed: {
+        ...mapGetters(['getPlay','getMp3','getInfo','getCover','getDuration'])
+    },
+    methods: {
+        ...mapActions(['setShowPlay','setKey','setPlay']),
+        back(){
+            this.setShowPlay(false);
+        },
+        change(){
+            // console.log(this.value);
+            $('#mp3')[0].currentTime = this.curTime = this.value*this.getDuration/100;
+        },
+        play(){
+            if(this.getMp3){
+                this.setPlay(!this.getPlay);
+                this.setKey(false);
+                if(this.getPlay){
+                    clearInterval(time1);
+                    time1 = setInterval(()=>{
+                        this.value= $('#mp3')[0].currentTime/this.getDuration*100;
+                        this.curTime = $('#mp3')[0].currentTime;
+                        this.playState = true;
+                    },1000)
+                }else{
+                    this.playState = false;
+                    clearInterval(time1);
+                }
+            }
+        }
+    },
+    mounted(){
+        if(this.getPlay){
+            clearInterval(time1);
+            time1 = setInterval(()=>{
+                this.value = $('#mp3')[0].currentTime/this.getDuration*100;
+                this.curTime = $('#mp3')[0].currentTime;
+                if(document.getElementById('mp3').paused){
+                    this.playState = false;
+                    clearInterval(time1);
+                }
+            },1000)
+        }else{
+            this.playState = false;            
+            clearInterval(time1);
+        }
+    }
+}
+</script>
+<style scoped>
+    .playview{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1001;
+        color: #fff;
+        background-color: #212121;
+    }
+    .p_singer{
+        text-align: center;
+        margin-top: 69px;
+    }
+    .p_name{
+        display: inline-block;
+        position: relative;
+        font-size: 16px;
+    }
+    .p_name::before,.p_name::after{
+        content: "";
+        width: 15px;
+        position: absolute;
+        top: 50%;
+        border-top: 1px solid #fff;
+    }
+    .p_name::before{
+        left: -20px;
+    }
+    .p_name::after{
+        right: -20px;
+    }
+    .drop{
+        background-image: url(http://y.gtimg.cn/music/photo_new/T002R300x300M000001ihx410QzSq3.jpg?max_age=2592000);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        background-repeat: no-repeat;
+        background-position: 50%;
+        background-size: cover;
+        filter: blur(20px);
+        opacity: .6;
+        transform: translateZ(0);
+        transition: background-image .3s;
+    }
+    .p_mid{
+        position: absolute;
+        top: 100px;
+        bottom: 120px;
+        width: 100%;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+    .singer-img{
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        border: 10px solid hsla(0,0%,87%,.3);
+    }
+    .singer-img>img{
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+    .cover_rot{
+        animation: rot 10s linear infinite;
+        animation-fill-mode: forwards;
+    }
+    .singer-bottom{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 120px;
+        padding: 0 15px;
+    }
+    .progress_bar{
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .progress_bar time{
+        color: #fff;
+        font-size: 12px;
+    }
+    .van-slider{
+        flex: 1;
+        margin: 0 12px;
+    }
+    .play-wrapper{
+        display: flex;
+        margin-top: 10px;
+        color: gold;
+        font-size: 36px;
+        text-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+    .play-wrapper>div{
+        flex: 1;
+        -ms-flex: 1;
+        text-align: center;
+    }
+    .lasts{
+        transform: rotate(180deg);
+    }
+    .actions{
+        text-align: right;
+    }
+    .actionsheets{
+        transition-property: transform;
+        transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+        transition-duration: 0ms;
+        transform: translate(0px, 0px) translateZ(0px);
+    }
+    .item_left{
+        float: left;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+    }
+    .van-actionsheet--withtitle{
+        font-size: 16px;
+        color: #fff;
+        background: url(https://code-mcx.github.io/vue-mango-music/static/img/play_bg.473725c.jpg) no-repeat 50%;
+        background-size: cover;
+        transform: translateZ(0);
+    }
+    .van-actionsheet--withtitle::after{
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        background-color: rgba(0,0,0,.5);
+    }
+    .item-right{
+        position: relative;
+        height: 50px;
+        margin-left: 50px;
+        padding-top: 2px;
+        margin-right: 50px;
+    }
+    .list_name,.list_singer{
+        color: #fff68f;
+        margin: 0;
+        font-size: 16px;
+    }
+    .list_singer{
+        font-size: 14px;
+    }
+    .deletes{
+        position: absolute;
+        right: 18px;
+        top: 16px;
+        font-size: 14px;
+    }
+    @keyframes rot {
+        from{
+            transform: rotate(0deg);
+        }to{
+            transform: rotate(360deg);
+        }
+    }
+</style>

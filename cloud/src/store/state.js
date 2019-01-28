@@ -16,7 +16,9 @@ const state = {
 	name: '',
 	singer: '',
 	duration: true,
-	widthkey: true
+	widthkey: true,
+	showPlay: false,
+	pc: ''
 }
 
 export default state;

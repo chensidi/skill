@@ -40,3 +40,10 @@ export const getDuration = (state)=>{
 export const getKey = (state)=>{
     return state.widthkey;
 }
+
+export const getShowPlay = (state)=>{
+    return state.showPlay;
+}
+export const getPC = (state)=>{
+    return state.pc;
+}

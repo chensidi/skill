@@ -34,3 +34,11 @@ export const setDuration = function(state,obj){
 export const setKey = function(state,obj){
     state.widthkey = obj.num;
 }
+
+export const setShowPlay = function(state,obj){
+    state.showPlay = obj.num;
+}
+
+export const setPc = function(state,obj){
+    state.pc = obj.num;
+}

@@ -60,3 +60,17 @@ export const setKey = function({commit,state},n){
 		num:n
 	})
 }
+
+export const setShowPlay = function({commit,state},n){
+	commit({
+		type:"setShowPlay",
+		num:n
+	})
+}
+
+export const setPc = function({commit,state},n){
+	commit({
+		type:"setPc",
+		num:n
+	})
+}

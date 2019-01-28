@@ -1,5 +1,5 @@
 <template>
-    <footer :style='{"background-color":this.getColorObj[this.getColor].tb}'>
+    <footer :style='{"background-color":this.getColorObj[this.getColor].tb}' @click="setShowPlay(true)">
         <div class="player-img rotate">
             <img :class="{playbar_img:rot}" :src="getCover||'static/img/lazy.png'" alt="">
         </div>
@@ -43,8 +43,10 @@ export default {
         ...mapGetters(['getColor','getColorObj','getMp3','getPlay','getCover','getInfo','getDuration','getKey'])
     },
     methods: {
-        ...mapActions(['setPlay','setDuration','setKey']),
-        play(){
+        ...mapActions(['setPlay','setDuration','setKey','setShowPlay','setPc']),
+        play(e){
+            e.stopPropagation();
+            
             this.isPlay = this.getPlay;
             if(this.getMp3){
                 this.setPlay(!this.getPlay);
@@ -62,12 +64,14 @@ export default {
                     $('#mp3')[0].currentTime = 0;
                     this.setPlay(false);
                 }
-                this.width = $('#mp3')[0].currentTime/this.duration*100+'%'
+                this.width = $('#mp3')[0].currentTime/this.duration*100+'%';
+                this.setPc($('#mp3')[0].currentTime/this.duration);
             },1000)
         } 
     },
     updated(){
         this.duration = document.getElementById('mp3').duration;
+        this.setDuration(this.duration);
         if(this.getKey){
             return;
         }

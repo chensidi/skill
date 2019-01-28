@@ -2,12 +2,14 @@
   <div id="app" :style="{'background':this.getColorObj[this.getColor].bgMain}">
     <router-view/>
     <Playbar />
+    <Play v-if="getShowPlay" />
   </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex';
 import Playbar from './components/playbar';
+import Play from './components/play';
 
 export default {
   name: 'App',
@@ -19,9 +21,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getColor','getColorObj'])
+    ...mapGetters(['getColor','getColorObj','getShowPlay'])
   },
-  components: {Playbar}
+  components: {Playbar,Play}
 }
 </script>
 
