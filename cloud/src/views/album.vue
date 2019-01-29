@@ -51,7 +51,7 @@ export default {
         ...mapGetters(['getColor','getMyApi','getColorObj','getDuration'])
     },
     methods: {
-        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration','setKey']),
+        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration','setKey','setIndex']),
         back(){
             history.go(-1);
         },
@@ -68,7 +68,20 @@ export default {
                 this.setMp3(dt.data[0].url);
                 this.setCover(this.datas.picUrl);
                 this.setInfo({m:obj.name,n:obj.ar[0].name});
+                this.save({id:obj.id,cover:this.datas.picUrl,name:obj.name,singer:obj.ar[0].name});
             })
+        },
+        save(obj){
+            var hist = JSON.parse(localStorage.getItem('hist'))||[];
+            for(let i = 0; i < hist.length; i ++){
+                if(hist[i].id==obj.id){
+                    this.setIndex(i);
+                    return;
+                }
+            }
+            hist.unshift({id:obj.id,cover:obj.cover,name:obj.name,singer:obj.singer});
+            localStorage.setItem('hist',JSON.stringify(hist));
+            this.setIndex(0);
         }
     }
 }

@@ -2,7 +2,7 @@
     <div>
         <div class="ser_box">
             <wv-search-bar 
-                :autofocus="false" 
+                :autofocus="true" 
                 v-model="value" 
                 @search='search'
             />
@@ -11,7 +11,7 @@
             <div class="hots">
                 <h1 class="hot_title" :style="{'color':getColorObj[getColor].title}">热门搜索</h1>
                 <div class="hot_list clearfix">
-                    <div :class="getColor==1?'hot_item bd2':'hot_item bd1'" v-for='(obj,i) of hots' :key="i">{{obj.first}}</div>
+                    <div :class="getColor==1?'hot_item bd2':'hot_item bd1'" v-for='(obj,i) of hots' :key="i" @click="autoFilter(obj.first)">{{obj.first}}</div>
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@ export default {
         ...mapGetters(['getColor','getColorObj','getMyApi'])
     },
     methods: {
-        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration','setKey']),
+        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration','setKey','setIndex']),
         search(){
             this.getRes(this.value)
         },
@@ -115,12 +115,31 @@ export default {
             })
             $.get(`${this.getMyApi}/song/detail?ids=${obj.id}`).then(dt=>{
                 this.setCover(dt.songs[0].al.picUrl);
+                this.save({id:obj.id,cover:dt.songs[0].al.picUrl,name:obj.name,singer:obj.artists[0].name});
             })
+        },
+        save(obj){
+            var hist = JSON.parse(localStorage.getItem('hist'))||[];
+            for(let i = 0; i < hist.length; i ++){
+                if(hist[i].id==obj.id){
+                    this.setIndex(i);
+                    return;
+                }
+            }
+            hist.unshift({id:obj.id,cover:obj.cover,name:obj.name,singer:obj.singer});
+            localStorage.setItem('hist',JSON.stringify(hist));
+            this.setIndex(0);
+        },
+        autoFilter(txt){
+            this.value = txt;
+            $('.weui-search-bar__label').hide();
+            $('input[type="text"]').focus();
         }
     },
     watch: {
         value(now,old){
             if(now==''){
+                $('.weui-search-bar__label').show();
                 mui('#refreshContainer').scroll().scrollTo(0,0);
                 this.res = [];
                 this.page = 0;

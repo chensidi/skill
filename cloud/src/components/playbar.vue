@@ -27,7 +27,7 @@ export default {
         return {
             isPlay: this.getPlay,
             mp3: $('#mp3')[0],
-            duration: '',
+            duration: this.getDuration,
             cur: 0,
             width: '0%',
             timer: null,
@@ -71,7 +71,7 @@ export default {
     },
     updated(){
         this.duration = document.getElementById('mp3').duration;
-        this.setDuration(this.duration);
+        this.setDuration(document.getElementById('mp3').duration);
         if(this.getKey){
             return;
         }
@@ -108,6 +108,7 @@ export default {
         }
     },
     mounted(){       
+        this.duration = document.getElementById('mp3').duration;
     }
 }
 </script>

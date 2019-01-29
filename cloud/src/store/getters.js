@@ -47,3 +47,7 @@ export const getShowPlay = (state)=>{
 export const getPC = (state)=>{
     return state.pc;
 }
+
+export const getIndex = (state)=>{
+    return state.index;
+}

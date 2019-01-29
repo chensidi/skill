@@ -74,3 +74,10 @@ export const setPc = function({commit,state},n){
 		num:n
 	})
 }
+
+export const setIndex = function({commit,state},n){
+	commit({
+		type:"setIndex",
+		num:n
+	})
+}

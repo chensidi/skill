@@ -24,24 +24,24 @@
                     active-color="#f44"
                     @change='change'
                 />
-                <time>{{parseInt(Math.ceil(getDuration)/60)+':'+((Math.ceil(getDuration)%60<10)?'0'+Math.ceil(getDuration)%60:Math.ceil(getDuration)%60)}}</time>
+                <time>{{parseInt(Math.ceil(duration)/60)+':'+((Math.ceil(duration)%60<10)?'0'+Math.ceil(duration)%60:Math.ceil(duration)%60)}}</time>
             </div>
             <div class="play-wrapper">
                 <div></div>
-                <div class="lasts"><van-icon name="play" /></div>
+                <div class="lasts"><van-icon name="play" @click="switchPlay(0)" /></div>
                 <div><van-icon :name="getPlay?'pause':'stop'" @click="play" /></div>
-                <div><van-icon name="play" /></div>
+                <div><van-icon name="play" @click="switchPlay(1)" /></div>
 
                 <div class="actions"><van-icon name="bars" @click="show=true" /></div>                
             </div>
             <van-actionsheet v-model="show" title="播放列表">
-                <div class="actionsheets" @click="show=false">
-                    <div class="item_left">01</div>
+                <div class="actionsheets" @click="goPlay(obj,i)" v-for="(obj,i) of hist" :key="i">
+                    <div class="item_left">{{i+1}}</div>
                     <div class="item-right">
-                        <p class="list_name elp">飞烟</p>
-                        <p class="list_singer elp">洛天依/未央</p>
+                        <p class="list_name elp">{{obj.name}}</p>
+                        <p class="list_singer elp">{{obj.singer}}</p>
                     </div>
-                    <div class="deletes"><van-icon name="delete" /></div>
+                    <div class="deletes"><van-icon name="delete" @click="deletes($event,i)" /></div>
                 </div>
             </van-actionsheet>
         </div>
@@ -58,26 +58,34 @@ export default {
             value: 0,
             show: false,
             curTime: 0,
-            playState: this.getPlay
+            playState: this.getPlay,
+            hist: [],
+            duration: document.getElementById('mp3').duration
         }
     },
     created(){
         // console.log($('#mp3').attr('src'))
-        this.value = $('#mp3')[0].currentTime/this.getDuration*100;
+        this.value = $('#mp3')[0].currentTime/this.duration*100;
         this.playState = this.getPlay;
         this.curTime = $('#mp3')[0].currentTime;
+        this.hist = JSON.parse(localStorage.getItem('hist'))||[];
     },
     computed: {
-        ...mapGetters(['getPlay','getMp3','getInfo','getCover','getDuration'])
+        ...mapGetters(['getMyApi','getPlay','getMp3','getInfo','getCover','getDuration','getIndex'])
+    },
+    updated(){
+        // console.log(666)
+        // if(this.getKey)return;
+        this.duration = document.getElementById('mp3').duration;
     },
     methods: {
-        ...mapActions(['setShowPlay','setKey','setPlay']),
+        ...mapActions(['setShowPlay','setKey','setPlay','setMp3','setCover','setInfo','setIndex']),
         back(){
             this.setShowPlay(false);
         },
         change(){
             // console.log(this.value);
-            $('#mp3')[0].currentTime = this.curTime = this.value*this.getDuration/100;
+            $('#mp3')[0].currentTime = this.curTime = this.value*this.duration/100;
         },
         play(){
             if(this.getMp3){
@@ -86,7 +94,7 @@ export default {
                 if(this.getPlay){
                     clearInterval(time1);
                     time1 = setInterval(()=>{
-                        this.value= $('#mp3')[0].currentTime/this.getDuration*100;
+                        this.value= $('#mp3')[0].currentTime/this.duration*100;
                         this.curTime = $('#mp3')[0].currentTime;
                         this.playState = true;
                     },1000)
@@ -95,13 +103,62 @@ export default {
                     clearInterval(time1);
                 }
             }
+        },
+        goPlay(obj,index){
+            this.show = false;
+            this.setIndex(index);
+            $.get(`${this.getMyApi}/song/url?id=${obj.id}`).then(dt=>{
+                this.setKey(false);
+                this.setPlay(false);
+                this.setMp3(dt.data[0].url);
+                this.setCover(obj.cover);
+                this.setInfo({m:obj.name,n:obj.singer});
+                this.playState = true;
+                this.play();
+            })
+        },
+        deletes(e,i){
+            e.stopPropagation();
+            this.hist.splice(i,1); 
+            localStorage.setItem('hist',JSON.stringify(this.hist));
+        },
+        switchPlay(flag){
+            var index = this.getIndex;
+            if(flag){
+                if(index < this.hist.length - 1){
+                    index ++;
+                    this.setIndex(index);
+                }else{
+                    index = 0;
+                    this.setIndex(0);
+                }
+            }else{
+                if(index > 0){
+                    index --;
+                    this.setIndex(index);
+                }else{
+                    index = this.hist.length - 1;
+                    this.setIndex(index);
+                }
+            }
+            
+            var obj = this.hist[index];
+            $.get(`${this.getMyApi}/song/url?id=${obj.id}`).then(dt=>{
+                this.setKey(false);
+                this.setPlay(false);
+                this.setMp3(dt.data[0].url);
+                this.setCover(obj.cover);
+                this.setInfo({m:obj.name,n:obj.singer});
+                this.playState = true;
+                this.play();
+            })
         }
     },
     mounted(){
         if(this.getPlay){
             clearInterval(time1);
             time1 = setInterval(()=>{
-                this.value = $('#mp3')[0].currentTime/this.getDuration*100;
+                this.value = $('#mp3')[0].currentTime/this.duration*100;
                 this.curTime = $('#mp3')[0].currentTime;
                 if(document.getElementById('mp3').paused){
                     this.playState = false;

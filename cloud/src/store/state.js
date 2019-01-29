@@ -18,7 +18,8 @@ const state = {
 	duration: true,
 	widthkey: true,
 	showPlay: false,
-	pc: ''
+	pc: '',
+	index: 0
 }
 
 export default state;

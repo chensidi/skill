@@ -42,3 +42,7 @@ export const setShowPlay = function(state,obj){
 export const setPc = function(state,obj){
     state.pc = obj.num;
 }
+
+export const setIndex = function(state,obj){
+    state.index = obj.num;
+}
