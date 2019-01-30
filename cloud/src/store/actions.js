@@ -81,3 +81,17 @@ export const setIndex = function({commit,state},n){
 		num:n
 	})
 }
+
+export const setCmt = function({commit,state},n){
+	commit({
+		type:"setCmt",
+		num:n
+	})
+}
+
+export const setSid = function({commit,state},n){
+	commit({
+		type:"setSid",
+		num:n
+	})
+}

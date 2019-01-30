@@ -51,7 +51,7 @@ export default {
         ...mapGetters(['getColorObj','getColor','getMyApi'])
     },
     methods: {
-        ...mapActions(['setKey','setPlay','setMp3','setCover','setInfo','setIndex']),
+        ...mapActions(['setKey','setPlay','setMp3','setCover','setInfo','setIndex','setSid']),
         back(){
             history.go(-1);
         },
@@ -63,6 +63,7 @@ export default {
                 this.setCover(obj.al.picUrl);
                 this.setInfo({m:obj.name,n:obj.ar[0].name});
                 this.save({id:obj.id,cover:obj.al.picUrl,name:obj.name,singer:obj.ar[0].name});
+                this.setSid(obj.id);
             })
         },
         save(obj){

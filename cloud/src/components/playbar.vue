@@ -40,13 +40,14 @@ export default {
         this.current = this.getDuration;
     },
     computed: {
-        ...mapGetters(['getColor','getColorObj','getMp3','getPlay','getCover','getInfo','getDuration','getKey'])
+        ...mapGetters(['getMyApi','getColor','getColorObj','getMp3','getPlay','getCover','getInfo','getDuration','getKey','getIndex'])
     },
     methods: {
-        ...mapActions(['setPlay','setDuration','setKey','setShowPlay','setPc']),
+        ...mapActions(['setPlay','setDuration','setKey','setShowPlay','setPc','setIndex','setMp3','setCover','setInfo','setSid']),
         play(e){
-            e.stopPropagation();
-            
+            if(e){
+                e.stopPropagation();
+            }
             this.isPlay = this.getPlay;
             if(this.getMp3){
                 this.setPlay(!this.getPlay);
@@ -54,6 +55,7 @@ export default {
             }
         },
         progress(){
+            var self = this;
             clearInterval(timer);
             this.setKey(true);
             
@@ -63,6 +65,29 @@ export default {
                     this.width = '0%';
                     $('#mp3')[0].currentTime = 0;
                     this.setPlay(false);
+                    var hist = JSON.parse(localStorage.getItem('hist'))||[],
+                        index = this.getIndex;
+                    if(hist.length){
+                        if(index < hist.length-1){
+                            index ++;
+                        }else{
+                            index = 0;
+                        }
+
+                        var obj = hist[index];
+                        // console.log(this.getMyApi);
+                        $.get(`${this.getMyApi}/song/url?id=${obj.id}`).then(dt=>{
+                            // console.log(dt);
+                            this.setKey(false);
+                            this.setPlay(false);
+                            this.setMp3(dt.data[0].url);
+                            this.setCover(obj.cover);
+                            this.setInfo({m:obj.name,n:obj.singer});
+                            this.play();
+                            this.setIndex(index);
+                            this.setSid(obj.id);
+                        })
+                    } 
                 }
                 this.width = $('#mp3')[0].currentTime/this.duration*100+'%';
                 this.setPc($('#mp3')[0].currentTime/this.duration);

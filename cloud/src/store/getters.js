@@ -51,3 +51,11 @@ export const getPC = (state)=>{
 export const getIndex = (state)=>{
     return state.index;
 }
+
+export const getCmt = (state)=>{
+    return state.cmt;
+}
+
+export const getSid = (state)=>{
+    return state.sid;
+}

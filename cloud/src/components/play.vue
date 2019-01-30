@@ -27,7 +27,9 @@
                 <time>{{parseInt(Math.ceil(duration)/60)+':'+((Math.ceil(duration)%60<10)?'0'+Math.ceil(duration)%60:Math.ceil(duration)%60)}}</time>
             </div>
             <div class="play-wrapper">
-                <div></div>
+                <div>
+                    <van-icon @click="goCmt" name="comment-o" :info="getCmt||0" />      
+                </div>
                 <div class="lasts"><van-icon name="play" @click="switchPlay(0)" /></div>
                 <div><van-icon :name="getPlay?'pause':'stop'" @click="play" /></div>
                 <div><van-icon name="play" @click="switchPlay(1)" /></div>
@@ -46,6 +48,66 @@
             </van-actionsheet>
         </div>
         <div class="drop" :style="{'background-image':`url(${getCover})`}"></div>
+        <div class="cmt" v-show="showCmt" :style="{'background-image':`url(${getCover})`}">
+            <van-nav-bar
+            title="评论"
+            left-arrow
+            :fixed='true'
+            :z-index='10'
+            @click-left="backs"
+            />
+            <div id="cmt" class="mui-content mui-scroll-wrapper">
+                <div class="mui-scroll">
+                    <div>
+                        <h4 class="cmt_title">热门评论({{hotCmts.length}})</h4>
+                    </div>
+                    <div class="mui-table-view mui-table-view-chevron">
+                        <div class="cmt_item" v-for="(obj,i) in hotCmts" >
+                            <div class="cmt_hd">
+                                <img :src="obj.user.avatarUrl" alt="">
+                            </div>
+                            <div class="cmt_wrap">
+                                <div class="cmt_header">
+                                    <div class="cmt_meta">
+                                        <div class="user">{{obj.user.nickname}}</div>
+                                        <time class="cmt_time">{{trTime(obj.time)}}</time>
+                                    </div>
+                                    <div class="like">
+                                        <van-icon name="thumb-circle-o" size="20px" :info="obj.likedCount" />
+                                    </div>
+                                </div>
+                                <div class="cmt_txt">
+                                    {{obj.content}}
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="cmt_title">最新评论</h4>
+                        </div>
+                        <div class="cmt_item" v-for="(itme,j) in cmtArr">
+                            <div class="cmt_hd">
+                                <img :src="itme.user.avatarUrl" alt="">
+                            </div>
+                            <div class="cmt_wrap">
+                                <div class="cmt_header">
+                                    <div class="cmt_meta">
+                                        <div class="user">{{itme.user.nickname}}</div>
+                                        <time class="cmt_time">{{trTime(itme.time)}}</time>
+                                    </div>
+                                    <div class="like">
+                                        <van-icon name="thumb-circle-o" size="20px" :info="itme.likedCount" />
+                                    </div>
+                                </div>
+                                <div class="cmt_txt">
+                                    {{itme.content}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -60,18 +122,26 @@ export default {
             curTime: 0,
             playState: this.getPlay,
             hist: [],
-            duration: document.getElementById('mp3').duration
+            duration: document.getElementById('mp3').duration,
+            cmt: 0,
+            sid: '',
+            showCmt: false,
+            cmtArr: [],
+            hotCmts: [],
+            mp3: this.getMp3
         }
     },
     created(){
         // console.log($('#mp3').attr('src'))
+        this.delNoEffect();
         this.value = $('#mp3')[0].currentTime/this.duration*100;
         this.playState = this.getPlay;
         this.curTime = $('#mp3')[0].currentTime;
         this.hist = JSON.parse(localStorage.getItem('hist'))||[];
+            this.getCmts();
     },
     computed: {
-        ...mapGetters(['getMyApi','getPlay','getMp3','getInfo','getCover','getDuration','getIndex'])
+        ...mapGetters(['getMyApi','getPlay','getMp3','getInfo','getCover','getDuration','getIndex','getCmt','getSid'])
     },
     updated(){
         // console.log(666)
@@ -79,9 +149,12 @@ export default {
         this.duration = document.getElementById('mp3').duration;
     },
     methods: {
-        ...mapActions(['setShowPlay','setKey','setPlay','setMp3','setCover','setInfo','setIndex']),
+        ...mapActions(['setShowPlay','setKey','setPlay','setMp3','setCover','setInfo','setIndex','setCmt','setSid']),
         back(){
             this.setShowPlay(false);
+        },
+        backs(){
+            this.showCmt = false;
         },
         change(){
             // console.log(this.value);
@@ -91,6 +164,9 @@ export default {
             if(this.getMp3){
                 this.setPlay(!this.getPlay);
                 this.setKey(false);
+                if(this.getCmt==null){
+                    this.getCmts(true);
+                }
                 if(this.getPlay){
                     clearInterval(time1);
                     time1 = setInterval(()=>{
@@ -115,14 +191,18 @@ export default {
                 this.setInfo({m:obj.name,n:obj.singer});
                 this.playState = true;
                 this.play();
+                this.getCmts(true);
+                this.setSid(obj.id);
             })
         },
         deletes(e,i){
             e.stopPropagation();
             this.hist.splice(i,1); 
             localStorage.setItem('hist',JSON.stringify(this.hist));
+            
         },
         switchPlay(flag){
+            if(!this.hist.length)return;
             var index = this.getIndex;
             if(flag){
                 if(index < this.hist.length - 1){
@@ -151,7 +231,36 @@ export default {
                 this.setInfo({m:obj.name,n:obj.singer});
                 this.playState = true;
                 this.play();
+                this.getCmts(true);
+                this.setSid(obj.id);
             })
+        },
+        getCmts(key){
+            if(this.getMp3||key){
+                var obj = this.hist[this.getIndex];
+                $.get(`${this.getMyApi}/comment/music?id=${obj.id}&limit=30`).then(dt=>{
+                    this.setCmt(dt.total);
+                    this.sid = obj.id;
+                    this.cmtArr = dt.comments;
+                    this.hotCmts = dt.hotComments;
+                })
+            }
+        },
+        goCmt(){
+            if(this.getSid){
+                this.showCmt = true;
+            }
+        },
+        delNoEffect(){
+            for(var i = mui.hooks.inits.length-1,item;i >= 0;i --){//解决mui上拉加载后scroll失效
+				item = mui.hooks.inits[i];
+				if(item.name=="pullrefresh"){
+				    item.repeat = true;
+				}
+			}
+        },
+        trTime(time){
+            return new Date(time).getFullYear() + '年' + Number(new Date(time).getMonth()+1) + '月' + new Date(time).getDate() + '日';
         }
     },
     mounted(){
@@ -168,6 +277,24 @@ export default {
         }else{
             this.playState = false;            
             clearInterval(time1);
+        }
+
+        mui.init({
+            pullRefresh : {
+                container: '#cmt',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+                up: {
+                    height: 50,//可选.默认50.触发上拉加载拖动距离
+                    auto: false,//可选,默认false.自动上拉加载一次
+                    callback: ()=>{
+                        mui('#cmt').pullRefresh().endPullupToRefresh();                        
+                    } //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+                }
+            }
+        });
+    },
+    watch: {
+        mp3(now,old){
+            console.log(now);
         }
     }
 }
@@ -346,5 +473,115 @@ export default {
         }to{
             transform: rotate(360deg);
         }
+    }
+    .cmt{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1002;
+        color: #333;
+        overflow: auto;
+        color: #fff;
+        background-color: rgba(0,0,0,.5);
+        background-repeat: no-repeat;
+        background-position: 50%;
+        background-size: cover;
+    }
+    #cmt{
+        top: 46px;
+        background-color: transparent;
+    }
+    #cmt div{
+        background-color: transparent;
+    }
+    #cmt .mui-scroll{
+        background:  rgba(0,0,0,.5);
+    }
+    #cmt ul{
+        background:  rgba(0,0,0,.2);
+    }
+    .cmt_title{
+        position: relative;
+        padding: 0 0 0 10px;
+        line-height: 25px;
+        color: #fff;
+        font-size: 16px;
+        background-color: transparent;
+    }
+    .cmt_title::after{
+        content: "";
+        display: block;
+        width: 2px;
+        height: 16px;
+        position: absolute;
+        top: 4px;
+        left: 0;
+        background: #d33a31;
+    }
+    .cmt_item{
+        padding-top: 10px;
+        display: flex;
+    }
+    .cmt_hd{
+        height: 35px;
+        margin: 0 10px;
+    }
+    .cmt_hd img{
+        display: block;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+    }
+    .cmt_wrap{
+        padding-right: 22px;
+        padding-bottom: 11px;
+        /* padding-left: 10px; */
+        -ms-flex: auto;
+        flex: auto;
+        width: 0;
+    }
+    .cmt_wrap div{
+        background: transparent;
+
+    }
+    .cmt_header{
+        display: flex;
+    }
+    .cmt_meta{
+        flex: auto;
+    }
+    .user{
+        font-size: 14px;
+        line-height: 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        -ms-flex: auto;
+        flex: auto;
+        color: hsla(0,0%,100%,.7);
+    }
+    .cmt_time{
+        color: hsla(0,0%,100%,.3);
+    }
+    .like{
+        width: 65px;
+        height: 22px;
+        line-height: 22px;
+        font-size: 11px;
+        color: #999;
+        -ms-flex: none;
+        flex: none;
+        text-align: right;
+    }
+    .zan{
+        line-height: 22px;
+        font-size: 11px;
+        color: #999;
+    }
+    .cmt_txt{
+        color: #fff;
+        font-size: 15px;
     }
 </style>

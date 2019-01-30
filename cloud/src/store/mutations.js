@@ -46,3 +46,11 @@ export const setPc = function(state,obj){
 export const setIndex = function(state,obj){
     state.index = obj.num;
 }
+
+export const setCmt = function(state,obj){
+    state.cmt = obj.num;
+}
+
+export const setSid = function(state,obj){
+    state.sid = obj.num;
+}

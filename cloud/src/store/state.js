@@ -19,7 +19,9 @@ const state = {
 	widthkey: true,
 	showPlay: false,
 	pc: '',
-	index: 0
+	index: 0,
+	cmt: null,
+	sid: ''
 }
 
 export default state;

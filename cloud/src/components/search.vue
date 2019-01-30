@@ -60,7 +60,7 @@ export default {
         ...mapGetters(['getColor','getColorObj','getMyApi'])
     },
     methods: {
-        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration','setKey','setIndex']),
+        ...mapActions(['setPlay','setMp3','setCover','setInfo','setDuration','setKey','setIndex','setSid']),
         search(){
             this.getRes(this.value)
         },
@@ -112,6 +112,7 @@ export default {
                 this.setInfo({m:obj.name,n:obj.artists[0].name});
                 this.setDuration(0);
                 this.setKey(false);
+                this.setSid(obj.id);
             })
             $.get(`${this.getMyApi}/song/detail?ids=${obj.id}`).then(dt=>{
                 this.setCover(dt.songs[0].al.picUrl);

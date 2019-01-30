@@ -5,6 +5,7 @@ import Skin from '@/views/skin'
 import Album from '@/views/album'
 import Rankview from '@/views/rankview'
 import Singerview from '@/views/singerview'
+import Cmt from '@/views/comment'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/singerview/:id',
       name: 'Singerview',
       component: Singerview
+    },
+    {
+      path: '/comment/:id',
+      name: 'Cmt',
+      component: Cmt
     }
   ]
 })
