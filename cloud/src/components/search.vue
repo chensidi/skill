@@ -140,7 +140,7 @@ export default {
     watch: {
         value(now,old){
             if(now==''){
-                $('.weui-search-bar__label').show();
+                // $('.weui-search-bar__label').show();
                 mui('#refreshContainer').scroll().scrollTo(0,0);
                 this.res = [];
                 this.page = 0;

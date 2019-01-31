@@ -21,7 +21,7 @@
                 <Search />
             </div>
         </div>
-        
+        <Begin />
     </div>
 </template>
 <script>
@@ -32,6 +32,7 @@ import Playbar from '../components/playbar';
 import Rank from '../components/rank';
 import Singer from '../components/singer';
 import Search from '../components/search';
+import Begin from './begin';
 import {mapActions, mapGetters} from 'vuex';
 export default {
     name: 'Home',
@@ -79,7 +80,7 @@ export default {
 		// 	deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
 		// });
     },
-    components: {Topbar,Switchs,NewAlbum,Playbar,Rank,Singer,Search}
+    components: {Topbar,Switchs,NewAlbum,Playbar,Rank,Singer,Search,Begin}
 }
 
 </script>

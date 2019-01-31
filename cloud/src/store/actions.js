@@ -95,3 +95,10 @@ export const setSid = function({commit,state},n){
 		num:n
 	})
 }
+
+export const setSwitched = function({commit,state},n){
+	commit({
+		type:"setSwitched",
+		num:n
+	})
+}

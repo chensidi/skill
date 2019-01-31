@@ -64,7 +64,7 @@
                     <div class="mui-table-view mui-table-view-chevron">
                         <div class="cmt_item" v-for="(obj,i) in hotCmts" >
                             <div class="cmt_hd">
-                                <img :src="obj.user.avatarUrl" alt="">
+                                <img v-lazy='obj.user.avatarUrl' alt="">
                             </div>
                             <div class="cmt_wrap">
                                 <div class="cmt_header">
@@ -77,7 +77,11 @@
                                     </div>
                                 </div>
                                 <div class="cmt_txt">
+                                    <span v-if='obj.beReplied.length'>回复<em class="replied_name">@{{obj.beReplied[0].user.nickname}}</em>:</span>
                                     {{obj.content}}
+                                </div>
+                                <div class="cmt_replied" v-if='obj.beReplied.length'>
+                                    <span>@{{obj.beReplied[0].user.nickname}}:{{obj.beReplied[0].content}}</span>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +90,7 @@
                         </div>
                         <div class="cmt_item" v-for="(itme,j) in cmtArr">
                             <div class="cmt_hd">
-                                <img :src="itme.user.avatarUrl" alt="">
+                                <img v-lazy='itme.user.avatarUrl' alt="">
                             </div>
                             <div class="cmt_wrap">
                                 <div class="cmt_header">
@@ -99,7 +103,11 @@
                                     </div>
                                 </div>
                                 <div class="cmt_txt">
+                                    <span v-if='itme.beReplied.length'>回复<em class="replied_name">@{{itme.beReplied[0].user.nickname}}</em>:</span>
                                     {{itme.content}}
+                                </div>
+                                <div class="cmt_replied" v-if='itme.beReplied.length'>
+                                    <span>@{{itme.beReplied[0].user.nickname}}:{{itme.beReplied[0].content}}</span>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +136,9 @@ export default {
             showCmt: false,
             cmtArr: [],
             hotCmts: [],
-            mp3: this.getMp3
+            mp3: this.getMp3,
+            page: 1,
+            total: ''
         }
     },
     created(){
@@ -138,18 +148,14 @@ export default {
         this.playState = this.getPlay;
         this.curTime = $('#mp3')[0].currentTime;
         this.hist = JSON.parse(localStorage.getItem('hist'))||[];
-            this.getCmts();
+        this.getCmts();
+        this.total = Math.ceil(this.getCmt/30);
     },
     computed: {
-        ...mapGetters(['getMyApi','getPlay','getMp3','getInfo','getCover','getDuration','getIndex','getCmt','getSid'])
-    },
-    updated(){
-        // console.log(666)
-        // if(this.getKey)return;
-        this.duration = document.getElementById('mp3').duration;
+        ...mapGetters(['getMyApi','getPlay','getMp3','getInfo','getCover','getDuration','getIndex','getCmt','getSid','getSwitched'])
     },
     methods: {
-        ...mapActions(['setShowPlay','setKey','setPlay','setMp3','setCover','setInfo','setIndex','setCmt','setSid']),
+        ...mapActions(['setShowPlay','setKey','setPlay','setMp3','setCover','setInfo','setIndex','setCmt','setSid','setSwitched']),
         back(){
             this.setShowPlay(false);
         },
@@ -249,6 +255,7 @@ export default {
         goCmt(){
             if(this.getSid){
                 this.showCmt = true;
+                mui('#cmt').scroll().scrollTo(0,0,10);//100毫秒滚动到顶
             }
         },
         delNoEffect(){
@@ -261,6 +268,13 @@ export default {
         },
         trTime(time){
             return new Date(time).getFullYear() + '年' + Number(new Date(time).getMonth()+1) + '月' + new Date(time).getDate() + '日';
+        },
+        updateCmt(){
+            var obj = this.hist[this.getIndex];
+            $.get(`${this.getMyApi}/comment/music?id=${obj.id}&limit=30&offset=${(this.page-1)*30}`).then(dt=>{
+                this.cmtArr = this.cmtArr.concat(dt.comments);
+                mui('#cmt').pullRefresh().endPullupToRefresh();                        
+            })
         }
     },
     mounted(){
@@ -282,19 +296,32 @@ export default {
         mui.init({
             pullRefresh : {
                 container: '#cmt',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+                indicators: false,
                 up: {
                     height: 50,//可选.默认50.触发上拉加载拖动距离
                     auto: false,//可选,默认false.自动上拉加载一次
                     callback: ()=>{
-                        mui('#cmt').pullRefresh().endPullupToRefresh();                        
+                        if(this.page >= this.total){
+                            mui('#cmt').pullRefresh().endPullupToRefresh();                        
+                            return;
+                        }
+                        this.page += 1;
+                        this.updateCmt();
                     } //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
                 }
             }
         });
     },
-    watch: {
-        mp3(now,old){
-            console.log(now);
+    updated(){
+        this.duration = document.getElementById('mp3').duration;
+        this.total = Math.ceil(this.getCmt/30);
+
+        if(this.getSwitched){
+            if(!this.showCmt){
+                this.getCmts(true);
+                this.setSwitched(false);
+                this.page = 1;
+            }
         }
     }
 }
@@ -583,5 +610,16 @@ export default {
     .cmt_txt{
         color: #fff;
         font-size: 15px;
+    }
+    .cmt_replied{
+        color: hsla(0,0%,100%,.6);
+        background-color: hsla(0,0%,100%,.05) !important;
+        margin: 5px 0;
+        padding: 10px;
+        font-size: 14px;
+        line-height: 21px;
+    }
+    .replied_name{
+        color: #507daf;
     }
 </style>

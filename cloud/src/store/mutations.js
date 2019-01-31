@@ -54,3 +54,7 @@ export const setCmt = function(state,obj){
 export const setSid = function(state,obj){
     state.sid = obj.num;
 }
+
+export const setSwitched = function(state,obj){
+    state.switched = obj.num;
+}

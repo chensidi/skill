@@ -59,3 +59,6 @@ export const getCmt = (state)=>{
 export const getSid = (state)=>{
     return state.sid;
 }
+export const getSwitched = (state)=>{
+    return state.switched;
+}

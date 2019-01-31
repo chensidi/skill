@@ -43,7 +43,7 @@ export default {
         ...mapGetters(['getMyApi','getColor','getColorObj','getMp3','getPlay','getCover','getInfo','getDuration','getKey','getIndex'])
     },
     methods: {
-        ...mapActions(['setPlay','setDuration','setKey','setShowPlay','setPc','setIndex','setMp3','setCover','setInfo','setSid']),
+        ...mapActions(['setPlay','setDuration','setKey','setShowPlay','setPc','setIndex','setMp3','setCover','setInfo','setSid','setSwitched']),
         play(e){
             if(e){
                 e.stopPropagation();
@@ -86,6 +86,7 @@ export default {
                             this.play();
                             this.setIndex(index);
                             this.setSid(obj.id);
+                            this.setSwitched(true);
                         })
                     } 
                 }
