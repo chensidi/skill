@@ -7,7 +7,7 @@
     height: 100%;
     z-index: 9999;
     color: #fff;
-    background: url('https://code-mcx.github.io/vue-mango-music/static/img/play_bg.473725c.jpg') no-repeat 50%;
+    background: url('../img/skin.png') no-repeat 50%;
     background-size: cover;
 }
 .music-skin:after {
