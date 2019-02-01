@@ -62,3 +62,7 @@ export const getSid = (state)=>{
 export const getSwitched = (state)=>{
     return state.switched;
 }
+
+export const getFirst = (state)=>{
+    return state.first;
+}

@@ -1,5 +1,5 @@
 <template>
-    <div class="begin" v-show="begins">
+    <div class="begin" v-show="getFirst">
         <div class="time_circel" @click="goHome">
             <van-circle
                 v-model="currentRate"
@@ -22,6 +22,7 @@
 </template>
 <script>
 let timeout;
+import {mapGetters,mapActions} from 'vuex';
 export default {
     name: 'Begin',
     data(){
@@ -34,11 +35,13 @@ export default {
     computed: {
         text() {
             return '跳过'
-        }
+        },
+        ...mapGetters(['getFirst'])
     },
     methods: {
+        ...mapActions(['setFirst']),
         goHome(){
-            this.begins = false;
+            this.setFirst(false);
         }
     },
     mounted(){
@@ -46,7 +49,7 @@ export default {
             this.rate += 1;
             if(this.rate >= 100){
                 clearInterval(timeout);
-                this.begins = false;
+                this.setFirst(false);
             }
         },50)
     }
@@ -60,7 +63,7 @@ export default {
         width: 100%;
         height: 100%;
         z-index: 1001;
-        background: url(/static/img/jacky.png) no-repeat;
+        background: url(../../static/img/jacky.png) no-repeat;
         background-position: center;
         background-size: cover;
     }

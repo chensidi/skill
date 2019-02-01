@@ -58,3 +58,7 @@ export const setSid = function(state,obj){
 export const setSwitched = function(state,obj){
     state.switched = obj.num;
 }
+
+export const setFirst = function(state,obj){
+    state.first = obj.num;
+}

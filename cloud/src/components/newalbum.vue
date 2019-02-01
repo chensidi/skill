@@ -1,6 +1,6 @@
 <template>
-    <div class="album-container mui-scroll-wrapper">
-        <div class="mui-scroll">
+    <div class="album-container">
+        <div class="">
             <Slider />
             <h1 class="skin-recommend-title" :style="{'color':this.getColorObj[this.getColor].title}">最新专辑</h1>   
             <div class="weui-panel__bd" id="recommand">
@@ -42,6 +42,7 @@ export default {
             },500)
             this.albums = dt.albums;
         })
+        this.delNoEffect();
     },
     computed: {
         ...mapGetters(['getColor','getColorObj','getMyApi'])
@@ -50,13 +51,19 @@ export default {
         pubTime(time){
             var t = new Date(time);
             return t.getFullYear() + '-' + Number(t.getMonth()+1) + '-' + t.getDate();
-	    }
+        },
+        delNoEffect(){
+            for(var i = mui.hooks.inits.length-1,item;i >= 0;i --){//解决mui上拉加载后scroll失效
+				item = mui.hooks.inits[i];
+				item.repeat = true;
+			}
+        }
     },
     mounted(){
         // mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);
-        mui('.mui-scroll-wrapper').scroll({
-			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
-		});
+        // mui('.mui-scroll-wrapper').scroll({
+		// 	deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		// });
     },
     components: {Slider}
 }

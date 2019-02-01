@@ -102,3 +102,10 @@ export const setSwitched = function({commit,state},n){
 		num:n
 	})
 }
+
+export const setFirst = function({commit,state},n){
+	commit({
+		type:"setFirst",
+		num:n
+	})
+}

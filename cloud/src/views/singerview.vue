@@ -7,8 +7,8 @@
             :z-index='10'
             @click-left="back"
         />
-        <div class="mui-scroll-wrapper">
-            <div class="mui-scroll">
+        <div class="">
+            <div class="">
                     <div class="album_wrap">
                         <div class="ab_bg" :style="{'background-image':`url(${img})`}">
                             <div class="ab_mask"></div>
@@ -109,9 +109,9 @@ export default {
         }
     },
     mounted(){
-        mui('.mui-scroll-wrapper').scroll({
-	        deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
-        });
+        // mui('.mui-scroll-wrapper').scroll({
+	    //     deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+        // });
     }
 }
 </script>

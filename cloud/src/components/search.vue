@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <div id="refreshContainer" class="mui-content mui-scroll-wrapper" v-show="value!=''">
+        <!-- <div id="refreshContainer" class="mui-content mui-scroll-wrapper" v-show="value!=''">
             <div class="mui-scroll">
                 <div class="ser_result mui-table-view mui-table-view-chevron">
                     <div @click="goPlay(item)" class="result_item" :style="{'background':getColor==1?'#212121':'#fff'}" v-for="(item,j) of res" :key="j">
@@ -35,6 +35,29 @@
                     <span class="weui-loadmore__tips">正在加载</span>
                 </div>
             </div>
+        </div> -->
+        <div class="list-content" id="list-content" v-show="value!=''">
+            <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+                <van-list
+                    v-model="loading"
+                    :finished="finished"
+                    @load="onLoad"
+                    :offset="10"
+                >
+                    <div class="list-item">
+                        <!-- <van-cell v-for="item in list" :key="item" :title="item + ''" />
+                         -->
+                            <div @click="goPlay(item)" class="result_item" :style="{'background':getColor==1?'#212121':'#fff'}" v-for="(item,j) of res" :key="j">
+                                    <img src="static/img/lazy.png" alt="">
+                                    <div>
+                                        <p class="s_song elp" :style="{'color':getColor==1?'#ddd':'#333'}">{{item.name}}</p>
+                                        <p class="s_singer elp" :style="{'color':getColor==1?'rgba(221, 221, 221, 0.7)':'rgba(0, 0, 0, 0.6)'}">{{item.artists[0].name}}</p>
+                                    </div>
+                            </div>
+                    </div>
+ 
+                </van-list>
+            </van-pull-refresh>
         </div>
     </div>
 </template>
@@ -49,11 +72,18 @@ export default {
             hots: [],
             res: [],
             total: null,
-            page: 0
+            page: 0,
+            list: [],
+            loading: false,   //是否处于加载状态
+            finished: false,  //是否已加载完所有数据
+            isLoading: false,   //是否处于下拉刷新状态
         }
     },
     created(){
         this.getHots();
+        this.delNoEffect();
+    },
+    updated(){
         this.delNoEffect();
     },
     computed: {
@@ -86,10 +116,10 @@ export default {
                 setTimeout(()=>{
                     this.loading = false;
                 },500)
-                mui('#refreshContainer').pullRefresh().endPullupToRefresh();
-                mui("#refreshContainer").on('tap', 'div', function (event) {
-                    this.click();
-                });
+                // mui('#refreshContainer').pullRefresh().endPullupToRefresh();
+                // mui("#refreshContainer").on('tap', 'div', function (event) {
+                //     this.click();
+                // });
                 this.res = this.res.concat(dt.result.songs);
                 this.total = Math.floor(dt.result.songCount/30);
             })
@@ -135,36 +165,63 @@ export default {
             this.value = txt;
             $('.weui-search-bar__label').hide();
             $('input[type="text"]').focus();
+        },
+        onLoad() {      //上拉加载
+            // setTimeout(() => {
+            //     for (let i = 0; i < 15; i++) {
+            //         this.list.push(this.list.length + 1);
+            //     }
+            //     this.loading = false;
+            //     if (this.list.length >= 60) {
+            //         this.finished = true;
+            //     }
+            // }, 500);
+            if(this.page >= this.total){
+                this.finished = true;
+                return;
+            }
+            this.page += 1;
+            this.getRes(this.value);
+        },
+        onRefresh() {       //下拉刷新
+            setTimeout(() => {
+                this.finished = false;
+                this.isLoading = false;
+                // this.list = []
+                this.onLoad()
+            }, 500);
         }
     },
     watch: {
         value(now,old){
             if(now==''){
                 // $('.weui-search-bar__label').show();
-                mui('#refreshContainer').scroll().scrollTo(0,0);
+                // mui('#refreshContainer').scroll().scrollTo(0,0);
                 this.res = [];
                 this.page = 0;
             }
         }
     },
     mounted(){
-        mui.init({
-            pullRefresh : {
-                container: '#refreshContainer',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
-                up: {
-                    height: 50,//可选.默认50.触发上拉加载拖动距离
-                    auto: false,//可选,默认false.自动上拉加载一次
-                    callback: ()=>{
-                        if(this.page >= this.total){
-                            mui('#refreshContainer').pullRefresh().endPullupToRefresh();
-                            return;
-                        }
-                        this.page += 1;
-                        this.getRes(this.value);
-                    } //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-                }
-            }
-        });
+        // mui.init({
+        //     pullRefresh : {
+        //         container: '#refreshContainer',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+        //         up: {
+        //             height: 50,//可选.默认50.触发上拉加载拖动距离
+        //             auto: false,//可选,默认false.自动上拉加载一次
+        //             callback: ()=>{
+        //                 if(this.page >= this.total){
+        //                     mui('#refreshContainer').pullRefresh().endPullupToRefresh();
+        //                     return;
+        //                 }
+        //                 this.page += 1;
+        //                 this.getRes(this.value);
+        //             } //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+        //         }
+        //     }
+        // });
+        let winHeight = document.documentElement.clientHeight                          //视口大小
+        document.getElementById('list-content').style.height = (winHeight - 120) +'px'  //调整上拉加载框高度
     }
 }
 </script>
@@ -237,5 +294,8 @@ export default {
     }
     .load{
         margin: auto;
+    }
+    #list-content{
+        margin-top: 44px;
     }
 </style>

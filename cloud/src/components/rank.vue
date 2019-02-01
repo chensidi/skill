@@ -1,6 +1,6 @@
 <template>
-    <div class="mui-scroll-wrapper">
-        <div class="mui-scroll">
+    <div class="">
+        <div class="">
             <div class="mask" id="sort_mask" v-show="loading">
                 <div class="load">
                     <i class="weui-loading"></i>
@@ -42,6 +42,7 @@ export default {
     },
     created(){
         this.createRank();
+        this.delNoEffect();
     },
     computed: {
         ...mapGetters(['getColor','getMyApi'])
@@ -68,13 +69,19 @@ export default {
             for(let i = 0; i < 24; i ++){
                 this.getRank(i)
             }
+        },
+        delNoEffect(){
+            for(var i = mui.hooks.inits.length-1,item;i >= 0;i --){//解决mui上拉加载后scroll失效
+				item = mui.hooks.inits[i];
+				item.repeat = true;
+			}
         }
     },
     mounted(){
         // mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);
-        mui('.mui-scroll-wrapper').scroll({
-			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
-		});
+        // mui('.mui-scroll-wrapper').scroll({
+		// 	deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		// });
     }
 }
 </script>

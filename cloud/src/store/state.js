@@ -22,7 +22,8 @@ const state = {
 	index: 0,
 	cmt: null,
 	sid: '',
-	switched: false
+	switched: false,
+	first: true
 }
 
 export default state;

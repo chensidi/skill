@@ -56,7 +56,7 @@
             :z-index='10'
             @click-left="backs"
             />
-            <div id="cmt" class="mui-content mui-scroll-wrapper">
+            <!-- <div id="cmt" class="mui-content mui-scroll-wrapper">
                 <div class="mui-scroll">
                     <div>
                         <h4 class="cmt_title">热门评论({{hotCmts.length}})</h4>
@@ -114,6 +114,73 @@
                     </div>
                     
                 </div>
+            </div> -->
+            <div class="list-content" id="list-contents">
+                <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+                    <van-list
+                        v-model="loading"
+                        :finished="finished"
+                        @load="onLoad"
+                        :offset="10"
+                    >
+                        <div class="list-item">
+                            <!-- <van-cell v-for="item in list" :key="item" :title="item + ''" /> -->
+                            <div>
+                        <h4 class="cmt_title">热门评论({{hotCmts.length}})</h4>
+                    </div>
+                        <div class="cmt_item" v-for="(obj,i) in hotCmts" >
+                            <div class="cmt_hd">
+                                <img v-lazy='obj.user.avatarUrl' alt="">
+                            </div>
+                            <div class="cmt_wrap">
+                                <div class="cmt_header">
+                                    <div class="cmt_meta">
+                                        <div class="user">{{obj.user.nickname}}</div>
+                                        <time class="cmt_time">{{trTime(obj.time)}}</time>
+                                    </div>
+                                    <div class="like">
+                                        <van-icon name="thumb-circle-o" size="20px" :info="obj.likedCount" />
+                                    </div>
+                                </div>
+                                <div class="cmt_txt">
+                                    <span v-if='obj.beReplied.length'>回复<em class="replied_name">@{{obj.beReplied[0].user.nickname}}</em>:</span>
+                                    {{obj.content}}
+                                </div>
+                                <div class="cmt_replied" v-if='obj.beReplied.length'>
+                                    <span>@{{obj.beReplied[0].user.nickname}}:{{obj.beReplied[0].content}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="cmt_title">最新评论</h4>
+                        </div>
+                        <div class="cmt_item" v-for="(itme,j) in cmtArr">
+                            <div class="cmt_hd">
+                                <img v-lazy='itme.user.avatarUrl' alt="">
+                            </div>
+                            <div class="cmt_wrap">
+                                <div class="cmt_header">
+                                    <div class="cmt_meta">
+                                        <div class="user">{{itme.user.nickname}}</div>
+                                        <time class="cmt_time">{{trTime(itme.time)}}</time>
+                                    </div>
+                                    <div class="like">
+                                        <van-icon name="thumb-circle-o" size="20px" :info="itme.likedCount" />
+                                    </div>
+                                </div>
+                                <div class="cmt_txt">
+                                    <span v-if='itme.beReplied.length'>回复<em class="replied_name">@{{itme.beReplied[0].user.nickname}}</em>:</span>
+                                    {{itme.content}}
+                                </div>
+                                <div class="cmt_replied" v-if='itme.beReplied.length'>
+                                    <span>@{{itme.beReplied[0].user.nickname}}:{{itme.beReplied[0].content}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+    
+                    </van-list>
+                </van-pull-refresh>
             </div>
         </div>
     </div>
@@ -138,7 +205,11 @@ export default {
             hotCmts: [],
             mp3: this.getMp3,
             page: 1,
-            total: ''
+            total: '',
+            list: [],
+            loading: false,   //是否处于加载状态
+            finished: false,  //是否已加载完所有数据
+            isLoading: false,   //是否处于下拉刷新状态
         }
     },
     created(){
@@ -199,6 +270,7 @@ export default {
                 this.play();
                 this.getCmts(true);
                 this.setSid(obj.id);
+                this.finished = false;
             })
         },
         deletes(e,i){
@@ -239,6 +311,7 @@ export default {
                 this.play();
                 this.getCmts(true);
                 this.setSid(obj.id);
+                this.finished = false;
             })
         },
         getCmts(key){
@@ -255,7 +328,8 @@ export default {
         goCmt(){
             if(this.getSid){
                 this.showCmt = true;
-                mui('#cmt').scroll().scrollTo(0,0,10);//100毫秒滚动到顶
+                // mui('#cmt').scroll().scrollTo(0,0,10);//100毫秒滚动到顶
+                this.delNoEffect();
             }
         },
         delNoEffect(){
@@ -273,8 +347,34 @@ export default {
             var obj = this.hist[this.getIndex];
             $.get(`${this.getMyApi}/comment/music?id=${obj.id}&limit=30&offset=${(this.page-1)*30}`).then(dt=>{
                 this.cmtArr = this.cmtArr.concat(dt.comments);
-                mui('#cmt').pullRefresh().endPullupToRefresh();                        
             })
+        },
+        onLoad() {      //上拉加载
+            // setTimeout(() => {
+            //     for (let i = 0; i < 15; i++) {
+            //         this.list.push(this.list.length + 1);
+            //     }
+            //     this.loading = false;
+            //     if (this.list.length >= 60) {
+            //         this.finished = true;
+            //     }
+            // }, 500);
+            if(this.page >= this.total){
+                this.finished = true;
+                return;
+            }
+            this.page += 1;
+            this.updateCmt();
+        },
+        onRefresh() {       //下拉刷新
+            setTimeout(() => {
+                this.finished = false;
+                this.isLoading = false;
+                this.onLoad()
+            }, 500);
+            // this.finished = false;
+            // this.isLoading = false;
+            // this.onLoad()
         }
     },
     mounted(){
@@ -293,24 +393,26 @@ export default {
             clearInterval(time1);
         }
 
-        mui.init({
-            pullRefresh : {
-                container: '#cmt',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
-                indicators: false,
-                up: {
-                    height: 50,//可选.默认50.触发上拉加载拖动距离
-                    auto: false,//可选,默认false.自动上拉加载一次
-                    callback: ()=>{
-                        if(this.page >= this.total){
-                            mui('#cmt').pullRefresh().endPullupToRefresh();                        
-                            return;
-                        }
-                        this.page += 1;
-                        this.updateCmt();
-                    } //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-                }
-            }
-        });
+        // mui.init({
+        //     pullRefresh : {
+        //         container: '#cmt',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+        //         indicators: false,
+        //         up: {
+        //             height: 50,//可选.默认50.触发上拉加载拖动距离
+        //             auto: false,//可选,默认false.自动上拉加载一次
+        //             callback: ()=>{
+        //                 if(this.page >= this.total){
+        //                     mui('#cmt').pullRefresh().endPullupToRefresh();                        
+        //                     return;
+        //                 }
+        //                 this.page += 1;
+        //                 this.updateCmt();
+        //             } //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+        //         }
+        //     }
+        // });
+        let winHeights = document.documentElement.clientHeight                          //视口大小
+        document.getElementById('list-contents').style.height = (winHeights - 46) +'px'  //调整上拉加载框高度
     },
     updated(){
         this.duration = document.getElementById('mp3').duration;
@@ -519,6 +621,8 @@ export default {
     #cmt{
         top: 46px;
         background-color: transparent;
+        position: absolute;
+        width: 100%;
     }
     #cmt div{
         background-color: transparent;
@@ -621,5 +725,9 @@ export default {
     }
     .replied_name{
         color: #507daf;
+    }
+    #list-contents{
+        margin-top: 46px !important;
+        background: rgba(0,0,0,.3)
     }
 </style>

@@ -1,19 +1,19 @@
 <template>
     <div id="singers">
-        <div class="kind">
-            <div class="ss mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-                <div class="mui-scroll" id="type">
+        <div class="kind" :style="{'background':this.getColorObj[this.getColor].bgMain}">
+            <div class="ss">
+                <div id="type">
                     <a v-for='(obj,i) of types' :style="{'color':getColor==1?'#fff':'#333'}" :key="i" :class="i==type?className[getColor]:''" @click="changeType(i,obj.id)">{{obj.info}}</a>
                 </div>
             </div>
-            <div class="ss mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-                <div class="mui-scroll" id="index">
+            <div class="ss">
+                <div id="index">
                     <a v-for="(item,j) of indexs" :style="{'color':getColor==1?'#fff':'#333'}" :key="j" :class="j==index?className[getColor]:''" @click="changeIndex(j,item.tag)">{{item.txt}}</a>
                 </div>
             </div>
         </div>
-        <div class="mui-scroll-wrapper" style="top:96px">
-            <div class="mui-scroll">
+        <div class="singers_wrap">
+            <div>
                 <ul class="singers">
                     <li v-for="(obj,i) of res" :key="i">
                         <router-link :to="'/singerview/'+obj.id" v-lazy-container="{ selector: 'img' }">
@@ -78,6 +78,7 @@ export default {
             this.indexs.push({txt,tag})
         }
         this.topSingers();
+        this.delNoEffect();
     },
     methods: {
         changeType(i,cat){
@@ -112,10 +113,16 @@ export default {
                 // console.log(dt);
                 this.res = dt.artists;
             })
+        },
+        delNoEffect(){
+            for(var i = mui.hooks.inits.length-1,item;i >= 0;i --){//解决mui上拉加载后scroll失效
+				item = mui.hooks.inits[i];
+				item.repeat = true;
+			}
         }
     },
     computed: {
-        ...mapGetters(['getColor','getMyApi'])
+        ...mapGetters(['getColor','getMyApi','getColorObj'])
     },
     mounted(){
         mui('.ss').scroll({
@@ -124,9 +131,9 @@ export default {
 			deceleration:0.0006,
 			bounce: true
         })
-        mui('.mui-scroll-wrapper').scroll({
-			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
-		});
+        // mui('.mui-scroll-wrapper').scroll({
+		// 	deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		// });
     }
 }
 </script>
@@ -134,10 +141,11 @@ export default {
     .kind{
         padding: 10px 20px;
         font-size: 14px;
-        position: absolute;
-        top: 0;
+        position: fixed;
+        top: 82px;
         left: 0;
         width: 100%;
+        z-index: 10;
     }
     .kind a{
         padding: 3px 8px;
@@ -199,6 +207,22 @@ export default {
     }
     .mui-scroll-wrapper{
         /* top: 96px; */
+    }
+    .singers_wrap{
+        top:96px;
+        position:absolute;
+        width: 100%;	
+    }
+    .ss{
+        width: 100%;
+        overflow:auto;
+    }
+    #type,#index{
+        min-width: 400%;
+        height: 40px;
+    }
+    #index{
+        min-width: 300%;
     }
 </style>
 
