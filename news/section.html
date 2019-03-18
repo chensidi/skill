@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>手机人民网</title>
+    <link rel="stylesheet" href="css/mui.css">
+    <link rel="stylesheet" href="css/weui.css">
+    <link rel="stylesheet" href="css/jquery-weui.css">
+    <link rel="stylesheet" href="css/public.css">
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="lib/all/css/play.css">
+</head>
+<body>
+    <header class="mui-bar mui-bar-nav returnbar">
+        <span class="mui-icon mui-icon-back" onclick="history.go(-1)"></span>
+        <h1 class="mui-title">
+            <img src="images/logo2.gif" alt="" height="40">
+        </h1>
+    </header>
+    <div id="blank" class="mui-content mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <ul class="mui-table-view mui-table-view-chevron">
+                <div class="weui-panel weui-panel_access" id="sec_block">
+                    <div class="weui-panel__hd" id="sec_tt">今日新闻</div>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <div class="cmt_drop">
+        <span class="loadings">
+            <em>加载中...</em>
+            <i class="mui-icon mui-icon-spinner mui-spin"></i>
+        </span>
+    </div>
+</body>
+</html>
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/jquery-weui.js"></script>
+<script src="js/mui.js"></script>
+<script src='lib/all/js/jquery.lazyload.min.js'></script>
+<script>
+    const url = 'http://www.localhost';
+    var id = location.search.split('=')[1];
+    var stamp,secName,date;
+    (function(){
+        muiInit();
+        if(id == 0){
+            var day = new Date();
+            day = day.getFullYear() + 
+                  (day.getMonth()<9?('0'+(day.getMonth()+1)):day.getMonth()+1) +
+                  (day.getDate()<10?('0'+day.getDate()):day.getDate());
+            getNews(day);
+            secName = '新闻'
+        }else{
+            getSections();
+        }
+
+        //获取新闻内容
+        function getNews(day){
+            $.get(`${url}/byday?day=${day}`).then(dt=>{
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                console.log(dt);
+                date = dt.date;
+                createListPub(dt.stories);
+            })
+        }
+
+        //获取栏目内容
+        function getSections(){
+            $.post(`${url}/section`,{id}).then(dt=>{
+                // console.log(dt);
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                stamp = dt.timestamp;
+                secName = dt.name;
+                $('#sec_tt').text(dt.name);
+                createListPub(dt.stories);
+            })
+        }
+
+        //获取栏目之前的信息
+        function getMoreSec(){
+            $.post(`${url}/beforesec`,{id,stamp}).then(dt=>{
+                // console.log(dt);
+                mui('#blank').pullRefresh().endPullupToRefresh(); 
+                stamp = dt.timestamp;
+                createListPub(dt.stories);
+            })
+        }
+
+        //获取之前的新闻
+        function getMoreNews(){
+            if(date<'20130520'){
+                mui('#blank').pullRefresh().endPullupToRefresh(); 
+                return;
+            }
+            $.get(`${url}/byday?day=${date}`).then(dt=>{
+                console.log(dt);
+                mui('#blank').pullRefresh().endPullupToRefresh(); 
+                date = dt.date;
+                createListPub(dt.stories);
+            })
+        }
+
+        //构造新闻列表公共函数
+        function createListPub(arr){
+            arr.map(obj=>{
+                var div = $('<div />').addClass('weui-panel__bd');
+                var secStr = '';
+                secStr += `<a href="newsdetails.html?id=${obj.id}" class="weui-media-box weui-media-box_appmsg">
+                                    <div class="weui-media-box__hd">
+                                        <img class="weui-media-box__thumb thumb_img" src="lib/all/img/avatar4.png" data-original="${obj.images[0]}">
+                                    </div>
+                                    <div class="weui-media-box__bd">
+                                        <h4 class="weui-media-box__title"><em class="label-light-red">${secName}</em></h4>
+                                        <p class="weui-media-box__desc">${obj.title}</p>
+                                    </div>
+                                </a>`;
+                div.append(secStr);
+                $('#sec_block').append(div);
+                div.find('img').lazyload({effect: "show",threshold :180})
+            })
+        }
+
+        //mui初始化
+        function muiInit(){
+            mui('#blank').on('tap','a',function(){
+	            window.top.location.href = this.href;
+            });
+            mui.init({
+                pullRefresh : {
+                    container:'#blank',
+                    up : {
+                        height:50,
+                        auto:false,
+                        contentrefresh : "正在加载...",
+                        contentnomore:'没有更多数据了',
+                        callback : function(){
+                            if(id==0){
+                                getMoreNews();
+                            }else{
+                                getMoreSec();
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    })()
+</script>

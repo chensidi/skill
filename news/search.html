@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>手机电影网</title>
+    <link href="http://www.jq22.com/jquery/bootstrap-3.3.4.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/mui.css">
+    <link rel="stylesheet" href="css/weui.css">
+    <link rel="stylesheet" href="css/jquery-weui.css">
+    <link rel="stylesheet" href="css/public.css">
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="lib/all/css/play.css">
+    <style>
+       
+    </style>
+</head>
+<body>
+    <header class="mui-bar mui-bar-nav returnbar">
+        <span class="mui-icon mui-icon-back" onclick="history.go(-1)"></span>
+        <h1 class="mui-title">
+            <img src="images/logo2.png" alt="" height="40">
+        </h1>
+    </header>
+    <div id="mlist" class="mui-content mui-scroll-wrapper" style="top:0">
+        <div class="mui-scroll">
+            <ul class="mui-table-view mui-table-view-chevron">
+                <li style="font-size:16px">搜索结果</li>
+            </ul>
+        </div>
+    </div>
+    <div class="cmt_drop">
+        <span class="loadings">
+            <em>加载中...</em>
+            <i class="mui-icon mui-icon-spinner mui-spin"></i>
+        </span>
+    </div>
+</body>
+</html>
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/jquery-weui.js"></script>
+<script src="js/mui.js"></script>
+<script>
+    const url = 'http://www.localhost';
+    var kw = location.search.split('=')[1];
+    var start = 0,count = 10;
+    (function(){
+        // $.post(`${url}/search`,{input:kw,type:'q',start:start,count:count}).then(dt=>{
+        //     console.log(dt);
+        // })
+        muiInit();
+        search();
+        
+        //根据type值拿对应数据
+        function search(){
+            $.post(`${url}/search`,{input:kw,type:'q',start:start,count:count}).then(dt=>{
+                console.log(dt);
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                mui('#mlist').pullRefresh().endPullupToRefresh();
+                dt.subjects.map(obj=>{
+                    var li = $('<li />');
+                    var tag = '',directors = '',casts = '';
+                    obj.genres.map(em=>{
+                        tag += `${em} `;
+                    })
+                    obj.directors.map(em=>{
+                        directors += `${em.name} `;
+                    })
+                    obj.casts.map(em=>{
+                        casts += `${em.name} `;
+                    })
+                    var mstr = `<a href="movieinfo.html?id=${obj.id}">
+                                <div class="imggroup">
+                                    <img src="${obj.images.medium}" alt="${obj.title}">
+                                    <i class="vip"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="c-title">
+                                        <div class="mnames elp">${obj.title}</div>
+                                        <div class="mscore">${obj.rating.average}</div>
+                                    </div>
+                                    <div>
+                                        <p class="elp">${obj.year} ${tag}</p>
+                                        <p class="elp">导演： ${directors}</p>
+                                        <p class="elp">主演： ${casts}</p>
+                                    </div>
+                                    <div class="source">
+                                        <span>播放源: </span>
+                                        <img src="images/logo2.png" alt="" height="12">
+                                    </div>
+                                    <button type="button" class="mui-btn mui-btn-success nowplay">立即播放</button>
+                                </div>
+                            </a>`
+
+                    li.append(mstr);
+                    $('#mlist ul').append(li);
+                })
+                
+            })
+        }
+
+        //mui初始化
+        function muiInit(){
+            mui.init({
+                pullRefresh : {
+                    container:'#mlist',
+                    up : {
+                        height:50,
+                        auto:false,
+                        contentrefresh : "正在加载...",
+                        contentnomore:'没有更多数据了',
+                        callback :function(){
+                            start += 20;
+                            search();
+                        } 
+                    }
+                }
+            });
+            mui('#mlist').off('tap','a');
+                mui('#mlist').on('tap','a',function(){
+                    window.top.location.href = this.href;
+            });
+        }
+    })()
+</script>

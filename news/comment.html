@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/mui.css">
+    <link rel="stylesheet" href="css/weui.css">
+    <link rel="stylesheet" href="css/jquery-weui.css">
+    <link rel="stylesheet" href="css/public.css">
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="lib/all/css/play.css">
+</head>
+<body>
+    <div class="cmt_wrap">
+        <header class="mui-bar mui-bar-nav returnbar">
+            <span class="mui-icon mui-icon-back" onclick="history.go(-1)"></span>
+            <h1 class="mui-title">
+                <img src="images/logo2.gif" alt="" height="40">
+            </h1>
+        </header>
+        <div class="cmt_drop">
+            <span class="loadings">
+                <em>加载中...</em>
+                <i class="mui-icon mui-icon-spinner mui-spin"></i>
+            </span>
+        </div>
+        <div class="cmt_bg"></div>
+        <div class="mui-content mui-scroll-wrapper" id="cmt">
+            <div class="mui-scroll">
+                <h4 class="cmt_title">精彩长评</h4>
+                <ul class="cmt_list_hot mui-table-view mui-table-view-chevron" id="long">
+                </ul>
+                <h4 class="cmt_title">精彩短评</h4>
+                <ul class="cmt_list_hot mui-table-view mui-table-view-chevron" id="short">
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/jquery-weui.js"></script>
+<script src="js/mui.js"></script>
+<script src='lib/all/js/jquery.lazyload.min.js'></script>
+<script src="lib/all/js/cmt.js"></script>
+<script>
+    (function(){
+        const url = 'http://www.localhost';
+        var id = location.search.split('=')[1];
+
+        shortCmt();
+        longCmt();
+        scrollNinit();
+
+        function shortCmt(){
+            $.post(`${url}/comment`,{id:id,type:'short-comments'}).then(dt=>{
+                cmtPub(dt.comments,'short');
+                $('.cmt_drop').hide();
+            })
+        }
+
+        function longCmt(){
+            $.post(`${url}/comment`,{id:id,type:'long-comments'}).then(dt=>{
+                cmtPub(dt.comments,'long');
+                $('.cmt_drop').hide();
+            })
+        }
+
+
+        function scrollNinit(){
+            mui.init({
+                pullRefresh : {
+                    container:"#cmt",
+                    up : {
+                        height:50,
+                        auto: false,
+                        contentdown : "下拉可以刷新",
+                        contentover : "释放立即刷新",
+                        contentrefresh : "正在刷新...",
+                        callback :function(){
+                            mui('#cmt').pullRefresh().endPullupToRefresh();
+                        }
+                    },
+                    down: {
+                        callback: function(){
+                            mui('#cmt').pullRefresh().endPulldownToRefresh();
+                        }
+                    }
+                }
+            })
+        }
+
+
+        function cmtPub(arr,type){
+            arr.map(obj=>{
+                var li = $('<li />');
+                    if(obj.reply_to){
+                        var cmtStr = `<div class="cmt_head">
+                                            <img src="lib/all/img/avatar4.png" alt="" class="lazy" data-original="${obj.avatar}">
+                                        </div>
+                                        <div class="cmt_info">
+                                            <div class="cmt_header">
+                                                <div class="cmt_meta">
+                                                    <span class="cmt_user">${obj.author}</span>
+                                                    <div class="cmt_time">${obj.time}</div>
+                                                </div>
+                                                <div class="cmt_like">
+                                                    <span class="cmt_likearea">
+                                                        <span class="cmt_count">${obj.likes}</span>
+                                                        <i class="mui-icon mui-icon-star zan"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="cmt_content">
+                                                    回复<span class="touser">${obj.reply_to.author}:</span> ${obj.reply_to.content}
+                                            </div>
+                                            <div class="recmt">
+                                                <span>@${obj.reply_to.author}:</span>${obj.content}
+                                            </div>
+                                        </div>`;
+                        li.append(cmtStr);
+
+                    }else{
+                        var cmtStr = `<div class="cmt_head">
+                                            <img src="lib/all/img/avatar4.png" alt="" class="lazy" data-original="${obj.avatar}">
+                                        </div>
+                                        <div class="cmt_info">
+                                            <div class="cmt_header">
+                                                <div class="cmt_meta">
+                                                    <span class="cmt_user">${obj.author}</span>
+                                                    <div class="cmt_time">${obj.time}</div>
+                                                </div>
+                                                <div class="cmt_like">
+                                                    <span class="cmt_likearea">
+                                                        <span class="cmt_count">${obj.likes}</span>
+                                                        <i class="mui-icon mui-icon-star zan"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="cmt_content">
+                                                ${obj.content}
+                                            </div>
+                                        </div>`;
+                        li.append(cmtStr);
+                    }
+                    if(type=='short'){
+                        $('#short').append(li);
+                    }else{
+                        $('#long').append(li);
+                    }
+                    li.find('img').lazyload({effect: "show",threshold :180});
+            })
+        }
+    })()
+</script>
