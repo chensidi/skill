@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>手机电影网</title>
+    <link rel="stylesheet" href="css/mui.css">
+    <link rel="stylesheet" href="css/weui.css">
+    <link rel="stylesheet" href="css/jquery-weui.css">
+    <link rel="stylesheet" href="css/public.css">
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="lib/all/css/play.css">
+</head>
+<body>
+    <header class="mui-bar mui-bar-nav returnbar">
+        <span class="mui-icon mui-icon-back" onclick="history.go(-1)"></span>
+        <h1 class="mui-title">
+            <img src="images/logo2.png" alt="" height="40">
+        </h1>
+    </header>
+    <div class="weui-search-bar" id="searchBar">
+        <div class="weui-search-bar__form">
+            <div class="weui-search-bar__box">
+                <i class="weui-icon-search"></i>
+                <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
+                <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+            </div>
+            <label class="weui-search-bar__label" id="searchText">
+            <i class="weui-icon-search"></i>
+            <span>搜索</span>
+            </label>
+        </div>
+        <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+    </div>
+    <div class="mui-content" style="padding:0">
+            <div id="slider" class="mui-slider">
+                <div class="mui-slider-group mui-slider-loop">
+                    <!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+                    <div class="mui-slider-item mui-slider-item-duplicate">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <div class="mui-slider-item">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <div class="mui-slider-item">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <div class="mui-slider-item">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <div class="mui-slider-item">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+                    <div class="mui-slider-item mui-slider-item-duplicate">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                </div>
+                <div class="mui-slider-indicator mui-text-right">
+                    <div class="mui-indicator mui-active"></div>
+                    <div class="mui-indicator"></div>
+                    <div class="mui-indicator"></div>
+                    <div class="mui-indicator"></div>
+                </div>
+            </div>
+    </div>
+    <section>
+        <div class="headlines_top">
+            <h3>
+                <em>正在热映</em>
+                <a href="movielist.html?type=hot" class="mores">更多</a>
+            </h3>
+        </div>
+        <div class="itemParent" id="inhot">
+        </div>
+    </section>
+    <section>
+        <div class="headlines_top">
+            <h3>
+                <em>即将上映</em>
+                <a href="movielist.html?type=coming" class="mores">更多</a>
+            </h3>
+        </div>
+        <div class="itemParent" id="coming">
+        </div>
+    </section>
+    <section>
+        <div class="headlines_top">
+            <h3>
+                <em>Top榜</em>
+                <a href="movielist.html?type=top" class="mores">更多</a>
+            </h3>
+        </div>
+        <div class="itemParent" id="top">
+        </div>
+    </section>
+    <hr>
+    <div class="weui-footer">
+        <p class="weui-footer__links">
+            <a href="javascript:void(0);" class="weui-footer__link">迪爷版权</a>
+        </p>
+        <p class="weui-footer__text">Copyright © 2008-2019 Jacky Cheung</p>
+    </div>
+    <div class="cmt_drop">
+        <span class="loadings">
+            <em>加载中...</em>
+            <i class="mui-icon mui-icon-spinner mui-spin"></i>
+        </span>
+    </div>
+</body>
+</html>
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/jquery-weui.js"></script>
+<script src="js/mui.js"></script>
+<script>
+    const url = 'http://www.localhost';
+    (function(){
+
+        swiperInit();
+        swiperData();
+        coming();
+        top();
+        searchJump();
+        //轮播
+        function swiperInit(){
+            var slider = mui("#slider");
+            slider.slider({
+                interval: 5000
+            });
+            var w = $(window).width();
+            $('#slider img').height(w*.6);
+        }
+
+        //轮播数据
+        function swiperData(){
+            $.get(`${url}/defaulthot`).then(dt=>{
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                var swiperArr = dt.subjects;
+                for(let i = 0; i < 4; i ++){
+                    if(i == 0){
+                        $('#slider img').last().attr('src',swiperArr[i]['images']['large']);
+                        $('#slider p').last().text(swiperArr[i]['title'])
+                        $('#slider a').last().attr('href','movieinfo.html?id='+swiperArr[i].id);
+                    }
+                    if(i == 3){
+                        $('#slider img').first().attr('src',swiperArr[i]['images']['large'])
+                        $('#slider p').first().text(swiperArr[i]['title'])
+                        $('#slider a').first().attr('href','movieinfo.html?id='+swiperArr[i].id);
+                    }
+                    $('#slider img').eq(i+1).attr('src',swiperArr[i]['images']['large'])
+                    $('#slider p').eq(i+1).text(swiperArr[i]['title'])
+                    $('#slider a').eq(i+1).attr('href','movieinfo.html?id='+swiperArr[i].id);                    
+                }
+                for(let i = 4; i < 8; i ++){
+                    var item = `<div class="item">
+                                    <a href="${'movieinfo.html?id='+swiperArr[i].id}">
+                                        <div class="figure">
+                                            <img src="${swiperArr[i]['images']['medium']}" alt="">
+                                            <span class="leftBlackLayer">${swiperArr[i]['year']}</span>
+                                        </div>
+                                        <p>
+                                            <span class="elp mname">${swiperArr[i]['title']}</span>
+                                            <em class="score">${swiperArr[i]['rating']['average']}</em>
+                                        </p>
+                                    </a>
+                                </div>`
+                    $('#inhot').append(item);
+                }
+                var w = $('#inhot .item').width();
+                $('#inhot .item img').height(w*1.4);
+            })
+        }
+
+        //即将上映
+        function coming(){
+            $.get(`${url}/defaultcoming`).then(dt=>{
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                var comarr = dt.subjects;
+                for(let i = 0; i < 4; i ++){
+                    var item = `<div class="item">
+                                    <a href="${'movieinfo.html?id='+comarr[i].id}">
+                                        <div class="figure">
+                                            <img src="${comarr[i]['images']['medium']}" alt="">
+                                            <span class="leftBlackLayer">${comarr[i]['year']}</span>
+                                        </div>
+                                        <p>
+                                            <span class="elp mname">${comarr[i]['title']}</span>
+                                            <em class="score">${comarr[i]['rating']['average']}</em>
+                                        </p>
+                                    </a>
+                                </div>`
+                    $('#coming').append(item);
+                }
+                var w = $('#coming .item').width();
+                $('#coming .item img').height(w*1.4);
+            })
+        }
+
+        //top
+        function top(){
+            $.post(`${url}/top250`).then(dt=>{
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                var topArr = dt.subjects;
+                for(let i = 0; i < 6; i ++){
+                    var item = `<div class="item">
+                                    <a href="${'movieinfo.html?id='+topArr[i].id}">
+                                        <div class="figure">
+                                            <img src="${topArr[i]['images']['medium']}" alt="">
+                                            <span class="leftBlackLayer">${topArr[i]['year']}</span>
+                                        </div>
+                                        <p>
+                                            <span class="elp mname">${topArr[i]['title']}</span>
+                                            <em class="score">${topArr[i]['rating']['average']}</em>
+                                        </p>
+                                    </a>
+                                </div>`
+                    $('#top').append(item);
+                }
+                var w = $('#top .item').width();
+                $('#top .item img').height(w*1.4);
+            })
+        }
+
+        //搜索跳转
+        function searchJump(){
+            $('#searchInput').keyup(function(e){
+                if(e.keyCode == 13){
+                    if($(this).val()!=undefined){
+                        location.href = `search.html?kw=${$(this).val()}`
+                    }
+                }
+            })
+        }
+    })()
+</script>

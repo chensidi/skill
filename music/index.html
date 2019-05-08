@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <link href="css/mui.css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="css/jquery-weui.css"/>
+	<link rel="stylesheet" type="text/css" href="lib/weui.css"/>
+	<link rel="stylesheet" type="text/css" href="css/public.css"/>
+	<link rel="stylesheet" type="text/css" href="css/index.css"/>
+	<link rel="shortcut icon" href="images/favicon.ico">
+</head>
+<body>
+	<div class="warp">
+		<header>
+			<i class="mui-icon mui-icon-bars nav_cell" onclick="actionSheet()"></i>
+			<h1><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAgCAYAAACVU7GwAAAACXBIWXMAAAsTAAALEwEAmpwYAAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEAIiOsCMgQWaIQkgBhhBASQMWFiApWFBURnEhVxILVCkidiOKgKLhnQYqIWotVXDjuH9yntX167+3t+9f7vOec5/zOec8PgBESJpHmomoAOVKFPDrYH49PSMTJvYACFUjgBCAQ5svCZwXFAADwA3l4fnSwP/wBr28AAgBw1S4kEsfh/4O6UCZXACCRAOAiEucLAZBSAMguVMgUAMgYALBTs2QKAJQAAGx5fEIiAKoNAOz0ST4FANipk9wXANiiHKkIAI0BAJkoRyQCQLsAYFWBUiwCwMIAoKxAIi4EwK4BgFm2MkcCgL0FAHaOWJAPQGAAgJlCLMwAIDgCAEMeE80DIEwDoDDSv+CpX3CFuEgBAMDLlc2XS9IzFLiV0Bp38vDg4iHiwmyxQmEXKRBmCeQinJebIxNI5wNMzgwAABr50cH+OD+Q5+bk4eZm52zv9MWi/mvwbyI+IfHf/ryMAgQAEE7P79pf5eXWA3DHAbB1v2upWwDaVgBo3/ldM9sJoFoK0Hr5i3k4/EAenqFQyDwdHAoLC+0lYqG9MOOLPv8z4W/gi372/EAe/tt68ABxmkCZrcCjg/1xYW52rlKO58sEQjFu9+cj/seFf/2OKdHiNLFcLBWK8ViJuFAiTcd5uVKRRCHJleIS6X8y8R+W/QmTdw0ArIZPwE62B7XLbMB+7gECiw5Y0nYAQH7zLYwaC5EAEGc0Mnn3AACTv/mPQCsBAM2XpOMAALzoGFyolBdMxggAAESggSqwQQcMwRSswA6cwR28wBcCYQZEQAwkwDwQQgbkgBwKoRiWQRlUwDrYBLWwAxqgEZrhELTBMTgN5+ASXIHrcBcGYBiewhi8hgkEQcgIE2EhOogRYo7YIs4IF5mOBCJhSDSSgKQg6YgUUSLFyHKkAqlCapFdSCPyLXIUOY1cQPqQ28ggMor8irxHMZSBslED1AJ1QLmoHxqKxqBz0XQ0D12AlqJr0Rq0Hj2AtqKn0UvodXQAfYqOY4DRMQ5mjNlhXIyHRWCJWBomxxZj5Vg1Vo81Yx1YN3YVG8CeYe8IJAKLgBPsCF6EEMJsgpCQR1hMWEOoJewjtBK6CFcJg4Qxwicik6hPtCV6EvnEeGI6sZBYRqwm7iEeIZ4lXicOE1+TSCQOyZLkTgohJZAySQtJa0jbSC2kU6Q+0hBpnEwm65Btyd7kCLKArCCXkbeQD5BPkvvJw+S3FDrFiOJMCaIkUqSUEko1ZT/lBKWfMkKZoKpRzame1AiqiDqfWkltoHZQL1OHqRM0dZolzZsWQ8ukLaPV0JppZ2n3aC/pdLoJ3YMeRZfQl9Jr6Afp5+mD9HcMDYYNg8dIYigZaxl7GacYtxkvmUymBdOXmchUMNcyG5lnmA+Yb1VYKvYqfBWRyhKVOpVWlX6V56pUVXNVP9V5qgtUq1UPq15WfaZGVbNQ46kJ1Bar1akdVbupNq7OUndSj1DPUV+jvl/9gvpjDbKGhUaghkijVGO3xhmNIRbGMmXxWELWclYD6yxrmE1iW7L57Ex2Bfsbdi97TFNDc6pmrGaRZp3mcc0BDsax4PA52ZxKziHODc57LQMtPy2x1mqtZq1+rTfaetq+2mLtcu0W7eva73VwnUCdLJ31Om0693UJuja6UbqFutt1z+o+02PreekJ9cr1Dund0Uf1bfSj9Rfq79bv0R83MDQINpAZbDE4Y/DMkGPoa5hpuNHwhOGoEctoupHEaKPRSaMnuCbuh2fjNXgXPmasbxxirDTeZdxrPGFiaTLbpMSkxeS+Kc2Ua5pmutG003TMzMgs3KzYrMnsjjnVnGueYb7ZvNv8jYWlRZzFSos2i8eW2pZ8ywWWTZb3rJhWPlZ5VvVW16xJ1lzrLOtt1ldsUBtXmwybOpvLtqitm63Edptt3xTiFI8p0in1U27aMez87ArsmuwG7Tn2YfYl9m32zx3MHBId1jt0O3xydHXMdmxwvOuk4TTDqcSpw+lXZxtnoXOd8zUXpkuQyxKXdpcXU22niqdun3rLleUa7rrStdP1o5u7m9yt2W3U3cw9xX2r+00umxvJXcM970H08PdY4nHM452nm6fC85DnL152Xlle+70eT7OcJp7WMG3I28Rb4L3Le2A6Pj1l+s7pAz7GPgKfep+Hvqa+It89viN+1n6Zfgf8nvs7+sv9j/i/4XnyFvFOBWABwQHlAb2BGoGzA2sDHwSZBKUHNQWNBbsGLww+FUIMCQ1ZH3KTb8AX8hv5YzPcZyya0RXKCJ0VWhv6MMwmTB7WEY6GzwjfEH5vpvlM6cy2CIjgR2yIuB9pGZkX+X0UKSoyqi7qUbRTdHF09yzWrORZ+2e9jvGPqYy5O9tqtnJ2Z6xqbFJsY+ybuIC4qriBeIf4RfGXEnQTJAntieTE2MQ9ieNzAudsmjOc5JpUlnRjruXcorkX5unOy553PFk1WZB8OIWYEpeyP+WDIEJQLxhP5aduTR0T8oSbhU9FvqKNolGxt7hKPJLmnVaV9jjdO31D+miGT0Z1xjMJT1IreZEZkrkj801WRNberM/ZcdktOZSclJyjUg1plrQr1zC3KLdPZisrkw3keeZtyhuTh8r35CP5c/PbFWyFTNGjtFKuUA4WTC+oK3hbGFt4uEi9SFrUM99m/ur5IwuCFny9kLBQuLCz2Lh4WfHgIr9FuxYji1MXdy4xXVK6ZHhp8NJ9y2jLspb9UOJYUlXyannc8o5Sg9KlpUMrglc0lamUycturvRauWMVYZVkVe9ql9VbVn8qF5VfrHCsqK74sEa45uJXTl/VfPV5bdra3kq3yu3rSOuk626s91m/r0q9akHV0IbwDa0b8Y3lG19tSt50oXpq9Y7NtM3KzQM1YTXtW8y2rNvyoTaj9nqdf13LVv2tq7e+2Sba1r/dd3vzDoMdFTve75TsvLUreFdrvUV99W7S7oLdjxpiG7q/5n7duEd3T8Wej3ulewf2Re/ranRvbNyvv7+yCW1SNo0eSDpw5ZuAb9qb7Zp3tXBaKg7CQeXBJ9+mfHvjUOihzsPcw83fmX+39QjrSHkr0jq/dawto22gPaG97+iMo50dXh1Hvrf/fu8x42N1xzWPV56gnSg98fnkgpPjp2Snnp1OPz3Umdx590z8mWtdUV29Z0PPnj8XdO5Mt1/3yfPe549d8Lxw9CL3Ytslt0utPa49R35w/eFIr1tv62X3y+1XPK509E3rO9Hv03/6asDVc9f41y5dn3m978bsG7duJt0cuCW69fh29u0XdwruTNxdeo94r/y+2v3qB/oP6n+0/rFlwG3g+GDAYM/DWQ/vDgmHnv6U/9OH4dJHzEfVI0YjjY+dHx8bDRq98mTOk+GnsqcTz8p+Vv9563Or59/94vtLz1j82PAL+YvPv655qfNy76uprzrHI8cfvM55PfGm/K3O233vuO+638e9H5ko/ED+UPPR+mPHp9BP9z7nfP78L/eE8/sl0p8zAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAPoSURBVHjaxJdLbBtVFIa/M+Mk48RNHBJoQIE8ECmxeASQUFuBCFKF2GEJxDbpFiHhBUsWASEWPES6YlXFwL447NiQFAmxAAkj2rhFkNCHEC1qSOoknsYzc1jYiR1nPGM7RbmSZY/v65tzzv3vOXAITVeIa445XeJfXeJnzTFV3S+HAUSBBYSJmq7TMk4aIHJXNrF5Ergi4/zZIhAo8Z2fLUHpZZK4TCEksav+zwHKrxicRZnfB1lgxgfoF2BWEiUrNe0+zTGJ8qnvm1beuLSqkkf4BIszMsKa5pgEFmpgUjLOYu0S0gTQNDAHbAPtoVCV56tEeAWHDMIQsA6kgGGUtxDiwCKQlnE+bxiqCqhJP+++ug1YKPNEmcYmCcyhXEboAGJAP0qWKC9KA0DDKBcROg94JmxMTsgYWc2xiDKK8GDNGBflm8BAH/1oFFj+uB7QZ7/HOfNbL22G+s5/Km7zxfG/dx4tHL7THE+UrdfrM8UEHjaCoP54bTkOvFqvf9sTip6w5Rj+H1cqLiyBHEH5EpMUSr7G1bfL7j0eLAkFpg8ir7Zj7I9a4Tlc4pLggZ3wqJWOMJ1K4bGJQVfQoJ42j/usIoaAW2WZ4Vix3pQPgJMAfoIbCTlxQ0EwXhngZP8WbzyyRtRUHK9y8LoiWm/qCT8LhVtKmUFwEcwwN/W1uxw7so0pIfKwV7+SwKzfUN9A1yVSCENoOBBA0RNs1wgetB94st5Qw1eX4F3A/V9zCKlcwIFQukIc5WuE7rJmHEqL1GjuLMLjfgPveMJfhQj/3DEZjDoctRyMVi2peEFeiFS5LQ17M0AAV4WFm1HSy938uBpFBNoM5eX7N9gomq26zkDJBkLVA/IUvroeY+ZCPwVXdk9R0RPOXeuu7CEtgdWFMsp6NOXXeSnfzvsX76kA3bWcmDwWmaBAf5M6GvftjU7yTriLVJu20jkZYS0IaqNe0F263dHQHk0FvLIJzASut3vuDtDutVwss2FzvRNWYBhAGrD8Op/uDWdtM5SRriKmaCNWmpeE/9WyF6oUcOsoTm3nqYFNjlrFwAWe6bV5ts8OT4mVC0SZbiwcSgGXRIgAherOhzod3nvsFn3tju/ksdg2bz+6yoDlBN95JaDng4Lb95qsKg62oJL+KpBd7eDsSg8/3LKwXZN4m8upgQ1Oj+QZ7gq05PcoP0mCVHOHs7bI9EgDPcB1YLBFHSoCi5LgpVam77mQ5RgZYAI4DwyibABXGwTR8veHCGNEeb31BCKoGi7pyQu7KixcAWIoMQwieLRXVTrrQAaLVKOx0zRUTd2XLCdlE+Uqd6edR8kiZLHIHBRmp/03AET2YxyrUQQQAAAAAElFTkSuQmCC" alt="">
+			Mango Music</h1>
+		</header>
+		<nav>
+			<div class="tab_item">
+				<span>推荐</span>
+			</div>
+			<div class="tab_item">
+				<span>排行榜</span>
+			</div>
+			<div class="tab_item">
+				<span>歌手</span>
+			</div>
+			<div class="tab_item">
+				<span>搜索</span>
+			</div>
+		</nav>
+		<div class="main">
+			<div class="mui-scroll-wrapper block">
+				<div class="mui-scroll">
+					<div id="slider" class="mui-slider">
+					<div class="mui-slider-group mui-slider-loop">
+							<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+							<div class="mui-slider-item mui-slider-item-duplicate">
+								<a href="#">
+									<img src="http://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/1128690.jpeg">
+								</a>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#">
+									<img src="http://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/1128806.jpg">
+								</a>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#">
+									<img src="http://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/1128806.jpg">
+								</a>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#">
+									<img src="http://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/1128914.jpg">
+								</a>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#">
+									<img src="http://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/1128690.jpeg">
+								</a>
+							</div>
+							<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+							<div class="mui-slider-item mui-slider-item-duplicate">
+								<a href="#">
+									<img src="http://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/1128806.jpg">
+								</a>
+							</div>
+					</div>
+					<div class="mui-slider-indicator mui-text-center">
+						<div class="mui-indicator mui-active"></div>
+						<div class="mui-indicator"></div>
+						<div class="mui-indicator"></div>
+						<div class="mui-indicator"></div>
+					</div>
+				</div>
+					<div class="album-container">
+						<h1 class="skin-recommend-title">最新专辑</h1>
+							
+								<div class="weui-panel__bd" id="recommand">
+<!-- 									<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+										<div class="weui-media-box__hd">
+											<img class="weui-media-box__thumb" src="http://y.gtimg.cn/music/photo_new/T002R300x300M000004BdozS16T3Je.jpg?max_age=2592000">
+										</div>
+										<div class="weui-media-box__bd">
+											<h4 class="weui-media-box__title">白马青衫</h4>
+											<p class="weui-media-box__desc">洛天依</p>
+										</div>
+										<div class="weui-panel__ft"><time class="pub_time">2019-01-15</time></div>
+									</a> -->
+									<div class="mask" id="newmask">
+										<div class="load">
+										  <i class="weui-loading"></i>
+										  <span class="weui-loadmore__tips">正在加载</span>
+										</div>
+									</div>
+								</div>
+							
+					</div>
+					
+				</div>
+			</div>
+			<div class="mui-scroll-wrapper block">
+				<div class="mui-scroll">
+					<ul class="sort_list">
+					</ul>
+				</div>
+				<div class="mask" id="sort_mask">
+					<div class="load">
+						<i class="weui-loading"></i>
+						<span class="weui-loadmore__tips">正在加载</span>
+					</div>
+				</div>
+			</div>
+			<div class="block">
+				<div class="kind">
+					<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+						<div class="mui-scroll" id="type">
+						</div>
+					</div>
+					<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+						<div class="mui-scroll" id="index">
+						</div>
+					</div>
+				</div>
+				<div class="mui-scroll-wrapper" id="singers">
+					<div class="mui-scroll">
+						<ul>
+						</ul>
+					</div>
+					<div class="mask" id="singer_mask">
+						<div class="load">
+							<i class="weui-loading"></i>
+							<span class="weui-loadmore__tips">正在加载</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="block">
+				<div class="weui-search-bar" id="searchBar">
+					<div class="weui-search-bar__form">
+						<div class="weui-search-bar__box ser_box">
+							<i class="weui-icon-search"></i>
+							<input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索歌曲、歌手、专辑" required="">
+							<a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+						</div>
+						<label class="weui-search-bar__label" id="searchText">
+							<i class="weui-icon-search"></i>
+							<span>搜索</span>
+						</label>
+					</div>
+					<a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+				</div>
+				<div class="hotser mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="hots">
+							<h1 class="hot_title">热门搜索</h1>
+							<div class="hot_list clearfix">
+							</div>
+						</div>
+						<div class="ser_result">
+							<div class="result_item">
+								<img src="images/lazy.png" alt="">
+								<div>
+									<p class="s_song elp">YUI</p>
+									<p class="s_singer elp">西皮士</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="mask" id="ser_mask">
+						<div class="load">
+							<i class="weui-loading"></i>
+							<span class="weui-loadmore__tips">正在加载</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<div class="player-img rotate">
+				<img src="http://y.gtimg.cn/music/photo_new/T002R300x300M000000W50Ni1rt0ep.jpg?max_age=2592000" alt="">
+			</div>
+			<div class="player-center">
+				<div class="weui-progress">
+					  <div class="weui-progress__bar">
+						<div class="weui-progress__inner-bar js_progress" style="width: 80%;"></div>
+					  </div>
+				</div>
+				<span class="song">不后悔</span>
+				<span class="singer">张学友</span>
+				<div class="play-right">
+					<div class="play"><img src="images/play.png" alt="" id="play_btn"></div>
+					<div class="next"><img src="images/next.png" alt="" id="next_btn"></div>
+				</div>
+			</div>
+		</footer>
+		<div class="music-skin" id="music-skin">
+			<div class="mui-bar mui-bar-nav mui-bar-transparent">
+				<h1 class="mui-title skin_title">皮肤中心</h1>
+				<span class="cancel" id="cancel_skin">取消</span>
+			</div>
+			<div class="skin_info">推荐皮肤</div>
+			<div class="skin_list">
+				<div class="skin_block">
+					<div class="yellow"><i class="weui-icon-success"></i></div>
+					<p>芒果黄</p>
+				</div>
+				<div class="skin_block">
+					<div class="black"><i class="weui-icon-success"></i></div>
+					<p>炫酷黑</p>
+				</div>
+				<div class="skin_block">
+					<div class="blue"><i class="weui-icon-success"></i></div>
+					<p>酷狗蓝</p>
+				</div>
+				<div class="skin_block">
+					<div class="red"><i class="weui-icon-success"></i></div>
+					<p>网易红</p>
+				</div>
+				<div class="skin_block">
+					<div class="green"><i class="weui-icon-success"></i></div>
+					<p>QQ绿</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="iframe">
+		<iframe src="album.html" frameborder="0"></iframe>
+	</div>
+</body>
+</html>
+<script type="text/javascript" src="js/jquery-2.1.4.js">
+</script>
+<script type="text/javascript" src="http://cdn.bootcss.com/jquery.lazyload/1.9.1/jquery.lazyload.min.js">
+</script>
+<script type="text/javascript" src="js/jquery-weui.js">
+</script>
+<script src="js/mui.min.js"></script>
+<script>
+	const bgColorArr = [['yellow','#F8F8FF'],['black','#212121'],['blue','#F8F8FF'],['red','#F8F8FF'],['green','#F8F8FF']],
+		  colorArr = ['yellowon','blackon','blueon','redon','greenon'],
+		  lazyurl = 'images/lazy.png',
+		  url = 'http://localhost:3000',
+		  sortColor = [{h:'#333',name:'#333',singer:'rgba(0,0,0,.5)',bg:'#fff',serBg:'#F8F8FF',serBox:'#fff'},
+		  				{h:'#fff',name:'#ddd',singer:'rgba(221, 221, 221, 0.7)',bg:'#333',serBg:'#212121',serBox:'#333'}
+					  ],
+		  types = [
+			  {info:'入驻歌手',id:5001},
+			  {info:'华语男',id:1001},
+			  {info:'华语女',id:1002},
+			  {info:'华语组合',id:1003},
+			  {info:'欧美男',id:2001},
+			  {info:'欧美女',id:2002},
+			  {info:'欧美组合',id:2003},
+			  {info:'日本男',id:6001},
+			  {info:'日本女',id:6002},
+			  {info:'日本组合',id:6003},
+			  {info:'韩国男',id:7001},
+			  {info:'韩国女',id:7002},
+			  {info:'韩国组合',id:7003},
+			  {info:'其他男',id:4001},
+			  {info:'其他女',id:4002},
+			  {info:'其他组合',id:4003}
+		  ];
+			
+	let now = 4,last = 4,cur = 0,nowSort = 0,playStatus = false;
+	
+	function getStorage(){
+		if(localStorage.getItem('now')!=null){
+			now = last = localStorage.getItem('now');
+		}
+	}
+
+	function actionSheet(){
+		$.actions({
+			actions: [
+				{
+					text: "皮肤中心",
+					onClick: function() {
+						$('#music-skin').show()
+					}
+				},
+			]
+		});
+	}
+	
+	function cancelSkin(){
+		$('#cancel_skin').on('click',function(){
+			$('#music-skin').hide();
+		})
+	}
+	
+	function switchColor(){
+		$('.skin_block').each(function(i){
+			$(this).find('div').on('tap',function(){
+				switchColorHandle(i);
+			})
+		})
+	}
+	
+	function switchColorHandle(i=now){
+		last = now;
+		$('header').removeClass().addClass(bgColorArr[i][0]);
+		$('body,footer').css('background',bgColorArr[i][1]);
+		$('.weui-icon-success').hide().eq(i).show();
+		$('#music-skin').hide();
+		$('.tab_item').eq(cur).removeClass(colorArr[last]).addClass(colorArr[i]);
+		$('.skin-recommend-title').removeClass(colorArr[last]).addClass(colorArr[i]);
+		if(i==1){
+			nowSort = 1;
+			$('.tab_item').css('color','#fff');
+			$('.weui-media-box__title,.pub_time').css('color','#fff');
+			$('#type a,#index a').css('color','#ddd');
+			$('#play_btn').attr('src','images/play.png');
+			$('#next_btn').attr('src','images/next.png');
+		}else{
+			nowSort = 0;
+			$('.tab_item,.pub_time,.weui-media-box__title').css('color','rgba(0, 0, 0, .7)');
+			$('#type a,#index a').css('color','#333');		
+			$('#play_btn').attr('src','images/play(1).png');
+			$('#next_btn').attr('src','images/next(1).png');			
+		}
+		$('.sort_list li').css('background',sortColor[nowSort].bg);
+		$('.sort_list li h1,.s_song').css('color',sortColor[nowSort].h);
+		$('.sort_list li .index,.sort_list li .s_name,.s_singer').css('color',sortColor[nowSort].name);
+		$('.sort_list li .sg').css('color',sortColor[nowSort].singer);
+		$('#type,#index').find('.tag'+last).removeClass().addClass('tag'+i);
+		$('#singers span').css('color',sortColor[nowSort].name);
+		$('#searchBar').css('background',sortColor[nowSort].serBg);
+		$('.ser_box,#searchText,#searchCancel').css({'background':sortColor[nowSort].serBox,'color':sortColor[nowSort].name});
+		$('.hot_title,.song,.singer').removeClass(colorArr[last]).addClass(colorArr[i]);
+		$('.hot_item').css({'color':sortColor[nowSort].name,'background':sortColor[nowSort].bg});
+		
+		now = i;
+		localStorage.setItem('now',i);
+	}
+
+	function switchTab(){
+		$('.tab_item').each(function(i){
+			$(this).on('tap',function(){
+				$('.tab_item').removeClass(colorArr[now]).eq(i).addClass(colorArr[now]);
+				cur = i;
+				$('.block').hide().eq(cur).show();
+				if(i==1){
+					var len = document.getElementsByClassName('sort_list')[0].getElementsByTagName('li').length;
+					for(let i = 0; i < len; i ++){
+						getSort(i);
+					}
+				}else if(i==2){
+					topSingers();
+				}else if(i==3){
+					hotSerach();
+				}
+			})
+		})
+	}
+	
+	function getBanner(){
+		$.get(`${url}/banner`).then((dt)=>{
+			for(let i = 0; i < 4; i ++){
+				$('#slider img').eq(i).attr('src',dt.banners[i].imageUrl);
+			}
+			$('#slider img').height($('#slider img').eq(0).height());
+		})
+	}
+	
+	function pubTime(time){
+		var t = new Date(time);
+		return t.getFullYear() + '-' + Number(t.getMonth()+1) + '-' + t.getDate();
+	}
+	
+	function topSong(){
+		$.ajax({
+			type: 'GET',
+			url: `${url}/top/album?limit=20`,
+			dataType: 'json',
+			success: function(dt){
+				dt.albums.map((obj,i)=>{
+					var a = $('<a />').attr({'href':'javascript:void(0);'}).addClass('weui-media-box weui-media-box_appmsg')
+									.append(
+										$('<div />').addClass('weui-media-box__hd')
+													.append(
+														$('<img />').addClass('weui-media-box__thumb')
+																	.attr({'data-original':obj.artist.picUrl,'src':lazyurl})
+													)
+									).append(
+										$('<div />').addClass('weui-media-box__bd')
+													.append($('<h4 />').addClass('weui-media-box__title').text(obj.name))
+													.append($('<p />').addClass('weui-media-box__desc').text(obj.artist.name))
+									).append(
+										$('<div />').addClass('weui-panel__ft')
+													.append($('<time />').addClass('pub_time').text(pubTime(obj.publishTime)))
+									).on('tap',function(){
+										// console.log(obj.id);
+										openNewView('album');
+									})
+					$('#recommand').append(a);
+				})
+				switchColorHandle(now);
+			},
+			complete: function(){
+				$('img.weui-media-box__thumb').lazyload();
+				$('#newmask').hide();
+			}
+		})
+
+	}
+	
+	function getSort(id){
+		$.get(`${url}/top/list?idx=${id}`).then((dt)=>{
+			$('#sort_mask').hide();
+			
+			$('.sort_list li').find('a').eq(id).empty();
+			var cnt = `<div class="left">
+									<img src="${lazyurl}" data-original='${dt.playlist.coverImgUrl}' alt="">
+									<div class="cover"></div>
+						</div>
+						<div class="right">
+							<h1 class="elp" style="color:${sortColor[nowSort].h}">${dt.playlist.name}</h1>
+							<i class="arrow mui-icon mui-icon-arrowright"></i>
+						</div>`;
+			$('.sort_list li').find('a').eq(id).append(cnt);
+
+			var ps = '';
+			for(let i = 1; i < 4; i ++){
+				ps += `<p class='elp'>
+						<em class="index" style="color:${sortColor[nowSort].name}">${i}</em>
+						<span class="s_name" style="color:${sortColor[nowSort].name}">${dt.playlist.tracks[i-1].name}</span> -
+						<span class="sg" style="color:${sortColor[nowSort].singer}">${dt.playlist.tracks[i-1].ar[0].name}</span>
+					</p>`;
+				
+			}
+			$('.sort_list li').eq(id).find('p').remove();
+			$('.sort_list li').eq(id).find('h1').after(ps);
+			$('.sort_list li').eq(id).find('img').lazyload()
+		})
+	}
+
+	function createSort(){
+		for(let i = 0; i < 24; i ++){
+			var li = $('<li />').append(
+									$('<a />').attr('href',"javascript:void(0)")
+											  .on('tap',function(){
+												  console.log(i);
+											  })
+								).css('background',sortColor[nowSort].bg);
+			$('.sort_list').append(li);							  	
+		}
+	}
+
+	function createTypes(){
+		types.map((obj,i)=>{
+			var a = $('<a />').text(obj.info)
+							  .attr('tag',obj.id)
+							  .on('tap',function(){
+									var cat = $(this).attr('tag');
+									var initial = $('#index').find('.tag'+now).attr('tag');
+								  	$(this).addClass('tag'+now).siblings().removeClass('tag'+now);
+									var addr = `/artist/list?cat=${cat}&initial=${initial}`;
+								  	topSingers(addr);
+							  });
+			if(i == 0){
+				a.addClass('tag'+now);
+			}
+			$('#type').append(a);
+		})
+
+		for(let i = 64; i <= 90; i ++){
+			var txt = i==64?'推荐':String.fromCharCode(i),
+				tag = i==64?'':String.fromCharCode(i);
+			var a = $('<a />').text(txt)
+							  .attr('tag',tag)
+							  .on('tap',function(){
+								  	var cat = $('#type').find('.tag'+now).attr('tag');
+									var initial = $(this).attr('tag');
+									$(this).addClass('tag'+now).siblings().removeClass('tag'+now);
+									var addr = `/artist/list?cat=${cat}&initial=${initial}`;
+									topSingers(addr);
+							  });
+			if(i == 64){
+				a.addClass('tag'+now);
+			}
+			$('#index').append(a);
+		}
+	}
+
+	
+	function topSingers(addr='/top/artists?offset=0&limit=30'){
+		$('#singers .mask').show();
+		$.get(`${url}${addr}`).then((dt)=>{
+			$('#singers ul').empty();
+			$('#singers .mask').hide();
+			
+			dt.artists.map((obj,i)=>{
+				var li = $('<li />').attr('sid',obj.id)
+						  			.append(
+										 $('<img />').attr({src:`${lazyurl}`,alt:`${obj.name}`,'data-original':`${obj.img1v1Url}`})
+						  							 .addClass('singer_img')
+									  ).append(
+										  $('<span />').addClass('singer_name elp').text(obj.name).css('color',sortColor[nowSort].name)
+									  ).on('tap',function(){
+											console.log($(this).attr('sid'))
+									  })
+				$('#singers ul').append(li);
+				li.find('img').lazyload();
+			})
+		})
+	}
+	
+
+	function hotSerach(){
+		$('.hot_list').empty();
+		$('#ser_mask').show();
+		$.get(`${url}/search/hot`).then((dt)=>{
+			$('#ser_mask').hide();
+			dt.result.hots.map((obj,i)=>{
+				var item = `<div class="hot_item" style="color:${sortColor[nowSort].name};background:${sortColor[nowSort].bg}">${obj.first}</div>`;
+				$('.hot_list').append(item);
+			})
+		})
+	}
+	
+	function serHandle(){
+		$('#searchInput').on('input',function(){
+			// console.log($(this).val());
+			if($(this).val()!=''){
+				$('.hots').hide();
+				$('.ser_result').show();
+			}else{
+				$('.hots').show();
+				$('.ser_result').hide();
+			}
+		})
+		$('#searchInput').on('keydown',function(e){
+			if(e.keyCode==13&&$(this).val()!=''){
+				var val = $(this).val();
+				$('.ser_result').empty();
+				$('#ser_mask').show();
+				$.get(`${url}/search?keywords= ${val}`).then((dt)=>{
+					$('#ser_mask').hide();
+					dt.result.songs.map((obj,i)=>{
+						var item = $('<div />').addClass('result_item')
+											   .append($('<img />').attr('src','images/lazy.png'))
+											   .append(
+												   $('<div />').append($('<p />').addClass('s_song elp').text(obj.name).css('color',sortColor[nowSort].h))
+												   			   .append($('<p />').addClass('s_singer elp').text(obj.artists[0].name).css('color',sortColor[nowSort].name))
+											   ).on('tap',function(){
+													console.log(obj.id);
+													
+											   })
+						$('.ser_result').append(item);
+					})
+					
+				})
+			}
+
+		})
+		$('#searchClear,#searchCancel').on('tap',function(){
+			$('.ser_result').hide();
+			$('.hots').show();
+			$('.ser_result').empty();
+		})
+
+	}
+
+	function switchPlay(){
+		$('#play_btn').on('tap',function(){
+			playStatus = !playStatus;
+			var code;
+			code = now==1?'':'(1)';
+			if(playStatus){
+				$(this).attr('src',`images/pause${code}.png`);
+			}else{
+				$(this).attr('src',`images/play${code}.png`);
+			}
+		})
+	}
+
+	function openNewView(url){
+		$('.iframe').show();
+		$('.iframe iframe').attr('src',`${url}.html`)
+	}
+	
+	getStorage();
+	cancelSkin();
+	switchColor();
+	switchColorHandle();
+	switchTab();
+	getBanner();
+	topSong();
+	createSort();
+	createTypes();
+	serHandle();
+	switchPlay();
+
+	(function(){
+		$('.tab_item').eq(cur).addClass(colorArr[now]);
+		$('body,footer').css('background',bgColorArr[now][1]);
+		$('.skin-recommend-title').removeClass(colorArr[last]).addClass(colorArr[now]);
+		$('.block').eq(cur).show();
+		$('.hot_title').removeClass(colorArr[last]).addClass(colorArr[now]);
+		var slider = mui("#slider");
+		slider.slider({
+			interval: 5000
+		});
+		
+		var options = {
+			scrollY: true, //是否竖向滚动
+			scrollX: false, //是否横向滚动
+			startX: 0, //初始化时滚动至x
+			startY: 0, //初始化时滚动至y
+			indicators: true, //是否显示滚动条
+			deceleration:0.0006, //阻尼系数,系数越小滑动越灵敏
+			bounce: true //是否启用回弹
+		}
+		mui('.mui-scroll-wrapper').scroll({
+			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		});
+
+		mui('.kind_scroll').scroll({
+			scrollY: false, 
+			scrollX: true,
+			deceleration:0.0006,
+			bounce: true
+		})
+
+		$('.sort_list img').lazyload();
+
+
+	})()
+	
+</script>

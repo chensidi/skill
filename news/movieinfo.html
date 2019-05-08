@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/mui.css">
+    <link rel="stylesheet" href="css/weui.css">
+    <link rel="stylesheet" href="css/jquery-weui.css">
+    <link rel="stylesheet" href="css/public.css">
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="lib/all/css/play.css">
+    <style>
+        html,body{
+            font-size: 100px !important;
+        }
+
+        @media screen and (max-width: 320px){
+            html,body{
+                font-size: 85px !important;
+            }
+        }
+
+        @media screen and (min-width: 375px){
+            html,body{
+                font-size: 26.6vw !important;
+            }
+        }
+
+        @media screen and (min-width: 768px){
+            html,body{
+                font-size: 205px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="mui-bar mui-bar-nav returnbar">
+        <span class="mui-icon mui-icon-back" style="position:absolute" onclick="history.go(-1)"></span>
+        <h1 class="mui-title">
+            <img src="images/logo2.png" alt="" height="40">
+        </h1>
+    </header>
+    <div class="film-cellu">
+        <div class="filmCellu">
+            <img id="filmbg" src="http://image11.m1905.cn/uploadfile/2019/0312/thumb_0_750_422_20190312085709624805.jpg" alt="">
+            <a href="" class="goplay">
+                <img src="http://css.static.m1905.cn/images/phone/filmVideo3.png" alt="">
+            </a>
+        </div>
+        <div class="filmCellu_Infos">
+            <div class="infosInner_2">
+                <div class="infosInnerTop">
+                    <div class="filmPic">
+                        <img id="poster" src="https://image11.m1905.cn/mdb/uploadfile/2019/0121/thumb_1_220_293_20190121013231240459.jpg" alt="">
+                    </div>
+                    <div class="infowords">
+                        <div class="marg-three">
+                            <h3>
+                                <em class="filmtitle elp" style="max-width: 80%"></em>
+                                <span id="score" style="color:#dd3068"></span>
+                            </h3>
+                            <h4 id="original_title"></h4>
+                        </div>
+                        <ul class="taglist">
+                            <li>
+                                <span></span>
+                                <span></span>
+                            </li>
+                            <li>
+                                <span></span>
+                            </li>
+                            <li>
+                                <span>124分钟</span>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                </div>
+                <div class="infosInnerBot">
+                    简介：<span id="summary"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="filmmaker">
+        <h3>影人</h3>
+        <div class="starlist">
+        </div>
+        
+    </div>
+    <div class="shares">
+        <a href="javascript:;" id="pc" class="weui-btn weui-btn_primary">源地址(PC端)</a>
+        <a href="javascript:;" id="mobile" class="weui-btn weui-btn_primary">源地址(移动端)</a>
+    </div>
+    <div class="weui-footer">
+        <p class="weui-footer__links">
+            <a href="javascript:void(0);" class="weui-footer__link">迪爷版权</a>
+        </p>
+        <p class="weui-footer__text">Copyright © 2008-2019 Jacky Cheung</p>
+    </div>
+    <div class="cmt_drop">
+        <span class="loadings">
+            <em>加载中...</em>
+            <i class="mui-icon mui-icon-spinner mui-spin"></i>
+        </span>
+    </div>
+</body>
+</html>
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/jquery-weui.js"></script>
+<script src="js/mui.js"></script>
+<script>
+    (function(){
+        const url = 'http://www.localhost';
+        var id = location.search.split('=')[1];
+        
+        getFilmInfo();
+        //获取电影详情
+        function getFilmInfo(){
+            $.post(`${url}/particulars`,{id}).then(dt=>{
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                console.log(dt);
+                $('#poster').attr('src',dt.images.large);
+                $('.filmtitle').text(dt.title);
+                $('#score').text(Number(dt.rating.average).toFixed(1));
+                var countries = '',genres = '',maker = [];
+                dt.countries.map(obj=>{
+                    countries += obj + ' ';
+                })
+                dt.genres.map(obj=>{
+                    genres += obj + ' / '
+                })
+                dt.directors.map(obj=>{
+                    obj.isDrc = '1'
+                    maker.push(obj)
+                })
+                dt.casts.map(obj=>{
+                    maker.push(obj)
+                })
+                $('.taglist li').eq(0).find('span').eq(0).text(dt.year);
+                $('.taglist li').eq(0).find('span').eq(1).text(countries);
+                $('.taglist li').eq(1).find('span').text(genres);
+                $('#summary').text(dt.summary);
+                $('#original_title').text(dt.original_title);
+                maker.map(obj=>{
+                    var a = $('<a />').attr('href',obj.alt).addClass('filmImgList');
+                    var str = `<div class="filmImgPos">
+                                    <img src="${obj.avatars.medium}" alt="${obj.name}">
+                                </div>
+                                <span class="elp">${obj.name}</span>`
+                    a.append(str);
+                    if(obj.isDrc){
+                        a.find('.filmImgPos').append(`<i class="director">导演</i>`)
+                    }
+                    $('.starlist').append(a);
+                })
+                $('#pc').attr('href',dt.alt);
+                $('#mobile,.goplay').attr('href',dt.mobile_url);
+            })
+        }
+    })()
+</script>

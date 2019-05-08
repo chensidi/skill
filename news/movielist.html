@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>手机电影网</title>
+    <link href="http://www.jq22.com/jquery/bootstrap-3.3.4.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/mui.css">
+    <link rel="stylesheet" href="css/weui.css">
+    <link rel="stylesheet" href="css/jquery-weui.css">
+    <link rel="stylesheet" href="css/public.css">
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="lib/all/css/play.css">
+</head>
+<body>
+    <header class="mui-bar mui-bar-nav returnbar">
+        <span class="mui-icon mui-icon-back" onclick="history.go(-1)"></span>
+        <h1 class="mui-title">
+            <img src="images/logo2.png" alt="" height="40">
+        </h1>
+    </header>
+    <form class="form-inline" id="pickers">
+        <p>选择热映城市</p>
+        <div data-toggle="distpicker">
+            <div class="form-group">
+                <label class="sr-only" for="province7">Province</label>
+                <select class="form-control" id="province7"><option value="" data-code="">—— 省 ——</option><option value="北京市" data-code="110000" selected="">北京市</option><option value="天津市" data-code="120000">天津市</option><option value="河北省" data-code="130000">河北省</option><option value="山西省" data-code="140000">山西省</option><option value="内蒙古自治区" data-code="150000">内蒙古自治区</option><option value="辽宁省" data-code="210000">辽宁省</option><option value="吉林省" data-code="220000">吉林省</option><option value="黑龙江省" data-code="230000">黑龙江省</option><option value="上海市" data-code="310000">上海市</option><option value="江苏省" data-code="320000">江苏省</option><option value="浙江省" data-code="330000">浙江省</option><option value="安徽省" data-code="340000">安徽省</option><option value="福建省" data-code="350000">福建省</option><option value="江西省" data-code="360000">江西省</option><option value="山东省" data-code="370000">山东省</option><option value="河南省" data-code="410000">河南省</option><option value="湖北省" data-code="420000">湖北省</option><option value="湖南省" data-code="430000">湖南省</option><option value="广东省" data-code="440000">广东省</option><option value="广西壮族自治区" data-code="450000">广西壮族自治区</option><option value="海南省" data-code="460000">海南省</option><option value="重庆市" data-code="500000">重庆市</option><option value="四川省" data-code="510000">四川省</option><option value="贵州省" data-code="520000">贵州省</option><option value="云南省" data-code="530000">云南省</option><option value="西藏自治区" data-code="540000">西藏自治区</option><option value="陕西省" data-code="610000">陕西省</option><option value="甘肃省" data-code="620000">甘肃省</option><option value="青海省" data-code="630000">青海省</option><option value="宁夏回族自治区" data-code="640000">宁夏回族自治区</option><option value="新疆维吾尔自治区" data-code="650000">新疆维吾尔自治区</option><option value="台湾省" data-code="710000">台湾省</option><option value="香港特别行政区" data-code="810000">香港特别行政区</option><option value="澳门特别行政区" data-code="820000">澳门特别行政区</option></select>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="city7">City</label>
+            <select class="form-control" id="city7"><option value="北京市市辖区" data-code="110100" selected="">北京市市辖区</option></select>
+            </div>
+        </div>
+    </form>
+    <div id="mlist" class="mui-content mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <ul class="mui-table-view mui-table-view-chevron">
+            </ul>
+            <div class="cmt_drop">
+                <span class="loadings">
+                    <em>加载中...</em>
+                    <i class="mui-icon mui-icon-spinner mui-spin"></i>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/jquery-weui.js"></script>
+<script src="js/mui.js"></script>
+<script src="http://www.jq22.com/jquery/bootstrap-3.3.4.js"></script>
+<script src="js/distpicker.data.js"></script>
+<script src="js/distpicker.js"></script>
+<script src="js/main.js"></script>
+<script>
+    (function(){
+        const url = 'http://www.localhost';
+        var type = location.search.split('=')[1];
+        var start = 0,count = 10,city = '北京';
+        switch(type){
+            case 'hot':
+                type = 'hotplay';
+                break;
+            case 'coming':
+                type = 'coming';
+                break;
+            default:
+                type = 'top250';
+        }
+
+        dataByType();
+        muiInit();
+        changeCity();
+        //根据type值拿对应数据
+        function dataByType(){
+            $.post(`${url}/${type}`,{city:encodeURIComponent(city),start:start,count:count}).then(dt=>{
+                console.log(dt);
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                mui('#mlist').pullRefresh().endPullupToRefresh();
+                dt.subjects.map(obj=>{
+                    var li = $('<li />');
+                    var tag = '',directors = '',casts = '';
+                    obj.genres.map(em=>{
+                        tag += `${em} `;
+                    })
+                    obj.directors.map(em=>{
+                        directors += `${em.name} `;
+                    })
+                    obj.casts.map(em=>{
+                        casts += `${em.name} `;
+                    })
+                    var mstr = `<a href="movieinfo.html?id=${obj.id}">
+                                <div class="imggroup">
+                                    <img src="${obj.images.medium}" alt="${obj.title}">
+                                    <i class="vip"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="c-title">
+                                        <div class="mnames elp">${obj.title}</div>
+                                        <div class="mscore">${obj.rating.average}</div>
+                                    </div>
+                                    <div>
+                                        <p class="elp">${obj.year} ${tag}</p>
+                                        <p class="elp">导演： ${directors}</p>
+                                        <p class="elp">主演： ${casts}</p>
+                                    </div>
+                                    <div class="source">
+                                        <span>播放源: </span>
+                                        <img src="images/logo2.png" alt="" height="12">
+                                    </div>
+                                    <button type="button" class="mui-btn mui-btn-success nowplay">立即播放</button>
+                                </div>
+                            </a>`
+
+                    li.append(mstr);
+                    $('#mlist ul').append(li);
+                })
+                
+            })
+        }
+
+
+        //mui初始化
+        function muiInit(){
+            mui.init({
+                pullRefresh : {
+                    container:'#mlist',
+                    up : {
+                        height:50,
+                        auto:false,
+                        contentrefresh : "正在加载...",
+                        contentnomore:'没有更多数据了',
+                        callback :function(){
+                            start += 20;
+                            dataByType();
+                        } 
+                    }
+                }
+            });
+            mui('#mlist').off('tap','a');
+                mui('#mlist').on('tap','a',function(){
+                    window.top.location.href = this.href;
+            });
+        }
+
+        //选择城市
+        function changeCity(){
+            $('#city7').change(function(){
+                if($(this).val()){
+                    $('.cmt_drop').show();
+                    city = $(this).val().match(/(.+?)(?=市)/)[0];
+                    start = 0;
+                    $('#mlist ul').empty();
+                    dataByType();
+                }
+            })
+            $('#province7').change(function(){
+                if($(this).val()){
+                    $('.cmt_drop').show();
+                    city = $('#city7').val().match(/(.+?)(?=市)/)[0];
+                    start = 0;
+                    $('#mlist ul').empty();
+                    dataByType();
+                }
+            })
+        }
+    })()
+</script>

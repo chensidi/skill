@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>手机人民网</title>
+    <link rel="stylesheet" href="css/mui.css">
+    <link rel="stylesheet" href="css/weui.css">
+    <link rel="stylesheet" href="css/jquery-weui.css">
+    <link rel="stylesheet" href="css/public.css">
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="lib/all/css/play.css">
+</head>
+<body>
+    <header class="head">
+        <a href="index.html" class="logo"></a>
+    </header>
+    <nav class="nav_list">
+        <ul class="clearfix">
+            <li>
+                <a href="section.html?id=0">新闻</a>
+            </li>
+            <li>
+                <a href="section.html?id=1">深夜</a>
+            </li>
+            <li>
+                <a href="section.html?id=2">瞎扯</a>
+            </li>
+            <li>
+                <a href="section.html?id=19">广告</a>
+            </li>
+            <li>
+                <a href="section.html?id=28">放映</a>
+            </li>
+            <li>
+                <a href="section.html?id=29"">大误</a>
+            </li>
+            <li>
+                <a href="section.html?id=33">职人</a>
+            </li>
+            <li>
+                <a href="section.html?id=34">日报</a>
+            </li>
+            <li>
+                <a href="section.html?id=35">小事</a>
+            </li>
+            <li>
+                <a href="section.html?id=36">专业</a>
+            </li>
+            <li>
+                <a href="section.html?id=37">大学</a>
+            </li>
+            <li>
+                <a href="section.html?id=38">问题</a>
+            </li>
+            <li>
+                <a href="section.html?id=41">苹果</a>
+            </li>
+            <li class="zhankai">
+                <a href="javascript:void(0)" id="zhankai"><span class="mui-icon mui-icon-plusempty"></span></a>
+            </li>
+            <li>
+                <a href="section.html?id=43">中国</a>
+            </li>
+        </ul>
+        <ul class="clearfix more">
+            <li>
+                <a href="section.html?id=46">生活</a>
+            </li>
+            <li>
+                <a href="section.html?id=48">经济</a>
+            </li>
+            <li>
+                <a href="section.html?id=50">职业</a>
+            </li>
+            <li>
+                <a href="section.html?id=52">运动</a>
+            </li>
+            <li>
+                <a href="section.html?id=54">健康</a>
+            </li>
+            <li>
+                <a href="section.html?id=55">盘点</a>
+            </li>
+            <li>
+                <a href="section.html?id=57">NBA</a>
+            </li>
+            <li>
+                <a href="section.html?id=58">美剧</a>
+            </li>
+            <li>
+                <a href="section.html?id=60">睡觉</a>
+            </li>
+            <li>
+                <a href="section.html?id=62">驾驶</a>
+            </li>
+            <li>
+                <a href="section.html?id=63">护肤</a>
+            </li>
+            <li>
+                <a href="section.html?id=65">川菜</a>
+            </li>
+            <li>
+                <a href="movie.html">电影</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)" id="shouqi"><span class="mui-icon mui-icon-arrowup"></span></a>
+            </li>
+        </ul>
+    </nav>
+    <div class="mui-content">
+            <div id="slider" class="mui-slider">
+                <div class="mui-slider-group mui-slider-loop">
+                    <!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+                    <div class="mui-slider-item mui-slider-item-duplicate">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <div class="mui-slider-item">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <div class="mui-slider-item">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <div class="mui-slider-item">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <div class="mui-slider-item">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                    <!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+                    <div class="mui-slider-item mui-slider-item-duplicate">
+                        <a href="#">
+                            <img src="">
+                            <p class="mui-slider-title"></p>
+                        </a>
+                    </div>
+                </div>
+                <div class="mui-slider-indicator mui-text-right">
+                    <div class="mui-indicator mui-active"></div>
+                    <div class="mui-indicator"></div>
+                    <div class="mui-indicator"></div>
+                    <div class="mui-indicator"></div>
+                </div>
+            </div>
+    </div>
+    <div class="rolls">
+        <div class="roll-news">
+            <span>滚动</span>
+            <div class="roll-news-list" id="scrollDiv">
+                <ul>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="leader">
+        <a href="">
+            <img src="http://m.people.cn/NMediaFile/2019/0301/WIRELESS201903011703446846136657638.png" alt="">
+        </a>
+    </div>
+    <div class="weui-panel weui-panel_access" id="today">
+        <div class="weui-panel__hd">今日新闻</div>
+        <div class="weui-panel__ft">
+            <a href="section.html?id=0" class="weui-cell weui-cell_access weui-cell_link">
+                <div class="weui-cell__bd">查看更多</div>
+                <span class="weui-cell__ft"></span>
+            </a>    
+        </div>
+    </div>
+    <div class="weui-panel weui-panel_access" id="hot">
+        <div class="weui-panel__hd">今日热点</div>
+    </div>
+    <div class="weui-footer">
+        <p class="weui-footer__links">
+            <a href="javascript:void(0);" class="weui-footer__link">迪爷版权</a>
+        </p>
+        <p class="weui-footer__text">Copyright © 2008-2019 Jacky Cheung</p>
+    </div>
+    <div class="cmt_drop">
+        <span class="loadings">
+            <em>加载中...</em>
+            <i class="mui-icon mui-icon-spinner mui-spin"></i>
+        </span>
+    </div>
+</body>
+</html>
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/jquery-weui.js"></script>
+<script src="js/mui.js"></script>
+<script>
+    (function(){
+
+        const url = 'http://www.localhost';
+
+        slideToggle();
+        swiperInit();
+        swiperData();
+        scrollMsg();
+        toDayMsg();
+
+        //收起展开
+        function slideToggle(){
+            $('#zhankai').on('click',function(){
+                $('.more').show();
+                $(this).parent().hide();
+                $('#shouqi').show();
+                $('.zhankai+li').show();
+            })
+            $('#shouqi').on('click',function(){
+                $('.more').hide();
+                $(this).hide();
+                $('#zhankai').parent().show();
+                $('.zhankai+li').hide();
+            })
+        }
+
+        //轮播
+        function swiperInit(){
+            var slider = mui("#slider");
+            slider.slider({
+                interval: 5000
+            });
+            var w = $(window).width();
+            $('#slider img').height(w*.6);
+
+        }
+
+        //滚动新闻提示
+        function rollNews(){
+            var count = 1;
+            function scroll(){
+                var rollTime = setTimeout(function(){
+                    count ++;
+                    if(count > 4){
+                        count = 0;
+                        $('#scrollDiv').css('top',0);
+                    }else{
+                        $('#scrollDiv').animate({'top':-count*3+'rem'});
+                    }
+                    scroll();
+                },2000)
+            }
+
+            scroll();
+        }
+
+        //首页轮播数据
+        function swiperData(){
+            $.get(`${url}/hot`).then((dt)=>{
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                var swiperArr = dt.recent;
+                for(let i = 0; i < 4; i ++){
+                    if(i == 0){
+                        $('#slider img').last().attr('src',swiperArr[i]['thumbnail']);
+                        $('#slider p').last().text(swiperArr[i]['title'])
+                        $('#slider a').last().attr('href','newsdetails.html?id='+swiperArr[i].news_id);
+                    }
+                    if(i == 3){
+                        $('#slider img').first().attr('src',swiperArr[i]['thumbnail'])
+                        $('#slider p').first().text(swiperArr[i]['title'])
+                        $('#slider a').first().attr('href','newsdetails.html?id='+swiperArr[i].news_id);
+                    }
+                    $('#slider img').eq(i+1).attr('src',swiperArr[i]['thumbnail'])
+                    $('#slider p').eq(i+1).text(swiperArr[i]['title'])
+                    $('#slider a').eq(i+1).attr('href','newsdetails.html?id='+swiperArr[i].news_id);                    
+                }
+                var hotStr = '';
+                for(let i = 5; i < swiperArr.length; i ++){
+                    hotStr += `<div class="weui-panel__bd">
+                                    <a href="newsdetails.html?id=${swiperArr[i].news_id}" class="weui-media-box weui-media-box_appmsg">
+                                        <div class="weui-media-box__hd">
+                                            <img class="weui-media-box__thumb thumb_img" src="${swiperArr[i].thumbnail}">
+                                        </div>
+                                        <div class="weui-media-box__bd">
+                                            <h4 class="weui-media-box__title"><em class="label-light-red">热点</em></h4>
+                                            <p class="weui-media-box__desc">${swiperArr[i].title}</p>
+                                        </div>
+                                    </a>
+                                </div>`
+                }
+                $('#hot .weui-panel__hd').after(hotStr);
+            })
+        }
+
+        //滚动消息数据
+        function scrollMsg(){
+            $.get(`${url}/latest`).then((dt)=>{
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                dt.top_stories.map((obj,i)=>{
+                    var li = `<li><a href="newsdetails.html?id=${obj.id}" class="elp">${obj.title}</a></li>`;
+                    $('#scrollDiv ul').append(li);
+                    if(i==dt.top_stories.length-1){
+                        $('#scrollDiv ul').prepend(li);
+                    }
+                })
+                rollNews();
+            })
+        }
+
+        //今日消息
+        function toDayMsg(){
+            var day = new Date();
+            day = day.getFullYear() + 
+                  (day.getMonth()<9?('0'+(day.getMonth()+1)):day.getMonth()+1) +
+                  (day.getDate()<10?('0'+day.getDate()):day.getDate());
+            $.get(`${url}/byday?day=${day}`).then(dt=>{
+                setTimeout(()=>{
+                    $('.cmt_drop').hide();
+                },500)
+                var todayStr = '';
+                dt.stories.map((obj,i)=>{
+                    todayStr += `<div class="weui-panel__bd">
+                                    <a href="newsdetails.html?id=${obj.id}" class="weui-media-box weui-media-box_appmsg">
+                                        <div class="weui-media-box__hd">
+                                            <img class="weui-media-box__thumb thumb_img" src="${obj.images[0]}">
+                                        </div>
+                                        <div class="weui-media-box__bd">
+                                            <h4 class="weui-media-box__title"><em class="label-light-blue">要闻</em></h4>
+                                            <p class="weui-media-box__desc">${obj.title}</p>
+                                        </div>
+                                    </a>
+                                </div>`
+                })
+                $('#today .weui-panel__hd').after(todayStr);
+            })
+        }
+    })()
+</script>
