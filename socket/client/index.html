@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script type="text/javascript" src="https://static1.dongqiudi.com/web-new/static/api/js/article.all.min.js?20161115"></script>
+    <!-- <link rel="stylesheet" href="layui/css/layui.css"> -->
+</head>
+<body>
+    <button onclick="getJSON('home')">home json</button><br>
+    <button onclick="getJSON('homehead')">home head json</button><br>
+    <button onclick="postJSON(`https:\/\/api.dongqiudi.com/article/968692.html?from=tab_1`)">one article</button><br>
+    <button onclick="getMatch('yc')">get match</button><br>
+    <button onclick="getHighLight(50953211)">getHighLight</button><br>
+    <button onclick="getAnalysis(50953211)">getAnalysis</button><br>
+    <button onclick="getLineup(50953211)">getLineup</button><br>
+    <button onclick="getRanking('yc')">getRanking</button><br>
+    <button onclick="getPersonRanking('yc')">getPersonRanking</button><br>
+    <button onclick="getDataRanking('https:\/\/sport-data.dongqiudi.com/soccer/biz/data/team_ranking?app=dqd&version=0&platform=&type=goals&season_id=10267')">getDataRanking</button><br>
+    <button onclick="getTeamRanking('yc')">getTeamRanking</button><br>
+    <button onclick="getSchedule('yc')">getSchedule</button>
+    <button onclick="getCmt(968862,100)">getCmt</button>
+</body>
+</html>
+<script src="js/jquery.min.js"></script>
+<script src="layui/layui.js"></script>
+<script>
+    
+    const api = 'http://localhost';
+    /*
+    $.get('http://localhost/new',function(dt){
+        // console.log(dt);
+        // $('document').append(dt.html);
+        dt.css.map((href)=>{
+            $('<link rel="stylesheet">').prop('href',href).appendTo($('head'))
+        })
+        
+        // dt.js.map((js)=>{
+        //     if(js.src!=null){
+        //         $('<script />').prop('src',js.src).appendTo($('head'));
+        //     }
+        // })
+
+        $('body').append(dt.body);
+        // dt.js.map((js)=>{
+        //     if(js.jsr!=null){
+        //         $('<script type="text/x-jsrender" />').html(js.jsr).appendTo($('body'));
+        //         eval(js.jsr);
+        //     }else if(js.jst!=null){
+        //         $('<script type="text/javascript" />').html(js.jst).appendTo($('body'));
+        //         eval(js.jst)
+        //     }
+        // })
+     
+        // $('body').find('img').each(function(){
+        //     var src = $(this).attr('data-src');
+        //     console.log(src)
+        // })
+    })
+    */
+
+
+    function getJSON(path){
+        $.get(`${api}/${path}`).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function postJSON(url){
+        $.post(`${api}/article`,{url}).then(dt=>{
+            if(dt.code==200){
+                console.log(dt);
+            }
+        })
+    }
+
+    function getMatch(type='important'){
+        $.post(`${api}/match`,{type}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function getHighLight(match_id){
+        $.post(`${api}/highlight`,{match_id}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function getAnalysis(match_id){
+        $.post(`${api}/analysis`,{match_id}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function getLineup(match_id){
+        $.post(`${api}/lineup`,{match_id}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function getRanking(league_id){
+        $.post(`${api}/ranking`,{league_id}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function getPersonRanking(league_id){
+        $.post(`${api}/person_ranking`,{league_id}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function getDataRanking(url){
+        $.post(`${api}/data_ranking`,{url}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function getTeamRanking(league_id){
+        $.post(`${api}/team_ranking`,{league_id}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function getSchedule(league_id){
+        $.post(`${api}/schedule`,{league_id}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+
+    function getCmt(id,size){
+        $.post(`${api}/cmt`,{id,size}).then(dt=>{
+            if(dt.code==200){
+                let res = JSON.parse(dt.result);
+                console.log(res);
+            }
+        })
+    }
+</script>
