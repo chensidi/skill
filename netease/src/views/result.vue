@@ -22,7 +22,7 @@
                             :error.sync="netError"
                         >
                             
-                            <div class="res_cell" v-for="(obj,i) of danquList.list" v-if="item.id=='1'" @click="play(obj.id)" :key="'s'+i">
+                            <div v-waves class="res_cell" v-for="(obj,i) of danquList.list" v-if="item.id=='1'" @click="play(obj.id)" :key="'s'+i">
                                 <p class="elp s_name">{{obj.name}}</p>
                                 <p class="elp s_owner">{{obj.artists[0].name}}</p>
                             </div>
@@ -32,7 +32,7 @@
                                     <img v-lazy="obj.picUrl" alt="">
                                 </div>
                                 <div class="album_info elp">
-                                    <p class="album_name elp">{{obj.name}}<span class="alias">({{obj.alias[0]?obj.alias[0]:''}})</span></p>
+                                    <p class="album_name elp">{{obj.name}}<span class="alias">{{obj.alias[0]?`(${obj.alias[0]})`:''}}</span></p>
                                     <p class="elp">
                                         <em class="album_owner">{{obj.artist.name}}</em>
                                         <time class="album_time">{{computedTime(obj.publishTime)}}</time>
@@ -147,42 +147,46 @@ export default {
         }
     },
     created(){
-        this.svalue = this.$route.query.kw;
+        this.svalue = this.getKw;
         // this.loadDanqu();
         this.on = this.getOn;
         this.type = this.getOn;
     },
     methods:{
+        ...mapActions(['setKw']),
         onSearch(){
             this.finished = false;
-            switch(this.type){
-                case '1': 
-                    this.danquList.list = [];
-                    this.loadDanqu();
-                    break;
-                case '10':
-                    this.zhuanjiList.list = [];
-                    this.loadZhuanji();
-                    break;
-                case '100':
-                    this.geshouList.list = [];
-                    this.loadGeshou();
-                    break;
-                case '1000':
-                    this.gedanList.list = [];
-                    this.loadGedan();
-                    break;
-                case '1004':
-                    this.mvList.list = [];
-                    this.loadMv();
-                    break;
-                case '1014':
-                    this.videoList.list = [];
-                    this.loadVideo();
-                    break;
-                case '1009':
-                    this.diantaiList.list = [];
-                    this.loadDiantai();
+            if(this.svalue!=null && this.svalue != ''){
+                this.setKw(this.svalue);
+                switch(this.type){
+                    case '1': 
+                        this.danquList.list = [];
+                        this.loadDanqu();
+                        break;
+                    case '10':
+                        this.zhuanjiList.list = [];
+                        this.loadZhuanji();
+                        break;
+                    case '100':
+                        this.geshouList.list = [];
+                        this.loadGeshou();
+                        break;
+                    case '1000':
+                        this.gedanList.list = [];
+                        this.loadGedan();
+                        break;
+                    case '1004':
+                        this.mvList.list = [];
+                        this.loadMv();
+                        break;
+                    case '1014':
+                        this.videoList.list = [];
+                        this.loadVideo();
+                        break;
+                    case '1009':
+                        this.diantaiList.list = [];
+                        this.loadDiantai();
+                }
             }
         },
         change(name,title){
@@ -461,7 +465,7 @@ export default {
                 url: `${this.getMyApi}/search?keywords=${this.svalue}&type=${this.type}&limit=${this.diantaiList.limit}&offset=${this.diantaiList.list.length}`,
                 timeout: 15000
             }).then(res=>{
-                console.log(res);
+                // console.log(res);
                 if(res.data.code == 200){
                     if(!res.data.result.djRadios || res.data.result.djRadios.length==0){
                         this.finished = true;
@@ -489,7 +493,7 @@ export default {
         ...mapActions(['setOn'])
     },
     computed: {
-        ...mapGetters(['getMyApi','getOn']),
+        ...mapGetters(['getMyApi','getOn','getKw']),
     },
     // beforeRouteEnter (to, from, next) {
     //     console.log(from,to);
@@ -542,10 +546,13 @@ export default {
         width: 100%;
         height: 15rem;
     }
-    .album_pic{
+    .album_pic,.singer_pic{
         width: 40px;
         height: 40px;
         margin-right: 10px;
+        background: url(../../static/img/user.png) no-repeat;
+        background-size: contain;
+        background-position: center;
     }
     .album_pic img{
         border-radius: 5px;
@@ -569,11 +576,11 @@ export default {
         color: #999;
         font-size: 12px;
     }
-    .singer_pic{
+    /* .singer_pic{
         width: 40px;
         height: 40px;
         margin-right: 10px;
-    }
+    } */
     .singer_pic>img{
         width: 100%;
         height: 100%;
@@ -594,6 +601,9 @@ export default {
         width: 100px !important;
         height: 60px !important;
         margin-right: 10px;
+        background: url(../../static/img/blank.png) no-repeat;
+        background-size: contain;
+        background-position: center;
     }
     .vedio_cover>img{
         position: absolute;

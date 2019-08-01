@@ -50,6 +50,9 @@
                     <span class="play_gap">-</span>
                     <span class="play_auth">{{defaultArt}}</span>
                 </h2>
+                <p class="text-center" style="margin-top:20px">
+                    <van-button type="info" size="small" round @click="downloadMp3(defaultSrc,defaultSong)">下载</van-button>
+                </p>
             </div>
             <div class="timebar flex">
                 <time class="stime">{{computedDuration(this.audio.currentTime)}}</time>
@@ -162,7 +165,7 @@
             v-model="showSongList"
             title="记录"
         >
-        <div class="memory_item flex" v-for="memoryItem of memory" @click="onSelect(memoryItem)">
+        <div class="memory_item flex" v-for="memoryItem of memory" @click="onSelect(memoryItem)" v-waves>
             <p class="elp">{{memoryItem.name + '-' + memoryItem.art}}</p>
             <van-icon name="close" @click="delSong($event,memoryItem)"></van-icon>
         </div>
@@ -198,7 +201,7 @@ export default {
             ended: false,
             defaultArt: 'Jacky Cheung',
             defaultSong: '不后悔',
-            defaultSrc: '../../static/audio/bhh.mp3',
+            defaultSrc: 'static/audio/bhh.mp3',
             defaultPic: 'http://y.gtimg.cn/music/photo_new/T002R300x300M000000W50Ni1rt0ep.jpg?max_age=2592000',
             bg: bg,
             playIcon: 'stop-circle-o',
@@ -253,18 +256,21 @@ export default {
             this.curTime = Math.floor(this.audio.currentTime);
             this.progress = this.curTime/this.duration*100;
             if(this.audio.ended){
+                console.log('end')
                 clearInterval(this.time);
                 let targetId;
                 for(let i = 0; i < this.memory.length; i ++){
                     if(this.memory[i].id == this.defaultId){
                         if(i == this.memory.length - 1){
                             targetId = this.memory[0].id;
+                            this.defaultSong = this.memory[0].name;
+                            this.defaultArt = this.memory[0].art;
                         }else{
                             targetId = this.memory[i+1].id;
+                            this.defaultSong = this.memory[i+1].name;
+                            this.defaultArt = this.memory[i+1].art;
                         }
                         this.defaultId = targetId;
-                        this.defaultSong = this.memory[0].name;
-                        this.defaultArt = this.memory[0].art;
                         break;
                     }
                 }
@@ -393,7 +399,7 @@ export default {
             if(this.memory.length>0){
                 for(let i = 0; i < this.memory.length; i ++){
                     if(this.memory[i].id == this.defaultId){
-                        if(flag='-'){
+                        if(flag=='-'){
                             if(i==0){
                                 tagId = this.memory[this.memory.length-1].id;
                                 this.defaultSong = this.memory[this.memory.length-1].name;
@@ -422,7 +428,7 @@ export default {
                 }
                 if(!sameFlag){
                     if(this.defaultId != 188967){
-                        if(flag='-'){
+                        if(flag=='-'){
                             tagId = this.autoLast.id;
                             this.defaultSong = this.autoLast.name;
                             this.defaultArt = this.autoLast.art;
@@ -433,7 +439,7 @@ export default {
                         }
                         this.defaultId = tagId;
                     }else{
-                        if(flag='-'){
+                        if(flag=='-'){
                             tagId = this.memory[this.memory.length-1].id;
                             this.defaultSong = this.memory[this.memory.length-1].name;
                             this.defaultArt = this.memory[this.memory.length-1].art;
@@ -528,19 +534,26 @@ export default {
                             tempLyc = [];
                         lyricArr.map(item=>{
                             // console.log(item)
-                            
-                            let oneContent = item.match(/(?<=\])[^\[]+/g),
-                                timeArr = item.match(/(?<=\[).+?(?=\])/g);
+                            // console.log(item.match(/[^\[\]]+/g));
+
+                            // let oneContent = item.match(/(?<=\])[^\[]+/g),
+                            //     timeArr = item.match(/(?<=\[).+?(?=\])/g);
+
+                            let matchRes = item.match(/[^\[\]]+/g);
+                            if(matchRes&&matchRes.length > 1){
+                                let oneContent = matchRes[matchRes.length - 1],
+                                timeArr = matchRes.slice(0,matchRes.length - 1);
                                 // console.log(timeArr,oneContent)
                                 if(timeArr&&oneContent){
                                     timeArr.map(items=>{
                                         let timePoint = items.split(':');
                                         tempLyc.push({
                                             timePoint:  parseInt(timePoint[0])*60 + parseInt(timePoint[1]),
-                                            content: oneContent?oneContent[0]:''
+                                            content: oneContent?oneContent:''
                                         })
                                     })
                                 }
+                            }
                             
                         })
                         this.lyric = tempLyc;
@@ -550,9 +563,26 @@ export default {
                     this.lyricNetErr = true;
                 }
             }).catch(err=>{
+                console.log(err)
                 Toast.fail('歌词加载失败');
                 this.lyricNetErr = true;
             })
+        },
+        downloadMp3(filePath,name){ //js保存mp3
+            fetch(filePath).then(res => res.blob()).then(blob => {
+                const a = document.createElement('a');
+                document.body.appendChild(a)
+                a.style.display = 'none'
+                // 使用获取到的blob对象创建的url
+                const url = window.URL.createObjectURL(blob);
+                a.href = url;
+                // 指定下载的文件名
+                a.download = name || '语音音频.mp3';
+                a.click();
+                document.body.removeChild(a)
+                // 移除blob对象的url
+                window.URL.revokeObjectURL(url);
+            });
         }
     },
     computed: {

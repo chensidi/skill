@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="pylst_list">
-            <div class="list_item" v-for="(item,index) of list" :key="item.id" @click="play(item.id)">
+            <div class="list_item" v-waves v-for="(item,index) of list" :key="item.id" @click="play(item.id)">
                 <div class="sgfl">{{index+1}}</div>
                 <div class="sgfr f-bd f-bd-btm">
                     <div class="sgchfl">
@@ -68,7 +68,7 @@ export default {
         return{
             pid: null,
             pyList: {
-                coverImgUrl: '',
+                coverImgUrl: '../../static/img/blank.png',
                 name: '',
                 creator: {},
                 description: '',

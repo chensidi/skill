@@ -23,7 +23,8 @@ const state = {
 	cmt: null,
 	sid: '',
 	switched: false,
-	first: true
+	first: true,
+	kw: '不后悔'
 }
 
 export default state;

@@ -284,8 +284,13 @@
     display: flex;
 }
 .cmt_head{
-    height: 35px;
+    height: 30px;
+    width: 30px;
     margin: 0 10px;
+    background: url(../../static/img/user.png) no-repeat;
+    background-size: contain;
+    background-position: center;
+    border-radius: 50%;
 }
 .cmt_head img{
     display: block;

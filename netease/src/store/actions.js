@@ -109,3 +109,10 @@ export const setFirst = function({commit,state},n){
 		num:n
 	})
 }
+
+export const setKw= function({commit,state},n){
+	commit({
+		type:"setKw",
+		num:n
+	})
+}

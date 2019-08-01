@@ -18,10 +18,10 @@ import Vue from 'vue'
 import Head from '../components/head';
 import Hot from '../components/hot';
 import Masks from '../components/mask'
-import { Search } from 'vant';
+import { Search,Toast } from 'vant';
 import axios from 'axios';
-import {mapGetters} from 'vuex';
-Vue.use(Search);
+import {mapGetters,mapActions} from 'vuex';
+Vue.use(Search).use(Toast);
 
 export default {
     name: 'Home',
@@ -36,8 +36,14 @@ export default {
     created(){
     },
     methods: {
+        ...mapActions(['setKw']),
         onSearch(){
-            this.$router.push(`/search?kw=${this.svalue}`)
+            if(this.svalue==''||this.svalue==null){
+                Toast.fail('请输入内容')
+                return;
+            }
+            this.setKw(this.svalue);
+            this.$router.push(`/search`);
         },
         loadDataOver(){
             this.loadover = true;
@@ -47,7 +53,7 @@ export default {
         }
     },
     computed:{
-        ...mapGetters(['getMyApi'])
+        ...mapGetters(['getMyApi','getKw'])
     }
 }
 </script>

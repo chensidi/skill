@@ -7,7 +7,7 @@
                     <van-button type="default" @click="reload">重新加载</van-button>
                 </span>
             </div>
-            <router-link :to="{path:'/search',query:{kw:obj.searchWord}}" v-for="(obj,i) of list" :key="i" class="hotlist flex">
+            <div @click="toSer(obj)" v-for="(obj,i) of list" :key="i" class="hotlist flex">
                 <em :class="['s_number',i+1<4?'s_most':'']">{{i+1}}</em>
                 <div class="elp">
                     <div>
@@ -16,13 +16,13 @@
                     </div>
                     <p class="elp s_desc">{{obj.content}}</p>
                 </div>
-            </router-link>
+            </div>
         </section>
     </div>
 </template>
 <script>
 import axios from 'axios';
-import {mapGetters} from 'vuex';
+import {mapGetters,mapActions} from 'vuex';
 import { Toast } from 'vant';
 import Vue from 'vue';
 import { Button } from 'vant';
@@ -41,6 +41,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions(['setKw']),
         getHot(){
             this.$emit('beginLoad');
             axios({
@@ -65,6 +66,10 @@ export default {
         },
         reload(){
             this.getHot();
+        },
+        toSer(obj){
+            this.setKw(obj.searchWord);
+            this.$router.push('/search');
         }
     },
     computed:{

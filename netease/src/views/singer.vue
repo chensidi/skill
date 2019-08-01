@@ -1,14 +1,14 @@
 <template>
     <div class="singer_wrap">
         <div class="singer_head">
-            <img src="http://p3.music.126.net/Ear-Ycru9SHVKzEL39of9w==/3286440257877602.jpg" alt="">
-            <h3 class="artist">{{`${artist}(${artistAlias})`}}</h3>
+            <img :src="pic" alt="">
+            <h3 class="artist">{{`${artist} ${artistAlias}`}}</h3>
             <i class="back"><van-icon name="arrow-left" size="25" @click="$router.go(-1)"></van-icon></i>
         </div>
         <van-tabs v-model="active" animated swipeable sticky>
             <van-tab title="热门单曲">
                 <div class="pylst_list">
-                    <div class="list_item" v-for="(item,index) of sList" :key="item.id" @click="play(item.id)">
+                    <div class="list_item" v-waves v-for="(item,index) of sList" :key="item.id" @click="play(item.id)">
                         <div class="sgfl">{{index+1}}</div>
                         <div class="sgfr f-bd f-bd-btm">
                             <div class="sgchfl">
@@ -31,7 +31,7 @@
                         <img v-lazy="obj.picUrl" alt="">
                     </div>
                     <div class="album_info elp">
-                        <p class="album_name elp">{{obj.name}}<span class="alias">({{obj.alias[0]?obj.alias[0]:''}})</span></p>
+                        <p class="album_name elp">{{obj.name}}<span class="alias">{{obj.alias[0]?`(${obj.alias[0]})`:''}}</span></p>
                         <p class="elp">
                             <em class="album_owner">{{obj.artist.name}}</em>
                             <time class="album_time">{{computedTime(obj.publishTime)}}</time>
@@ -101,6 +101,7 @@ export default {
             introduction: [],
             artist: '',
             artistAlias: '',
+            pic: '../../static/img/blank.png',
 
             songNetErr: false,
             albumNetErr: false,
@@ -139,6 +140,7 @@ export default {
                     if(res.data.artist.alias[0]){
                         this.artistAlias = res.data.artist.alias[0];
                     }
+                    this.pic = res.data.artist.picUrl;
                 }else{
                     Toast.fail('网络请求错误');
                     this.songNetErr = true;
@@ -373,6 +375,9 @@ export default {
         width: 40px;
         height: 40px;
         margin-right: 10px;
+        background: url('../../static/img/user.png') no-repeat;
+        background-size: contain;
+        background-position: center;
     }
     .album_pic img{
         border-radius: 5px;
@@ -410,6 +415,9 @@ export default {
         width: 100px !important;
         height: 60px !important;
         margin-right: 10px;
+        background: url('../../static/img/blank.png') no-repeat;
+        background-size: contain;
+        background-position: center;
     }
     .vedio_cover>img{
         position: absolute;

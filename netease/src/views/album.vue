@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="pylst_list">
-            <div class="list_item" v-for="(item,index) of list" :key="item.id" @click="play(item.id)">
+            <div class="list_item" v-waves v-for="(item,index) of list" :key="item.id" @click="play(item.id)">
                 <div class="sgfl">{{index+1}}</div>
                 <div class="sgfr f-bd f-bd-btm">
                     <div class="sgchfl">
@@ -73,7 +73,8 @@ export default {
             album: {
                 name: '',
                 alias: [],
-                artist: {}
+                artist: {},
+                picUrl: '../../static/img/blank.png'
             },
             list: [],
             showAllInfo: false,
@@ -225,7 +226,7 @@ export default {
         -webkit-transform: scale(1.5);
         -ms-transform: scale(1.5);
         transform: scale(1.5);
-        background-image: url(http://p4.music.126.net/XeBV6fMffdsPfI8H-I_64A==/6649846326157603.jpg);
+        background-image: url(../../static/img/blank.png);
     }
     .album_head_bg,.album_head_bg::after{
         position: absolute;

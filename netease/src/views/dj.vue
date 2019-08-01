@@ -36,7 +36,7 @@
                     error-text="点击重新加载"
                 >
                     <div class="pylst_list">
-                        <div class="list_item" v-for="(item,index) of djList" :key="item.id" @click="play(item.mainSong.id)">
+                        <div class="list_item" v-waves v-for="(item,index) of djList" :key="item.id" @click="play(item.mainSong.id)">
                             <div class="sgfl">{{index+1}}</div>
                             <div class="sgfr f-bd f-bd-btm">
                                 <div class="sgchfl">
@@ -79,7 +79,8 @@ export default {
             djList: [],
             active: 1,
             djInfo: {
-                dj: {}
+                dj: {},
+                picUrl: '../../static/img/blank.png'
             },
             infoNetErr: false,
             loading: false,

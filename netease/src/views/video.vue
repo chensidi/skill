@@ -130,7 +130,7 @@ export default {
                     type: "",
                     src: "" //视频url地址
                 }],
-                poster: "", //你的封面地址
+                poster: "../../static/img/blank.png", //你的封面地址
                 // width: document.documentElement.clientWidth,
                 notSupportedMessage: '此视频暂无法播放，请下拉刷新再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
                 controlBar: {
@@ -178,10 +178,10 @@ export default {
                 timeout: 15000
             }).then(res=>{
                 // console.log(res);
-                this.loadover = true;
+                // this.loadover = true;
                 if(res.data.code == 200){
                     this.netErr = false;
-                    this.isLoading = false;
+                    // this.isLoading = false;
                     this.videoInfo = res.data.data;
                     this.playerOptions.poster = this.videoInfo.cover;
                     this.br = [];
@@ -219,7 +219,7 @@ export default {
                 url: `${this.getMyApi}/comment/${type}?id=${this.vid}&offset=${this.cmts.length}`,
                 timeout: 15000
             }).then(res=>{
-                console.log(res);
+                // console.log(res);
                 this.loadover = true;
                 if(res.data.code == 200){
                     this.error = false;
@@ -268,7 +268,7 @@ export default {
             let self = this;
             axios.all([this.loadVideoInfos(), this.loadVideoUrl()])
                  .then(axios.spread(function (info,url) {
-                     console.log(info,url);
+                    //  console.log(info,url);
                      if(info.data.code == 200 && url.data.code == 200){
                         self.videoInfo = info.data.data;
                         self.playerOptions.poster = self.videoInfo.coverUrl;
@@ -288,7 +288,7 @@ export default {
     
     components: {Masks},
     beforeRouteEnter (to, from, next) {
-        console.log(to);
+        // console.log(to);
         next();
     }
 }

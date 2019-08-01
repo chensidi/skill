@@ -62,3 +62,7 @@ export const setSwitched = function(state,obj){
 export const setFirst = function(state,obj){
     state.first = obj.num;
 }
+
+export const setKw = function(state,obj){
+    state.kw = obj.num;
+}

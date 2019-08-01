@@ -7,6 +7,7 @@ import Album from '@/views/Album'
 import Singer from '@/views/singer'
 import Dj from '@/views/dj'
 import Video from '@/views/video'
+import Start from '@/views/start'
 
 Vue.use(Router)
 
@@ -14,6 +15,14 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'Start',
+      component: Start,
+      meta: {
+        keep: true
+      }
+    },
+    {
+      path: '/home',
       name: 'Home',
       component: Home,
       meta: {

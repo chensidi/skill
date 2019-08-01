@@ -66,3 +66,7 @@ export const getSwitched = (state)=>{
 export const getFirst = (state)=>{
     return state.first;
 }
+
+export const getKw = (state)=>{
+    return state.kw;
+}
