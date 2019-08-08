@@ -8,6 +8,14 @@ import Singer from '@/views/singer'
 import Dj from '@/views/dj'
 import Video from '@/views/video'
 import Start from '@/views/start'
+import Main from '@/views/main'
+import MainPy from '@/views/pylistmain'
+import MainDisk from '@/views/diskmain'
+import MainSong from '@/views/songmain'
+import TopList from '@/views/toplist'
+import MainDj from '@/views/djmain'
+import DjList from '@/views/djlist'
+
 
 Vue.use(Router)
 
@@ -81,6 +89,62 @@ export default new Router({
       path: '/videos/:id',
       name: 'Video',
       component: Video,
+      meta: {
+        keep: false
+      }
+    },
+    {
+      path: '/main',
+      name: 'Main',
+      component: Main,
+      meta: {
+        keep: true
+      }
+    },
+    {
+      path: '/main/mainpys',
+      name: 'mainpys',
+      component: MainPy,
+      meta: {
+        keep: true
+      }
+    },
+    {
+      path: '/main/maindisks',
+      name: 'maindisks',
+      component: MainDisk,
+      meta: {
+        keep: true
+      }
+    },
+    {
+      path: '/main/mainsongs',
+      name: 'mainsongs',
+      component: MainSong,
+      meta: {
+        keep: true
+      }
+    },
+    {
+      path: '/main/toplists',
+      name: 'toplists',
+      component: TopList,
+      meta: {
+        keep: true
+      }
+    },
+    {
+      path: '/main/djmain',
+      name: 'maindj',
+      component: MainDj,
+      meta: {
+        keep: true
+      }
+    },
+    {
+      path: '/main/djlist/:id',
+      name: 'DjList',
+      component: DjList,
       meta: {
         keep: false
       }

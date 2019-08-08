@@ -66,3 +66,7 @@ export const setFirst = function(state,obj){
 export const setKw = function(state,obj){
     state.kw = obj.num;
 }
+
+export const setPy = function(state,obj){
+    state.pytype = obj.num;
+}

@@ -1,6 +1,8 @@
 <template>
     <div>
-        <Head />
+        <Head :child="true">
+            <span slot="hname">迪爷搜索</span>
+        </Head>
         <div class="wrap">
             <van-search
                 v-model="svalue"

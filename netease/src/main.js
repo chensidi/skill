@@ -10,8 +10,14 @@ Vue.config.productionTip = false
 import 'vant/lib/index.css';
 import '../static/css/public.css';
 
-import WXConfig from './assets/js/wx.jsapi'
-Vue.prototype.WXConfig = WXConfig;
+import VueLazyload from 'vue-lazyload'
+ 
+Vue.use(VueLazyload, {
+  preLoad: 1,
+  error: require('@/assets/logo.png'),   //请求失败后显示的图片
+  loading: require('@/assets/logo.png'),   //加载的loading过渡图片
+  attempt: 1     // 加载图片数量
+})
 
 import vueWaves from './wave'
 Vue.use(vueWaves)

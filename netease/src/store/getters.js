@@ -70,3 +70,7 @@ export const getFirst = (state)=>{
 export const getKw = (state)=>{
     return state.kw;
 }
+
+export const getPy = (state)=>{
+    return state.pytype;
+}

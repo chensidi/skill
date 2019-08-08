@@ -68,7 +68,7 @@ export default {
         return{
             pid: null,
             pyList: {
-                coverImgUrl: '../../static/img/blank.png',
+                coverImgUrl: 'static/img/blank.png',
                 name: '',
                 creator: {},
                 description: '',

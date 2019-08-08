@@ -29,7 +29,7 @@ export default {
                     self.second -= 1;
                     down();
                 }else{
-                    self.$router.push('/home');
+                    self.$router.push('/main');
                 }
             },1000)
         }

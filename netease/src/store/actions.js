@@ -116,3 +116,10 @@ export const setKw= function({commit,state},n){
 		num:n
 	})
 }
+
+export const setPy= function({commit,state},n){
+	commit({
+		type:"setPy",
+		num:n
+	})
+}

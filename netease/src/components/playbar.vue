@@ -2,7 +2,7 @@
     <footer>
         <div class="playbar flex" @click.stop="showPlayUI">
             <div>
-                <img :src="defaultPic" alt="" :class="['p_img',playStatus?'rot_animate':'']">
+                <img :src="defaultPic||logos" alt="" :class="['p_img',playStatus?'rot_animate':'']">
             </div>
             <div class="p_info elp">
                 <van-progress 
@@ -10,7 +10,7 @@
                     :show-pivot='false'
                     :color="'rgb(212, 60, 51)'"
                 />
-                <p class="elp">{{defaultSong}}</p>
+                <p class="elp">{{defaultSong||'未知歌曲'}}</p>
                 
                 <van-notice-bar
                     color="#999"
@@ -46,9 +46,9 @@
             </div>
             <div class="play_info">
                 <h2 class="play_title">
-                    <span class="play_sname">{{defaultSong}}</span>
+                    <span class="play_sname">{{defaultSong||'未知歌曲'}}</span>
                     <span class="play_gap">-</span>
-                    <span class="play_auth">{{defaultArt}}</span>
+                    <span class="play_auth">{{defaultArt||'未知艺术家'}}</span>
                 </h2>
                 <p class="text-center" style="margin-top:20px">
                     <van-button type="info" size="small" round @click="downloadMp3(defaultSrc,defaultSong)">下载</van-button>
@@ -150,10 +150,10 @@
                                     {{cmtItem.content}}
                                 </div>
                                 <div class="cmt_content" v-if="cmtItem.beReplied.length">
-                                        回复<span class="touser">{{cmtItem.beReplied[0].user.nickname}}:</span> {{cmtItem.beReplied[0].content}}
+                                        回复<span class="touser">{{cmtItem.beReplied[0].user.nickname}}:</span> {{cmtItem.content}}
                                 </div>
                                 <div class="recmt" v-if="cmtItem.beReplied.length">
-                                    <span>@{{cmtItem.beReplied[0].user.nickname}}:</span>{{cmtItem.content}}
+                                    <span>@{{cmtItem.beReplied[0].user.nickname}}:</span>{{cmtItem.beReplied[0].content}}
                                 </div>
                             </div>
                         </li>
@@ -177,8 +177,10 @@ import Vue from 'vue';
 import { Icon,Progress,Slider,NavBar,Lazyload,List,Toast,ActionSheet,Button,NoticeBar } from 'vant';
 import '../../static/css/play.css';
 import bg from '../../static/img/bhh.png';
+import logos from '../assets/logo.png';
 import axios from 'axios';
 import {mapGetters} from 'vuex';
+
 Vue.use(Icon);
 Vue.use(Progress)
    .use(Slider)
@@ -204,6 +206,7 @@ export default {
             defaultSrc: 'static/audio/bhh.mp3',
             defaultPic: 'http://y.gtimg.cn/music/photo_new/T002R300x300M000000W50Ni1rt0ep.jpg?max_age=2592000',
             bg: bg,
+            logos: logos,
             playIcon: 'stop-circle-o',
             showPlayPage: false,
             showCmt: false,

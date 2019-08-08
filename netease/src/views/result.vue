@@ -1,6 +1,8 @@
 <template>
     <div>
-        <Head :child='true' />
+        <Head :child='true'>
+            <span slot="hname">迪爷搜索结果</span>
+        </Head>
         <div class="wrap">
             <div class="search_wrap">
             <van-search

@@ -24,7 +24,8 @@ const state = {
 	sid: '',
 	switched: false,
 	first: true,
-	kw: '不后悔'
+	kw: '不后悔',
+	pytype: 0
 }
 
 export default state;
