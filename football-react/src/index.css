@@ -1,0 +1,276 @@
+*{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+.elp{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: wrap;
+}
+
+.elp2{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.flex-b{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-a{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.main{
+  position: fixed;
+  bottom: 50px;
+  top: 0;
+  width: 100%;
+  overflow: auto;
+}
+
+.top{
+  height: 2.5rem;
+  background-color: #16b13a;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+  left: 0;
+}
+
+.logo{
+  width: 3.83rem;
+  position: absolute;
+  left: .95rem;
+  top: 50%;
+  -ms-transform: translateY(-45%);
+  transform: translateY(-45%);
+  -webkit-transform: translateY(-45%);
+}
+
+.main .react-weui-infiniteloader{
+  margin-top: 97px;
+}
+.topmenu{
+  width: 100%;
+  overflow-y: hidden;
+  overflow-x: auto;
+  display: flex;
+  /* margin-top: 2.5rem; */
+}
+.topmenu::-webkit-scrollbar {display:none}
+.topmenu .ant-tabs{
+  width: 100%;
+}
+.topmenu > span{
+  flex: 1;
+  min-width: 3rem;
+  padding: 2px 5px;
+}
+
+.news-list-item a{
+  padding: .75rem;
+  border-bottom: 1px solid #e9e9e9;
+  background: #f7f7f7;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  overflow: hidden;
+  min-height: 4.2rem;
+}
+
+.news-list-img-side{
+    width: 5.6rem;
+    float: left;
+    margin-right: 1rem;
+    position: relative;
+    line-height: 0;
+    margin-bottom: .2rem;
+    height: 4.2rem;
+}
+
+.news-list-img-side img{
+  width: 100%;
+}
+
+.news-list-img-side .lazy-load-image-background{
+  height: 100%;
+  width: 100%;
+}
+.news-list-info{
+  overflow: hidden;
+}
+
+.news-list-info h3{
+  font-size: 1rem;
+  line-height: 1.3rem;
+  color: #333;
+  margin-bottom: .3rem;
+}
+
+.news-list-tag, .open-app{
+  position: absolute;
+  bottom: .35rem;
+  font-size: .6rem;
+  line-height: .9rem;
+}
+
+.news-list-tag{
+  right: .75rem;
+}
+
+.news-list-comment{
+  color: #8c9399;
+}
+.news-list-tag, .open-app{
+  position: absolute;
+  bottom: .35rem;
+  font-size: .6rem;
+  line-height: .9rem;
+}
+
+.news-list-tag .news-list-tag-item {
+  display: inline-block;
+  border: 1px solid transparent;
+  padding: 0 .2rem;
+  margin-left: .2rem;
+}
+
+.news-list-tag .news-list-tag-item{
+  display: inline-block;
+  border: 1px solid transparent;
+  padding: 0 .2rem;
+  margin-left: .2rem;
+  color: rgb(71, 130, 196);
+  border-color: rgb(71, 130, 196);
+}
+
+.ant-tabs-bar{
+  position: fixed;
+  top: 2.5rem;
+  width: 100%;
+  z-index: 10;
+  background: #fff;
+}
+
+.news-list{
+  /* margin-top: 2.5rem; */
+}
+
+.reload_btn{
+  position: fixed;
+  top: 50%;
+  z-index: 10;
+  text-align: center;
+  width: 100%;
+  /* display: none; */
+}
+
+.match-title{
+  line-height: 1.7rem;
+  font-size: .6rem;
+  color: #333;
+  background: #e8e8e8;
+  text-align: center;
+  height: 1.6rem;
+}
+
+.match-list-item{
+  position: relative;
+  display: block;
+  width: auto;
+  height: 5.9rem;
+  padding: 0 1.9rem;
+  border-bottom: 1px solid #e8e8e8;
+  background: #f7f7f7;
+}
+
+.match-item-a, .match-item-b{
+  float: left;
+  width: 4.7rem;
+  padding-top: 1rem;
+}
+
+.match-item-c{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-top: .8rem;
+}
+
+.match-item-b{
+  float: right;
+}
+
+.match-item-a img, .match-item-b img {
+  display: block;
+  width: 2.6rem;
+  margin: 0 auto;
+}
+
+.match-item-a span, .match-item-b span {
+  display: block !important;
+  height: 2.6rem;
+  width: 2.6rem;
+  margin: 0 auto;
+}
+
+.match-item-a p, .match-item-b p{
+  line-height: 1;
+  margin-top: .6rem;
+  font-size: .6rem;
+  color: #333;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.match-item-c p:first-of-type {
+  width: 10rem;
+  line-height: .8rem;
+  margin: 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.match-item-c p {
+  font-size: .6rem;
+  line-height: 1rem;
+  color: #999;
+  text-align: center;
+}
+
+.match-item-c p.spec {
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  margin: .6rem 0;
+  color: #333;
+}
+
+
+.icon-highlights{
+  display: block;
+  width: 5.8rem;
+  margin: 0 auto;
+  margin-top: -.3rem;
+}
+
+
+.match-item-b{
+  float: right;
+}
