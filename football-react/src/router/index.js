@@ -2,6 +2,7 @@ import {BrowserRouter as Router,Route,Switch,withRouter} from 'react-router-dom'
 import React from 'react';
 import Home from '../views/home';
 import Match from '../views/match';
+import Data from '../views/data';
 import Tabbar from '../components/tabbar';
 
 // import {KeepAlive,Provider} from 'react-keep-alive'
@@ -105,6 +106,7 @@ const footballRoute = () => {
             <Switch>
                 <Route path="/"  exact component={Home}></Route>
                 <Route path="/match"  exact component={Match}></Route>
+                <Route path="/data"  exact component={Data}></Route>
             </Switch>
             <Tabbar />
         </Router>

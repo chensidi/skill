@@ -9,9 +9,8 @@ import {
     InfiniteLoader,
 } from 'react-weui';
 
-import LazyLoad from 'react-lazy-load';
 
-import { Tabs,Skeleton,Avatar } from 'antd';
+import { Tabs,Skeleton } from 'antd';
 
 import {Toast,Button} from 'antd-mobile';
 
@@ -110,7 +109,7 @@ class Home extends Component {
             newId: newId,
             index: index
         },()=>{
-            if(this.state[`news${index}Arr`].length == 0){
+            if(this.state[`news${index}Arr`].length === 0){
                 this.loadNews(index);
             }
         })
@@ -122,7 +121,7 @@ class Home extends Component {
             timeout: 15000
         }).then(res=>{
             // console.log(res);
-            if(res.status == 200){
+            if(res.status === 200){
                 this.setState({
                     menus: res.data.menus.news,
                     menuLoading: false,
@@ -144,8 +143,8 @@ class Home extends Component {
             url: `${this.props.api}/news?id=${this.state.newId}`,
             timeout: 15000
         }).then(res=>{
-            if(res.status == 200){
-                if(this.state.newId == 104){
+            if(res.status === 200){
+                if(this.state.newId === 104){
                     let arr = [];
                     res.data.contents.map((obj)=>{
                         obj.articles.map((item)=>{
@@ -174,8 +173,8 @@ class Home extends Component {
             url: this.props.api + '/noparams?' + 'url=' + this.state[`new${index}Url`],
             timeout: 15000
         }).then(res=>{
-            if(res.status == 200){
-                if(this.state.newId == 104){
+            if(res.status === 200){
+                if(this.state.newId === 104){
                     this.setState({
                         [`news${index}Arr`]: this.state[`news${index}Arr`].concat(res.data.contents)
                     })
@@ -208,8 +207,8 @@ class Home extends Component {
         }).then(res=>{
             // console.log(res);
             // resolve();
-            if(res.status == 200){
-                if(this.state.newId == 104){
+            if(res.status === 200){
+                if(this.state.newId === 104){
                     this.setState({
                         [`news${this.state.index}Arr`]: res.data.contents
                     })

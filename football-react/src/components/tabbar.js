@@ -49,7 +49,7 @@ class TabBarExample extends Component {
             selectedIcon={
                 <Icon type="home" theme="filled" style={{fontSize:20}} />
             }
-            selected={this.props.count == 1}
+            selected={this.props.count === 1}
             onPress={() => {
               this.setState({
                 selectedTab: 'blueTab',
@@ -69,7 +69,7 @@ class TabBarExample extends Component {
             }
             title="比赛"
             key="Match"
-            selected={this.props.count == 2}
+            selected={this.props.count === 2}
             onPress={() => {
               this.setState({
                 selectedTab: 'redTab',
@@ -88,11 +88,12 @@ class TabBarExample extends Component {
             }
             title="数据"
             key="Data"
-            selected={this.state.selectedTab === 'greenTab'}
+            selected={this.props.count === 3}
             onPress={() => {
               this.setState({
                 selectedTab: 'greenTab',
               });
+              this.props.history.push('/data');
             }}
           >
           </TabBar.Item>

@@ -274,3 +274,39 @@
 .match-item-b{
   float: right;
 }
+
+.ranking-view .cell_data {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border-top: 1px solid #ddd;
+}
+
+.ranking-view .cell_data .team {
+  text-align: left;
+  width: 30%;
+  white-space: nowrap;
+}
+.ranking-view .cell_data td, .ranking-view .cell_data th {
+  height: 30px;
+  font-size: .75rem;
+  line-height: 30px;
+  text-align: center;
+  font-weight: 400;
+  padding: 3px 0;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ddd;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.ranking-view .cell_data td img {
+  vertical-align: middle;
+  height: 20px;
+  display: inline-block;
+  width: auto;
+}
+
+.ranking-view .match-table, .ranking-view .schedule-table {
+  background: #e2e2e2;
+}
