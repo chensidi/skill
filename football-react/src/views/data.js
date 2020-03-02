@@ -46,7 +46,8 @@ class Data extends Component {
             seasonId: '',
             playerTypes: [],
             playerGolasArr: [],
-            playerDataArr: []
+            playerDataArr: [],
+            typeIndex: 0
         }
     }
 
@@ -56,9 +57,7 @@ class Data extends Component {
     }
 
     componentDidMount(){
-        console.log(window.innerHeight,
-           
-        )
+        
     }
 
     callback = (key) => {
@@ -66,7 +65,8 @@ class Data extends Component {
         let temp = key.split('_');
         this.setState({
             index: temp[0],
-            seasonId: temp[2]
+            seasonId: temp[2],
+            typeIndex: 0
         })
         if(this.state.scoreArr[temp[0]].length > 0){
             this.setState({rankLoading:false});  
@@ -137,6 +137,16 @@ class Data extends Component {
                     console.log(this.state.playerDataArr[this.state.index][0])
                 })
             }
+        })
+    }
+
+    changeDataType = (e) => {
+        let index = e.target.getAttribute('data-index');
+        this.setState({
+            typeIndex: parseInt(index)
+        },()=>{
+            let type = this.state.playerTypes[index].type;
+            this.changeType(type);
         })
     }
 
@@ -220,6 +230,11 @@ class Data extends Component {
             { title: '4 Tab', key: 't4' },
         ];
 
+        let playerDataArr = this.state.playerDataArr,
+            stateIndex = this.state.index,
+            playerTypes = this.state.playerTypes,
+            typeIndex = this.state.typeIndex;
+
         return (
             <div className="main">
                 <Top />
@@ -239,7 +254,7 @@ class Data extends Component {
                                         this.state.rankArr.map((menu,index)=>{
                                             return (
                                                 <TabPane tab={menu.label} key={`${index}_${menu.id}_${menu.season_id}`}>
-                                                    <Tabsm tabs={tabs} onChange={this.changeData}>
+                                                    <Tabsm tabs={tabs} onChange={this.changeData} animated={false}>
                                                         <div className="ranking-view match-table-list">
                                                         <Skeleton loading={this.state.rankLoading} active avatar paragraph={{ rows: 9 }}>
                                                             <table className="cell_data">
@@ -285,7 +300,7 @@ class Data extends Component {
                                                                 {
                                                                     this.state.playerTypes.map((item,i)=>{
                                                                         return (
-                                                                            <div className={["elp",i==-0?'on':''].join(' ')} key={`t${i}`}>
+                                                                            <div onClick={this.changeDataType} data-index={i} className={["elp",i===this.state.typeIndex?'on':''].join(' ')} key={`t${i}`}>
                                                                                 {item.title}
                                                                             </div>
                                                                         )
@@ -294,38 +309,42 @@ class Data extends Component {
                                                                 </div>
                                                             </Col>
                                                             <Col span={17}>
-                                                                    <div className="match-table-list ranking-view ranktable">
-                                                                        <table className="cell_data">
-                                                                            <tbody>
-                                                                                <tr>
-                                                                                    <th >排名</th>
-                                                                                    <th className="player">球员</th>
-                                                                                    <th >球队</th>
-                                                                                    <th >进球数</th>
-                                                                                </tr>
-                                                                                {
-                                                                                    this.state.playerDataArr[this.state.index]&&
-                                                                                    this.state.playerDataArr[this.state.index][0]&&
-                                                                                    this.state.playerDataArr[this.state.index][0]['goals']&&
-                                                                                    this.state.playerDataArr[this.state.index][0]['goals'].map((item,i)=>{
-                                                                                        return (
-                                                                                            <tr key={`goal${i}`}>
-                                                                                                <td>{i+1}</td>
-                                                                                                <td className="player">
-                                                                                                    <img src={item.person_logo} />
-                                                                                                    &nbsp;{item.person_name}
-                                                                                                </td>
-                                                                                                <td>
-                                                                                                    {item.team_name}
-                                                                                                </td>
-                                                                                                <td>{item.count}</td>
-                                                                                            </tr>
-                                                                                        )
-                                                                                    })
-                                                                                }
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
+                                                                
+                                                                            <div  className="match-table-list ranking-view ranktable">
+                                                                                <table className="cell_data">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <th >排名</th>
+                                                                                            <th className="player">球员</th>
+                                                                                            <th >球队</th>
+                                                                                            <th >总计</th>
+                                                                                        </tr>
+                                                                                        {
+                                                                                            
+
+                                                                                            playerDataArr[stateIndex]&&
+                                                                                            playerDataArr[stateIndex][0]&&
+                                                                                            playerDataArr[stateIndex][0][playerTypes[typeIndex].type]&&
+                                                                                            playerDataArr[stateIndex][0][playerTypes[typeIndex].type].map((item,i)=>{
+                                                                                                return (
+                                                                                                    <tr key={`goal${i}`}>
+                                                                                                        <td>{i+1}</td>
+                                                                                                        <td className="player">
+                                                                                                            <img src={item.person_logo} alt="" />
+                                                                                                            &nbsp;{item.person_name}
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            {item.team_name}
+                                                                                                        </td>
+                                                                                                        <td>{item.count}</td>
+                                                                                                    </tr>
+                                                                                                )
+                                                                                            })
+                                                                                        }
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                    
                                                             </Col>
                                                         </Row>
                                                         </div>
