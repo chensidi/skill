@@ -288,14 +288,16 @@
   white-space: nowrap;
 }
 
-.ranking-view .cell_data .player {
+.ranking-view .cell_data .player, .ranking-view .cell_data .team{
   text-align: left;
   width: 5rem;
-  max-width: 5rem;
+  max-width: 7rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+
 .ranking-view .cell_data td, .ranking-view .cell_data th {
   height: 30px;
   font-size: .75rem;
@@ -352,6 +354,10 @@
     height: calc(100vh - 97px - 43.5px) !important;
 }
 
-.player .lazy-load-image-background{
+.player .lazy-load-image-background,.team .lazy-load-image-background{
   width: 30px;
+}
+
+.teamrank{
+  width: 2rem;
 }

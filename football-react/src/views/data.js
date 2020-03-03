@@ -51,7 +51,10 @@ class Data extends Component {
             teamDataArr: [],
             typeIndex: 0,
             typeTeamIndex: 0,
-            rankTypeLoading: true
+            rankTypeLoading: true,
+            rankTeamLoading: true,
+            playerKey: false,
+            teamKey: false
         }
     }
 
@@ -125,7 +128,7 @@ class Data extends Component {
                 url: `${this.props.api}/team?id=${this.state.seasonId}`,
                 timeout: 15000
             }).then(res=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status === 200){
                     let types = res.data.content.data;
                     types.map((obj)=>{
@@ -156,26 +159,25 @@ class Data extends Component {
 
     changeTeamType = (type) => {
         if(this.state.teamDataArr[this.state.index][0][type].length > 0){
-            // this.setState({rankTypeLoading: false});
+            this.setState({rankTeamLoading: false,teamKey:true});
             return;
         }
+        this.setState({rankTeamLoading: true,teamKey:false});
         axios({
             url: `${this.props.api}/teamdata?type=${type}&id=${this.state.seasonId}`,
             timeout: 15000
         }).then(res=>{
-            console.log(res);
+            // console.log(res);
             if(res.status === 200){
-                // this.setState({
-                //     playerGolasArr: res.data.content.data,
-                //     rankTypeLoading: false
-                // })
+                this.setState({
+                    rankTeamLoading: false
+                })
 
                 let tempObj = this.state.teamDataArr;
                 tempObj[this.state.index][0][type] = res.data.content.data;
                 this.setState({
-                    teamDataArr: tempObj
-                },()=>{
-                    console.log(this.state.playerDataArr[this.state.index][0])
+                    teamDataArr: tempObj,
+                    teamKey: true
                 })
             }
         })
@@ -184,15 +186,15 @@ class Data extends Component {
     changeType = (type) => {
         // console.log(this.state.playerDataArr[this.state.index])
         if(this.state.playerDataArr[this.state.index][0][type].length > 0){
-            this.setState({rankTypeLoading: false});
-            return;
+            this.setState({rankTypeLoading: false,playerKey:true});
+            return false;
         }
-        this.setState({rankTypeLoading: true});
+        this.setState({rankTypeLoading: true,playerKey:false});
         axios({
             url: `${this.props.api}/playerdata?type=${type}&id=${this.state.seasonId}`,
             timeout: 15000
         }).then(res=>{
-            console.log(res);
+            // console.log(res);
             if(res.status === 200){
                 this.setState({
                     playerGolasArr: res.data.content.data,
@@ -202,16 +204,15 @@ class Data extends Component {
                 let tempObj = this.state.playerDataArr;
                 tempObj[this.state.index][0][type] = res.data.content.data;
                 this.setState({
-                    playerDataArr: tempObj
-                },()=>{
-                    console.log(this.state.playerDataArr[this.state.index][0])
+                    playerDataArr: tempObj,
+                    playerKey: true
                 })
             }
         })
     }
 
-    changeDataType = (e) => {
-        let index = e.target.getAttribute('data-index');
+    changeDataType = (index) => {
+        // let index = e.target.getAttribute('data-index');
         this.setState({
             typeIndex: parseInt(index)
         },()=>{
@@ -255,7 +256,7 @@ class Data extends Component {
             url: `${this.props.api}/home`,
             timeout: 15000
         }).then(res=>{
-            console.log(res);
+            // console.log(res);
             this.setState({
                 menuLoading: false,
                 menuErr: false
@@ -288,14 +289,7 @@ class Data extends Component {
             })
         ])
     }
-    renderContent = tab =>
-    (<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '150px', backgroundColor: '#fff' }}>
-      <p>Content of {tab.title}</p>
-    </div>);
 
-    handleClick = e => {
-        console.log('click ', e);
-    };
 
     render(){
         
@@ -305,13 +299,6 @@ class Data extends Component {
             { title: '球队榜' },
             { title: '赛程' },
           ];
-        
-        const tabss = [
-            { title: '射门次数', key: 't1' },
-            { title: '2 Tab', key: 't2' },
-            { title: '3 Tab', key: 't3' },
-            { title: '4 Tab', key: 't4' },
-        ];
 
         let playerDataArr = this.state.playerDataArr,
             stateIndex = this.state.index,
@@ -387,7 +374,7 @@ class Data extends Component {
                                                                 {
                                                                     this.state.playerTypes.map((item,i)=>{
                                                                         return (
-                                                                            <div onClick={this.changeDataType} data-index={i} className={["elp",i===this.state.typeIndex?'on':''].join(' ')} key={`t${i}`}>
+                                                                            <div onClick={()=>{this.changeDataType(i)}} data-index={i} className={["elp",i===this.state.typeIndex?'on':''].join(' ')} key={`t${i}`}>
                                                                                 {item.title}
                                                                             </div>
                                                                         )
@@ -407,13 +394,11 @@ class Data extends Component {
                                                                                 <th >总计</th>
                                                                             </tr>
                                                                             {
-                                                                                playerDataArr[stateIndex]&&
-                                                                                playerDataArr[stateIndex][0]&&
-                                                                                playerDataArr[stateIndex][0][playerTypes[typeIndex].type]&&
+                                                                                this.state.playerKey?
                                                                                 playerDataArr[stateIndex][0][playerTypes[typeIndex].type].map((item,i)=>{
                                                                                     return (
                                                                                         <tr key={`goal${i}`}>
-                                                                                            <td>{i+1}</td>
+                                                                                            <td>{item.rank}</td>
                                                                                             <td className="player">
                                                                                                 <LazyLoadImage
                                                                                                     src={item.person_logo} 
@@ -427,7 +412,8 @@ class Data extends Component {
                                                                                             <td>{item.count}</td>
                                                                                         </tr>
                                                                                     )
-                                                                                })
+                                                                                }):<tr></tr>
+
                                                                             }
                                                                         </tbody>
                                                                     </table>
@@ -452,23 +438,22 @@ class Data extends Component {
                                                                 </div>
                                                             </Col>
                                                             <Col span={17}>
+                                                                <Skeleton loading={this.state.rankTeamLoading} active avatar paragraph={{ rows: 9 }}>
                                                                 <div className="match-table-list ranking-view ranktable">
                                                                     <table className="cell_data">
                                                                         <tbody>
                                                                             <tr>
-                                                                                <th >排名</th>
-                                                                                <th className="player">球队</th>
+                                                                                <th className="teamrank">排名</th>
+                                                                                <th>球队</th>
                                                                                 <th >总计</th>
                                                                             </tr>
                                                                             {
-                                                                                teamDataArr[stateIndex]&&
-                                                                                teamDataArr[stateIndex][0]&&
-                                                                                teamDataArr[stateIndex][0][teamTypes[typeTeamIndex].type]&&
+                                                                                this.state.teamKey&&
                                                                                 teamDataArr[stateIndex][0][teamTypes[typeTeamIndex].type].map((item,i)=>{
                                                                                     return (
                                                                                         <tr key={`team${i}`}>
-                                                                                            <td>{i+1}</td>
-                                                                                            <td className="player">
+                                                                                            <td>{item.rank}</td>
+                                                                                            <td className="team">
                                                                                                 <LazyLoadImage
                                                                                                     src={item.team_logo} 
                                                                                                     placeholderSrc={lazy}
@@ -483,6 +468,7 @@ class Data extends Component {
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
+                                                                </Skeleton>
                                                             </Col>
                                                         </Row>
                                                         </div>
