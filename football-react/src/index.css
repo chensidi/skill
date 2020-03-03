@@ -351,3 +351,7 @@
 .data .react-weui-infiniteloader{
     height: calc(100vh - 97px - 43.5px) !important;
 }
+
+.player .lazy-load-image-background{
+  width: 30px;
+}

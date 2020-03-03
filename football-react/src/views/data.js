@@ -45,9 +45,13 @@ class Data extends Component {
             menuErr: false,
             seasonId: '',
             playerTypes: [],
+            teamTypes: [],
             playerGolasArr: [],
             playerDataArr: [],
-            typeIndex: 0
+            teamDataArr: [],
+            typeIndex: 0,
+            typeTeamIndex: 0,
+            rankTypeLoading: true
         }
     }
 
@@ -76,8 +80,8 @@ class Data extends Component {
     }
 
     changeData = (tab,index) => {
-        console.log(this.state.seasonId);
-        if(index == 1){
+        // console.log(this.state.seasonId);
+        if(index === 1){
             if(this.state.playerTypes.length > 0){
                 this.changeType(this.state.playerTypes[0].type);
                 return;
@@ -95,7 +99,6 @@ class Data extends Component {
                     this.setState({
                         playerTypes: types
                     },()=>{
-                        
                         let tempArr = this.state.playerDataArr;
                         tempArr.map((obj,i)=>{
                             let object = {}
@@ -113,12 +116,78 @@ class Data extends Component {
                     })
                 }
             })
+        }else if(index === 2){
+            if(this.state.teamTypes.length > 0){
+                this.changeType(this.state.teamTypes[0].type);
+                return;
+            }
+            axios({
+                url: `${this.props.api}/team?id=${this.state.seasonId}`,
+                timeout: 15000
+            }).then(res=>{
+                console.log(res);
+                if(res.status === 200){
+                    let types = res.data.content.data;
+                    types.map((obj)=>{
+                        obj.title = obj.name
+                    })
+                    this.setState({
+                        teamTypes: types
+                    },()=>{
+                        let tempArr = this.state.teamDataArr;
+                        tempArr.map((obj,i)=>{
+                            let object = {}
+                            types.map((item,j)=>{
+                                object[item.type] = [];
+                            })
+                            obj.push(object);
+                        })
+                        this.setState({
+                            teamDataArr: tempArr
+                        },()=>{
+                            // console.log(this.state.teamDataArr)
+                            this.changeTeamType(types[0].type);
+                        })
+                    })
+                }
+            })
         }
+    }
+
+    changeTeamType = (type) => {
+        if(this.state.teamDataArr[this.state.index][0][type].length > 0){
+            // this.setState({rankTypeLoading: false});
+            return;
+        }
+        axios({
+            url: `${this.props.api}/teamdata?type=${type}&id=${this.state.seasonId}`,
+            timeout: 15000
+        }).then(res=>{
+            console.log(res);
+            if(res.status === 200){
+                // this.setState({
+                //     playerGolasArr: res.data.content.data,
+                //     rankTypeLoading: false
+                // })
+
+                let tempObj = this.state.teamDataArr;
+                tempObj[this.state.index][0][type] = res.data.content.data;
+                this.setState({
+                    teamDataArr: tempObj
+                },()=>{
+                    console.log(this.state.playerDataArr[this.state.index][0])
+                })
+            }
+        })
     }
 
     changeType = (type) => {
         // console.log(this.state.playerDataArr[this.state.index])
-        if(this.state.playerDataArr[this.state.index][0][type].length > 0)return;
+        if(this.state.playerDataArr[this.state.index][0][type].length > 0){
+            this.setState({rankTypeLoading: false});
+            return;
+        }
+        this.setState({rankTypeLoading: true});
         axios({
             url: `${this.props.api}/playerdata?type=${type}&id=${this.state.seasonId}`,
             timeout: 15000
@@ -126,7 +195,8 @@ class Data extends Component {
             console.log(res);
             if(res.status === 200){
                 this.setState({
-                    playerGolasArr: res.data.content.data
+                    playerGolasArr: res.data.content.data,
+                    rankTypeLoading: false
                 })
 
                 let tempObj = this.state.playerDataArr;
@@ -147,6 +217,16 @@ class Data extends Component {
         },()=>{
             let type = this.state.playerTypes[index].type;
             this.changeType(type);
+        })
+    }
+
+    changeTeamDataType = (e) => {
+        let index = e.target.getAttribute('data-index');
+        this.setState({
+            typeTeamIndex: parseInt(index)
+        },()=>{
+            let type = this.state.teamTypes[index].type;
+            this.changeTeamType(type);
         })
     }
 
@@ -185,15 +265,18 @@ class Data extends Component {
                     rankArr: res.data.menus.ranking_new
                 },()=>{
                     let tempArr = [],
-                        temp1Arr = [];
+                        temp1Arr = [],
+                        temp2Arr = [];
                     this.state.rankArr.map((obj,i)=>{
                         tempArr.push([]);
                         temp1Arr.push([]);
+                        temp2Arr.push([]);
                     })
                     this.setState({
                         scoreArr: tempArr,
                         seasonId: this.state.rankArr[0].season_id,
-                        playerDataArr: temp1Arr
+                        playerDataArr: temp1Arr,
+                        teamDataArr: temp2Arr
                     })
                     this.loadRanking(this.state.rankArr[0].season_id);
                 })
@@ -234,6 +317,10 @@ class Data extends Component {
             stateIndex = this.state.index,
             playerTypes = this.state.playerTypes,
             typeIndex = this.state.typeIndex;
+        
+        let teamDataArr = this.state.teamDataArr,
+            teamTypes = this.state.teamTypes,
+            typeTeamIndex = this.state.typeTeamIndex;
 
         return (
             <div className="main">
@@ -309,47 +396,95 @@ class Data extends Component {
                                                                 </div>
                                                             </Col>
                                                             <Col span={17}>
-                                                                
-                                                                            <div  className="match-table-list ranking-view ranktable">
-                                                                                <table className="cell_data">
-                                                                                    <tbody>
-                                                                                        <tr>
-                                                                                            <th >排名</th>
-                                                                                            <th className="player">球员</th>
-                                                                                            <th >球队</th>
-                                                                                            <th >总计</th>
+                                                                <Skeleton loading={this.state.rankTypeLoading} active avatar paragraph={{ rows: 9 }}>
+                                                                <div className="match-table-list ranking-view ranktable">
+                                                                    <table className="cell_data">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <th >排名</th>
+                                                                                <th className="player">球员</th>
+                                                                                <th >球队</th>
+                                                                                <th >总计</th>
+                                                                            </tr>
+                                                                            {
+                                                                                playerDataArr[stateIndex]&&
+                                                                                playerDataArr[stateIndex][0]&&
+                                                                                playerDataArr[stateIndex][0][playerTypes[typeIndex].type]&&
+                                                                                playerDataArr[stateIndex][0][playerTypes[typeIndex].type].map((item,i)=>{
+                                                                                    return (
+                                                                                        <tr key={`goal${i}`}>
+                                                                                            <td>{i+1}</td>
+                                                                                            <td className="player">
+                                                                                                <LazyLoadImage
+                                                                                                    src={item.person_logo} 
+                                                                                                    placeholderSrc={lazy}
+                                                                                                />
+                                                                                                &nbsp;{item.person_name}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                {item.team_name}
+                                                                                            </td>
+                                                                                            <td>{item.count}</td>
                                                                                         </tr>
-                                                                                        {
-                                                                                            
-
-                                                                                            playerDataArr[stateIndex]&&
-                                                                                            playerDataArr[stateIndex][0]&&
-                                                                                            playerDataArr[stateIndex][0][playerTypes[typeIndex].type]&&
-                                                                                            playerDataArr[stateIndex][0][playerTypes[typeIndex].type].map((item,i)=>{
-                                                                                                return (
-                                                                                                    <tr key={`goal${i}`}>
-                                                                                                        <td>{i+1}</td>
-                                                                                                        <td className="player">
-                                                                                                            <img src={item.person_logo} alt="" />
-                                                                                                            &nbsp;{item.person_name}
-                                                                                                        </td>
-                                                                                                        <td>
-                                                                                                            {item.team_name}
-                                                                                                        </td>
-                                                                                                        <td>{item.count}</td>
-                                                                                                    </tr>
-                                                                                                )
-                                                                                            })
-                                                                                        }
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </div>
-                                                                    
+                                                                                    )
+                                                                                })
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                </Skeleton>
                                                             </Col>
                                                         </Row>
                                                         </div>
-                                                        <div>
-                                                            1
+                                                        <div className="vertab">
+                                                        <Row gutter={16}>
+                                                            <Col span={7}>
+                                                                <div className="leftbar ranktable">
+                                                                {
+                                                                    this.state.teamTypes.map((item,i)=>{
+                                                                        return (
+                                                                            <div onClick={this.changeTeamDataType} data-index={i} className={["elp",i===this.state.typeTeamIndex?'on':''].join(' ')} key={`team${i}`}>
+                                                                                {item.title}
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                }
+                                                                </div>
+                                                            </Col>
+                                                            <Col span={17}>
+                                                                <div className="match-table-list ranking-view ranktable">
+                                                                    <table className="cell_data">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <th >排名</th>
+                                                                                <th className="player">球队</th>
+                                                                                <th >总计</th>
+                                                                            </tr>
+                                                                            {
+                                                                                teamDataArr[stateIndex]&&
+                                                                                teamDataArr[stateIndex][0]&&
+                                                                                teamDataArr[stateIndex][0][teamTypes[typeTeamIndex].type]&&
+                                                                                teamDataArr[stateIndex][0][teamTypes[typeTeamIndex].type].map((item,i)=>{
+                                                                                    return (
+                                                                                        <tr key={`team${i}`}>
+                                                                                            <td>{i+1}</td>
+                                                                                            <td className="player">
+                                                                                                <LazyLoadImage
+                                                                                                    src={item.team_logo} 
+                                                                                                    placeholderSrc={lazy}
+                                                                                                />
+                                                                                                &nbsp;{item.team_name}
+                                                                                            </td>
+                                                                                            <td>{item.count}</td>
+                                                                                        </tr>
+                                                                                    )
+                                                                                })
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
                                                         </div>
                                                         <div>
                                                             2
