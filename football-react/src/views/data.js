@@ -49,12 +49,14 @@ class Data extends Component {
             playerGolasArr: [],
             playerDataArr: [],
             teamDataArr: [],
+            scheduleArr: [],
             typeIndex: 0,
             typeTeamIndex: 0,
             rankTypeLoading: true,
             rankTeamLoading: true,
             playerKey: false,
-            teamKey: false
+            teamKey: false,
+            scheduleLoading: true
         }
     }
 
@@ -154,6 +156,8 @@ class Data extends Component {
                     })
                 }
             })
+        }else if(index === 3){
+            this.loadSchedule();
         }
     }
 
@@ -251,6 +255,34 @@ class Data extends Component {
         })
     }
 
+    loadSchedule = () => {
+        if(this.state.scheduleArr[this.state.index].length > 0){
+            this.setState({
+                scheduleLoading: false
+            })
+            return false;
+        }
+        this.setState({
+            scheduleLoading: true
+        })
+        axios({
+            url: `${this.props.api}/schedule?id=${this.state.seasonId}`,
+            timeout: 15000
+        }).then(res=>{
+            console.log(res);
+            this.setState({
+                scheduleLoading: false
+            })
+            if(res.status === 200){
+                let prevScheduleArr = this.state.scheduleArr;
+                prevScheduleArr[this.state.index] = res.data.content.matches;
+                this.setState({
+                    scheduleArr: prevScheduleArr
+                })
+            }
+        })
+    }
+
     loadAllData = () => {
         axios({
             url: `${this.props.api}/home`,
@@ -267,17 +299,20 @@ class Data extends Component {
                 },()=>{
                     let tempArr = [],
                         temp1Arr = [],
-                        temp2Arr = [];
+                        temp2Arr = [],
+                        temp3Arr = [];
                     this.state.rankArr.map((obj,i)=>{
                         tempArr.push([]);
                         temp1Arr.push([]);
                         temp2Arr.push([]);
+                        temp3Arr.push([]);
                     })
                     this.setState({
                         scoreArr: tempArr,
                         seasonId: this.state.rankArr[0].season_id,
                         playerDataArr: temp1Arr,
-                        teamDataArr: temp2Arr
+                        teamDataArr: temp2Arr,
+                        scheduleArr: temp3Arr
                     })
                     this.loadRanking(this.state.rankArr[0].season_id);
                 })
@@ -473,7 +508,42 @@ class Data extends Component {
                                                         </Row>
                                                         </div>
                                                         <div>
-                                                            2
+                                                        <Skeleton loading={this.state.scheduleLoading} active avatar paragraph={{ rows: 9 }}>
+                                                            <div className="ranking-view">
+                                                                <div className="schedule-table">
+                                                                <ul className="activeRound">
+                                                                    <li>
+                                                                        <a href="#" className="prev">上一轮</a>
+                                                                    </li>
+                                                                    <li className="name">第7轮</li>
+                                                                    <li>
+                                                                        <a href="#" className="next">下一轮</a>
+                                                                    </li>
+                                                                </ul>
+                                                                <table className="cell_data">
+                                                                    <tbody>
+                                                                        {
+                                                                            this.state.scheduleArr[stateIndex]&&
+                                                                            this.state.scheduleArr[stateIndex].map((item,i)=>{
+                                                                                return (
+                                                                                    <tr key={`schedule${i}`}>
+                                                                                        <td>{item.start_play}</td>
+                                                                                        <td className="name_l">
+                                                                                            <img src={item.team_A_logo} />{item.team_A_name}
+                                                                                        </td>
+                                                                                        <td>VS</td>
+                                                                                        <td className="name_r" >{item.team_B_name}
+                                                                                            <img src={item.team_B_logo} />
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                )
+                                                                            })
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                                </div>
+                                                            </div>
+                                                        </Skeleton>
                                                         </div>
                                                     </Tabsm>
                                                 </TabPane>

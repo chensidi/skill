@@ -361,3 +361,44 @@
 .teamrank{
   width: 2rem;
 }
+
+.schedule-table{
+  background: #e2e2e2;
+}
+
+.activeRound{
+  width: 100%;
+  overflow: hidden;
+  height: 30px;
+  line-height: 30px;
+  background: #ddd;
+  display: table;
+  display: box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0;
+}
+
+.activeRound a{
+  color: #333;
+  text-decoration: none;
+  display: block;
+}
+
+.activeRound li{
+  width: 33%;
+  text-align: center;
+  display: table-cell;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.ranking-view .cell_data td.name_l {
+  text-align: left;
+  padding-left: 10px;
+}
+
+.ranking-view .cell_data td.name_r {
+  text-align: right;
+  padding-right: 10px;
+}
