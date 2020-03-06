@@ -12,7 +12,7 @@ import {
 } from 'react-weui';
 
 import { Tabs ,Skeleton,Row, Col } from 'antd';
-import {Tabs as Tabsm,Button} from 'antd-mobile';
+import {Tabs as Tabsm,Button,Picker, List} from 'antd-mobile';
 
 
 
@@ -50,6 +50,7 @@ class Data extends Component {
             playerDataArr: [],
             teamDataArr: [],
             scheduleArr: [],
+            roundArr: [],
             typeIndex: 0,
             typeTeamIndex: 0,
             rankTypeLoading: true,
@@ -276,8 +277,39 @@ class Data extends Component {
             if(res.status === 200){
                 let prevScheduleArr = this.state.scheduleArr;
                 prevScheduleArr[this.state.index] = res.data.content.matches;
+                let prevRound = this.state.roundArr;
+                let arr = []
+                res.data.content.rounds.map((obj,i)=>{
+                    obj.label = obj.name;
+                    obj.value = i;
+                    arr.push(obj);
+                })
+                prevRound[this.state.index] = arr;
                 this.setState({
-                    scheduleArr: prevScheduleArr
+                    scheduleArr: prevScheduleArr,
+                    roundArr: prevRound
+                })
+            }
+        })
+    }
+
+    loadRound = (url) => {
+        axios({
+            url: `${this.props.api}/noparams?url=${url}`,
+            timeout: 15000
+        }).then(res=>{
+            console.log(res);
+            if(res.status === 200){
+                let prevScheduleArr = this.state.scheduleArr;
+                prevScheduleArr[this.state.index] = [];
+                this.setState({
+                    scheduleArr: prevScheduleArr,
+                },()=>{
+                    prevScheduleArr = this.state.scheduleArr;
+                    prevScheduleArr[this.state.index] = res.data.content.matches;
+                    this.setState({
+                        scheduleArr: prevScheduleArr
+                    })
                 })
             }
         })
@@ -300,19 +332,22 @@ class Data extends Component {
                     let tempArr = [],
                         temp1Arr = [],
                         temp2Arr = [],
-                        temp3Arr = [];
+                        temp3Arr = [],
+                        temp4Arr = [];
                     this.state.rankArr.map((obj,i)=>{
                         tempArr.push([]);
                         temp1Arr.push([]);
                         temp2Arr.push([]);
                         temp3Arr.push([]);
+                        temp4Arr.push([]);
                     })
                     this.setState({
                         scoreArr: tempArr,
                         seasonId: this.state.rankArr[0].season_id,
                         playerDataArr: temp1Arr,
                         teamDataArr: temp2Arr,
-                        scheduleArr: temp3Arr
+                        scheduleArr: temp3Arr,
+                        roundArr: temp4Arr
                     })
                     this.loadRanking(this.state.rankArr[0].season_id);
                 })
@@ -344,6 +379,32 @@ class Data extends Component {
             teamTypes = this.state.teamTypes,
             typeTeamIndex = this.state.typeTeamIndex;
 
+            const seasons = [
+                
+                [
+                  {
+                    label: '春',
+                    value: '春',
+                  },
+                  {
+                    label: '夏',
+                    value: '夏',
+                  },
+                ],
+              ];
+        let pickers = [this.state.roundArr[stateIndex]];
+
+        let curRound = 0;
+        if(this.state.roundArr[stateIndex]&&this.state.roundArr[stateIndex].length > 0){
+            for(let i = 0;i < this.state.roundArr[stateIndex].length; i ++){
+                let r = this.state.roundArr[stateIndex][i];
+                if(r.current === true){
+                    curRound = [i];
+                    break;
+                }
+            }
+        }
+        
         return (
             <div className="main">
                 <Top />
@@ -543,6 +604,24 @@ class Data extends Component {
                                                                 </table>
                                                                 </div>
                                                             </div>
+                                                            <Picker
+                                                            data={pickers}
+                                                            title="选择季节"
+                                                            cascade={false}
+                                                            extra="请选择(可选)"
+                                                            value={curRound}
+                                                            onOk={v => {
+                                                                let tempRound = this.state.scheduleArr;
+                                                                tempRound[stateIndex] = this.state.roundArr[stateIndex][v[0]]
+                                                                console.log(this.state.roundArr[stateIndex][v[0]].url)
+                                                                this.loadRound(this.state.roundArr[stateIndex][v[0]].url)
+                                                                // this.setState({
+                                                                //     scheduleArr: tempRound
+                                                                // })
+                                                            }}
+                                                            >
+                                                            <List.Item arrow="horizontal">Multiple</List.Item>
+                                                            </Picker>
                                                         </Skeleton>
                                                         </div>
                                                     </Tabsm>
