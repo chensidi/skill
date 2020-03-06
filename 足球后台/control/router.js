@@ -102,5 +102,14 @@ module.exports = function(app){
 		let competitionId = req.query.competitionId;
 		model.getSeason(competitionId,res);
 	})
+
+	//轮数查询
+	app.get('/round',(req,res)=>{
+		headCross(res);
+		let gameweek = req.query.gameweek,
+			roundId = req.query.roundId,
+			seasonId = req.query.seasonId;
+		model.getRound({gameweek,roundId,seasonId},res);
+	})
 }
 	

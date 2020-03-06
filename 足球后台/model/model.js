@@ -63,6 +63,11 @@ module.exports = {
 	},
 	getTemplate(url,res){
 		getHTML(url,res);
+	},
+	getRound(params,res){
+		let {gameweek,roundId,seasonId} = params;
+		let roundUrl = `https://sport-data.dongqiudi.com/soccer/biz/data/schedule?season_id=${seasonId}&round_id=${roundId}&gameweek=${gameweek}&app=dqd&platform=&version=0`;
+		transation(roundUrl,res);
 	}
 }	
 
