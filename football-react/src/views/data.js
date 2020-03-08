@@ -293,23 +293,27 @@ class Data extends Component {
         })
     }
 
-    loadRound = (url) => {
+    loadRound = (params) => {
+        let {gameweek,round_id,season_id} = params;
         axios({
-            url: `${this.props.api}/noparams?url=${url}`,
+            url: `${this.props.api}/round?gameweek=${gameweek}&roundId=${round_id}&seasonId=${season_id}`,
             timeout: 15000
         }).then(res=>{
             console.log(res);
             if(res.status === 200){
                 let prevScheduleArr = this.state.scheduleArr;
-                prevScheduleArr[this.state.index] = [];
+                prevScheduleArr[this.state.index] = res.data.content.matches;
+                let prevRound = this.state.roundArr;
+                let arr = []
+                res.data.content.rounds.map((obj,i)=>{
+                    obj.label = obj.name;
+                    obj.value = i;
+                    arr.push(obj);
+                })
+                prevRound[this.state.index] = arr;
                 this.setState({
                     scheduleArr: prevScheduleArr,
-                },()=>{
-                    prevScheduleArr = this.state.scheduleArr;
-                    prevScheduleArr[this.state.index] = res.data.content.matches;
-                    this.setState({
-                        scheduleArr: prevScheduleArr
-                    })
+                    roundArr: prevRound
                 })
             }
         })
@@ -576,7 +580,7 @@ class Data extends Component {
                                                                     <li>
                                                                         <a href="#" className="prev">上一轮</a>
                                                                     </li>
-                                                                    <li className="name">第7轮</li>
+                                                                        <li className="name">第{curRound[0]+1}轮</li>
                                                                     <li>
                                                                         <a href="#" className="next">下一轮</a>
                                                                     </li>
@@ -589,12 +593,13 @@ class Data extends Component {
                                                                                 return (
                                                                                     <tr key={`schedule${i}`}>
                                                                                         <td>{item.start_play}</td>
-                                                                                        <td className="name_l">
-                                                                                            <img src={item.team_A_logo} />{item.team_A_name}
+                                                                                        <td className="name_r">
+                                                                                            {item.team_A_name}<img src={item.team_A_logo} />
                                                                                         </td>
-                                                                                        <td>VS</td>
-                                                                                        <td className="name_r" >{item.team_B_name}
+                                                                                        <td>{item.status==='Played'?(item.score_A + ':' + item.score_B):'VS'}</td>
+                                                                                        <td className="name_l" >
                                                                                             <img src={item.team_B_logo} />
+                                                                                            {item.team_B_name}
                                                                                         </td>
                                                                                     </tr>
                                                                                 )
@@ -613,14 +618,14 @@ class Data extends Component {
                                                             onOk={v => {
                                                                 let tempRound = this.state.scheduleArr;
                                                                 tempRound[stateIndex] = this.state.roundArr[stateIndex][v[0]]
-                                                                console.log(this.state.roundArr[stateIndex][v[0]].url)
-                                                                this.loadRound(this.state.roundArr[stateIndex][v[0]].url)
+                                                                let params = this.state.roundArr[stateIndex][v[0]].params;
+                                                                this.loadRound(params)
                                                                 // this.setState({
                                                                 //     scheduleArr: tempRound
                                                                 // })
                                                             }}
                                                             >
-                                                            <List.Item arrow="horizontal">Multiple</List.Item>
+                                                            <List.Item arrow="horizontal">选择比赛周</List.Item>
                                                             </Picker>
                                                         </Skeleton>
                                                         </div>

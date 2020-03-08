@@ -128,7 +128,7 @@ class News extends Component {
         let timeDate = new Date();
         let time = timeDate.getFullYear() + '-' + String(timeDate.getMonth()+1).padStart(2,0) + '-' + String(timeDate.getDate()).padStart(2,0);
         axois({
-            url: `${this.props.api}/match?league=${this.state.league_id}&time=${time}`,
+            url: `${this.props.api}/match?league=${this.state.league_id}&time=${time}%2000:00:00`,
             timeout: 15000
         }).then(res=>{
             this.setState({
@@ -137,8 +137,8 @@ class News extends Component {
             if(res.status === 200){
                 this.setState({
                     [`match${this.state.index}Arr`]: this.state[`match${this.state.index}Arr`].concat(res.data.list),
-                    [`match${this.state.index}Next`]: res.data.nextDate.match(/(.+)(?= )/)[0],
-                    [`match${this.state.index}Prev`]: res.data.prevDate.match(/(.+)(?= )/)[0],
+                    [`match${this.state.index}Next`]: res.data.nextDate,
+                    [`match${this.state.index}Prev`]: res.data.prevDate,
                 })
             }
         })
@@ -161,7 +161,7 @@ class News extends Component {
                 })
                 if(res.data.nextDate){
                     this.setState({
-                        [`match${this.state.index}Next`]: res.data.nextDate.match(/(.+)(?= )/)[0]
+                        [`match${this.state.index}Next`]: res.data.nextDate
                     })
                 }else{
                     this.setState({
@@ -179,17 +179,20 @@ class News extends Component {
         }
 
         axois({
-            url: `${this.props.api}/match?league=${this.state.league_id}&time=${this.state[`match${this.state.index}Prev`]}prev`,
+            url: `${this.props.api}/match?league=${this.state.league_id}&time=${this.state[`match${this.state.index}Prev`]}`,
             timeout: 15000
         }).then(res=>{
             resolve();
             if(res.status === 200){
+                if(res.data.prevDate === this.state[`match${this.state.index}Prev`]){
+                    return;
+                }
                 this.setState({
                     [`match${this.state.index}Arr`]: res.data.list.concat(this.state[`match${this.state.index}Arr`]),
                 })
-                if(res.data.nextDate){
+                if(res.data.prevDate){
                     this.setState({
-                        [`match${this.state.index}Prev`]: res.data.nextDate.match(/(.+)(?= )/)[0]
+                        [`match${this.state.index}Prev`]: res.data.prevDate
                     })
                 }else{
                     this.setState({
