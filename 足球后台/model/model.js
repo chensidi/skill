@@ -12,7 +12,8 @@
 
 const request = require('request');
 
-const [home] = [
+const [home,homePrev] = [
+	'https://api.dongqiudi.com/app/global/2/iphone.json',
 	'https://api.dongqiudi.com/app/global/2/iphone.json?mark=gif&version=576&from=msite_com',
 ];
 
@@ -54,7 +55,7 @@ module.exports = {
 		transation(scheduleUrl,res);
 	},
 	getMatch(league,time,res){
-		let matchUrl = `https://api.dongqiudi.com/data/tab/league/new/${league}?start=${time}%2000:00:00&version=576&init=1&f`
+		let matchUrl = `https://api.dongqiudi.com/data/tab/league/new/${league}?start=${time}&version=576&init=1&from=msite_com`
 		transation(matchUrl,res);
 	},
 	getSeason(competitionId,res){
