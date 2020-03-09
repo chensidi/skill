@@ -57,7 +57,12 @@ class Data extends Component {
             rankTeamLoading: true,
             playerKey: false,
             teamKey: false,
-            scheduleLoading: true
+            scheduleLoading: true,
+            historrySeason: [],
+            lastSeason: 'xxx',
+            keyP: true,
+            keyT: true,
+            keyS: true
         }
     }
 
@@ -76,8 +81,15 @@ class Data extends Component {
         this.setState({
             index: temp[0],
             seasonId: temp[2],
-            typeIndex: 0
+            lastSeason: temp[2],
+            typeIndex: 0,
+            keyP: true,
+            keyT: true,
+            keyS: true
+        },()=>{
+            this.loadHistory();
         })
+        
         if(this.state.scoreArr[temp[0]].length > 0){
             this.setState({rankLoading:false});  
             return
@@ -88,22 +100,23 @@ class Data extends Component {
     changeData = (tab,index) => {
         // console.log(this.state.seasonId);
         if(index === 1){
-            if(this.state.playerTypes.length > 0){
-                this.changeType(this.state.playerTypes[0].type);
-                return;
-            }
+            // if(!this.state.keyP){
+            //     this.changeType(this.state.playerTypes[0].type);
+            //     return;
+            // }
             axios({
                 url: `${this.props.api}/player?id=${this.state.seasonId}`,
                 timeout: 15000
             }).then(res=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status === 200){
                     let types = res.data.content.data;
                     types.map((obj)=>{
                         obj.title = obj.name
                     })
                     this.setState({
-                        playerTypes: types
+                        playerTypes: types,
+                        // keyP: false
                     },()=>{
                         let tempArr = this.state.playerDataArr;
                         tempArr.map((obj,i)=>{
@@ -123,10 +136,10 @@ class Data extends Component {
                 }
             })
         }else if(index === 2){
-            if(this.state.teamTypes.length > 0){
-                this.changeType(this.state.teamTypes[0].type);
-                return;
-            }
+            // if(!this.state.keyS){
+            //     this.changeType(this.state.teamTypes[0].type);
+            //     return;
+            // }
             axios({
                 url: `${this.props.api}/team?id=${this.state.seasonId}`,
                 timeout: 15000
@@ -138,7 +151,8 @@ class Data extends Component {
                         obj.title = obj.name
                     })
                     this.setState({
-                        teamTypes: types
+                        teamTypes: types,
+                        keyT: false
                     },()=>{
                         let tempArr = this.state.teamDataArr;
                         tempArr.map((obj,i)=>{
@@ -163,10 +177,10 @@ class Data extends Component {
     }
 
     changeTeamType = (type) => {
-        if(this.state.teamDataArr[this.state.index][0][type].length > 0){
-            this.setState({rankTeamLoading: false,teamKey:true});
-            return;
-        }
+        // if(!this.state.keyT){
+        //     this.setState({rankTeamLoading: false,teamKey:true});
+        //     return;
+        // }
         this.setState({rankTeamLoading: true,teamKey:false});
         axios({
             url: `${this.props.api}/teamdata?type=${type}&id=${this.state.seasonId}`,
@@ -190,10 +204,10 @@ class Data extends Component {
 
     changeType = (type) => {
         // console.log(this.state.playerDataArr[this.state.index])
-        if(this.state.playerDataArr[this.state.index][0][type].length > 0){
-            this.setState({rankTypeLoading: false,playerKey:true});
-            return false;
-        }
+        // if(this.state.playerDataArr[this.state.index][0][type].length > 0 && !this.state.keyP){
+        //     this.setState({rankTypeLoading: false,playerKey:true});
+        //     return false;
+        // }
         this.setState({rankTypeLoading: true,playerKey:false});
         axios({
             url: `${this.props.api}/playerdata?type=${type}&id=${this.state.seasonId}`,
@@ -203,7 +217,8 @@ class Data extends Component {
             if(res.status === 200){
                 this.setState({
                     playerGolasArr: res.data.content.data,
-                    rankTypeLoading: false
+                    rankTypeLoading: false,
+                    keyP: false
                 })
 
                 let tempObj = this.state.playerDataArr;
@@ -236,13 +251,36 @@ class Data extends Component {
         })
     }
 
+    loadHistory = () => {
+        this.setState({
+            historrySeason: []
+        })
+        axios({
+            url: `${this.props.api}/noparams?url=${this.state.rankArr[this.state.index].season.url}`,
+            timeout: 15000
+        }).then(res=>{
+            // console.log(res);
+            if(res.status === 200){
+                let arr = [];
+                res.data.map((obj,i)=>{
+                    obj.label = obj.season_name;
+                    obj.value = i;
+                    arr.push(obj);
+                })
+                this.setState({
+                    historrySeason: arr
+                })
+            }
+        })
+    }
+
     loadRanking = (id) => {
         this.setState({rankLoading:true});  
         axios({
-            url: `${this.props.api}/score?id=${id}&r=${Math.random()}`,
+            url: `${this.props.api}/score?id=${id}`,
             timeout: 15000
         }).then(res=>{
-            console.log(res);
+            // console.log(res);
             this.setState({rankLoading:false});  
             if(res.status === 200){
                 let prevScoreArr = this.state.scoreArr;
@@ -250,19 +288,23 @@ class Data extends Component {
                 this.setState({
                     scoreArr: prevScoreArr
                 })
+                this.loadHistory();
             }
+            
         }).catch(err=>{
             this.setState({rankLoading:false});  
         })
+        
+        
     }
 
     loadSchedule = () => {
-        if(this.state.scheduleArr[this.state.index].length > 0){
-            this.setState({
-                scheduleLoading: false
-            })
-            return false;
-        }
+        // if(!this.state.keyS){
+        //     this.setState({
+        //         scheduleLoading: false
+        //     })
+        //     return false;
+        // }
         this.setState({
             scheduleLoading: true
         })
@@ -270,9 +312,10 @@ class Data extends Component {
             url: `${this.props.api}/schedule?id=${this.state.seasonId}`,
             timeout: 15000
         }).then(res=>{
-            console.log(res);
+            // console.log(res);
             this.setState({
-                scheduleLoading: false
+                scheduleLoading: false,
+                keyS: false
             })
             if(res.status === 200){
                 let prevScheduleArr = this.state.scheduleArr;
@@ -316,6 +359,19 @@ class Data extends Component {
                     roundArr: prevRound
                 })
             }
+        })
+    }
+
+    changeSeason = (x) => {
+        // console.log(x,this.state.historrySeason[x]);
+        let lastSeason = this.state.seasonId;
+        this.setState({
+            lastSeason: lastSeason,
+            seasonId: this.state.historrySeason[x].season_id,
+            typeIndex: 0,
+            typeTeamIndex: 0
+        },()=>{
+            this.loadRanking(this.state.seasonId);
         })
     }
 
@@ -383,19 +439,6 @@ class Data extends Component {
             teamTypes = this.state.teamTypes,
             typeTeamIndex = this.state.typeTeamIndex;
 
-            const seasons = [
-                
-                [
-                  {
-                    label: '春',
-                    value: '春',
-                  },
-                  {
-                    label: '夏',
-                    value: '夏',
-                  },
-                ],
-              ];
         let pickers = [this.state.roundArr[stateIndex]];
 
         let curRound = 0;
@@ -408,6 +451,31 @@ class Data extends Component {
                 }
             }
         }
+
+        let pickersSeason = [this.state.historrySeason];
+        const seasons = [
+            [
+              {
+                label: '2013',
+                value: '2013',
+              },
+              {
+                label: '2014',
+                value: '2014',
+              },
+            ],
+            [
+              {
+                label: '春',
+                value: '春',
+              },
+              {
+                label: '夏',
+                value: '夏',
+              },
+            ],
+          ];
+          
         
         return (
             <div className="main">
@@ -428,7 +496,7 @@ class Data extends Component {
                                         this.state.rankArr.map((menu,index)=>{
                                             return (
                                                 <TabPane tab={menu.label} key={`${index}_${menu.id}_${menu.season_id}`}>
-                                                    <Tabsm tabs={tabs} onChange={this.changeData} animated={false}>
+                                                    <Tabsm tabs={tabs} onChange={this.changeData} animated={false} initialPage={0}>
                                                         <div className="ranking-view match-table-list">
                                                         <Skeleton loading={this.state.rankLoading} active avatar paragraph={{ rows: 9 }}>
                                                             <table className="cell_data">
@@ -465,10 +533,20 @@ class Data extends Component {
                                                                 }
                                                                 </tbody>
                                                             </table>
+                                                            <Picker
+                                                                data={pickersSeason}
+                                                                title="选择赛季"
+                                                                cascade={false}
+                                                                extra="请选择(可选)"
+                                                                value={this.state.sValue}
+                                                                onOk={v => this.changeSeason(v[0])}
+                                                            >
+                                                                <List.Item arrow="horizontal">Multiple</List.Item>
+                                                            </Picker>
                                                         </Skeleton>
                                                         </div>
                                                         <div className="vertab">
-                                                        <Row gutter={16}>
+                                                        <Row gutter={4}>
                                                             <Col span={7}>
                                                                 <div className="leftbar ranktable">
                                                                 {
