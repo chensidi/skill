@@ -3,9 +3,10 @@ import React from 'react';
 import Home from '../views/home';
 import Match from '../views/match';
 import Data from '../views/data';
+import News from '../views/news';
 import Tabbar from '../components/tabbar';
 
-// import {KeepAlive,Provider} from 'react-keep-alive'
+import {KeepAlive,Provider} from 'react-keep-alive'
 
  
 const ANIMATION_MAP = {
@@ -103,12 +104,19 @@ const ANIMATION_MAP = {
 const footballRoute = () => {
     return (
         <Router>
-            <Switch>
-                <Route path="/"  exact component={Home}></Route>
-                <Route path="/match"  exact component={Match}></Route>
-                <Route path="/data"  exact component={Data}></Route>
-            </Switch>
-            <Tabbar />
+            <Provider include="Home,Match,Data,News">
+                <Switch>
+                    <Route path="/"  exact>
+                        <KeepAlive name="Home">
+                            <Home />
+                        </KeepAlive>
+                    </Route>
+                    <Route path="/match"  exact component={Match}></Route>
+                    <Route path="/data"  exact component={Data}></Route>
+                    <Route path="/news/:id"  exact component={News}></Route>
+                </Switch>
+                <Tabbar />
+            </Provider>
         </Router>
 
     )

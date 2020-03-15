@@ -19,3 +19,10 @@ export function changePic(pic){
     }
 }
 
+export function changeScorll(num){
+    return {
+        type: 'changeScorll',
+        num: num
+    }
+}
+
