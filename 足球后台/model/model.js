@@ -10,7 +10,8 @@
 // })
 // connection.connect();//连接数据库
 
-const request = require('request');
+const request = require('request'),
+	  cheerio = require('cheerio');
 
 const [home,homePrev] = [
 	'https://api.dongqiudi.com/app/global/2/iphone.json',
@@ -69,7 +70,8 @@ module.exports = {
 		let {gameweek,roundId,seasonId} = params;
 		let roundUrl = `https://sport-data.dongqiudi.com/soccer/biz/data/schedule?season_id=${seasonId}&round_id=${roundId}&gameweek=${gameweek}&app=dqd&platform=&version=0`;
 		transation(roundUrl,res);
-	}
+	},
+
 }	
 
 
@@ -94,7 +96,31 @@ function getHTML(url,res){
 			/*把字符串转换为json*/
 			// var data = JSON.parse(body);
 			/*渲染模板*/
-			res.json({html:body})
+			let $ = cheerio.load(body,{decodeEntities: false})
+			// console.log($('body'))
+			// res.json({html:$('body').remove('script').html()});
+			let main = $('body'),
+				css = [];
+			main.find('script').remove();
+			main.find('.column').remove();
+			main.find('*').each(function(i){
+				if($(this).attr('class')){
+					let className = $(this).attr('class');
+					$(this).removeAttr('class').attr('className',className)
+				}
+			})
+			main.find('img').each(function(j){
+				if($(this).attr('orig-src')){
+					$(this).attr('src',$(this).attr('orig-src'));
+				}
+			})
+			$('link').each(function(i){
+				if($(this).attr('type') == 'text/css'){
+					css.push($(this).attr('href'))
+				}
+			})
+			// res.end(main.html())
+			res.json({main:main.html(),css})
 		}else{
 			res.end('');
 		}

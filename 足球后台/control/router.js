@@ -111,5 +111,6 @@ module.exports = function(app){
 			seasonId = req.query.seasonId;
 		model.getRound({gameweek,roundId,seasonId},res);
 	})
+	
 }
 	
